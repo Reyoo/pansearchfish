@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        AS id,
+            movie_name AS movieName,
+            wangpan_url AS wangPanUrl,
+            wangpan_passwd AS wangPanPassword
+    </sql>
+
+
+
+    <select id="selectMovieUrlByLikeName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM  ${tablename}
+        WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 10
+
+    </select>
+
+
+
+
+    <select id="selectMovieUrlByName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM  ${tablename}
+        WHERE movie_name =  ${"'"+movieName+"'"}
+        LIMIT 10
+    </select>
+
+
+
+    <insert id="insertMovieUrls"  statementType="STATEMENT">
+        INSERT INTO  ${tableName}
+        (movie_name,movie_url,wangpan_url,wangpan_passwd,updatetime)
+        VALUES
+        <foreach collection="list" item="movieNameAndUrlModels" separator=",">
+            (${movieNameAndUrlModels.movieName}, ${movieNameAndUrlModels.movieUrl},
+            ${movieNameAndUrlModels.wangPanUrl},${movieNameAndUrlModels.wangPanPassword} , now())
+        </foreach>
+    </insert>
+
+
+
+    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+        INSERT INTO  ${tableName}
+            (movie_name, movie_url, wangpan_url, wangpan_passwd,updatetime)
+        VALUES (${"'"+movieNameAndUrlModel.movieName+"'"}, ${"'"+movieNameAndUrlModel.movieUrl+"'"},
+                ${"'"+movieNameAndUrlModel.wangPanUrl+"'"}, ${"'"+movieNameAndUrlModel.wangPanPassword+"'"},now())
+
+    </insert>
+
+
+    <delete id="deleteUrlMovieUrls" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+        DELETE
+        FROM  ${tableName}
+        WHERE movie_name = ${"'"+movieNameAndUrlModel.movieName+"'"}
+          AND wangpan_url = ${"'"+movieNameAndUrlModel.wangPanUrl+"'"};
+    </delete>
+
+
+
+    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+        UPDATE
+        ${tableName}
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test="movieNameAndUrlModel.movieUrl != null and movieNameAndUrlModel.movieUrl != ''">
+                movie_url =${"'"+movieNameAndUrlModel.movieUrl+"'"},
+            </if>
+
+            <if test="movieNameAndUrlModel.wangPanUrl != null and movieNameAndUrlModel.wangPanUrl != ''">
+                wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"},
+            </if>
+            <if test="movieNameAndUrlModel.wangPanPassword != null and movieNameAndUrlModel.wangPanPassword != ''">
+                wangpan_passwd =${"'"+movieNameAndUrlModel.wangPanPassword+"'"},
+            </if>
+            updatetime = now()
+        </trim>
+        WHERE
+        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"}
+    </update>
+
+
+
+
+    <!--    由于设置了自增长ID 无法使用插入更新  ON DUPLICATE KEY UPDATE-->
+
+    <!--    <insert id="insertMovieUrls" parameterType="com.libbytian.pan.system.model.MovieNameAndUrlModel">
+            INSERT INTO url_movie
+            (movie_name,movie_url,wangpan_url,wangpan_passwd)
+            values
+                    <foreach collection="list" item="movieNameAndUrlModels" separator=",">
+                        (#{movieNameAndUrlModels.movieName}, #{movieNameAndUrlModels.movieUrl},
+                        #{movieNameAndUrlModels.wangPanUrl},#{movieNameAndUrlModels.wangPanPassword})
+                    </foreach>
+            ON DUPLICATE KEY UPDATE
+            movie_name = values(movieName)
+        </insert>-->
+
+</mapper>

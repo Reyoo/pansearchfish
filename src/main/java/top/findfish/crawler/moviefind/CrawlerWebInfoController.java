@@ -1,0 +1,70 @@
+package top.findfish.crawler.moviefind;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import top.findfish.crawler.common.AjaxResult;
+import top.findfish.crawler.proxy.service.GetProxyService;
+
+/**
+ * @ProjectName: pansearch
+ * @Package: com.libbytian.pan.crawler.controller
+ * @ClassName: CrawlerWebInfoController
+ * @Author: sun71
+ * @Description: 获取未读影单信息
+ * @Date: 2020/12/13 11:26
+ * @Version: 1.0
+ */
+@RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequestMapping("/initmovie")
+@Slf4j
+public class CrawlerWebInfoController {
+
+
+    @Qualifier("jsoupSumuServiceImpl")
+    private final ICrawlerCommonService jsoupSumuServiceImpl;
+
+    @Qualifier("jsoupSumuServiceImpl")
+    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
+
+    @Qualifier("jsoupUnreadServiceImpl")
+    private final ICrawlerCommonService jsoupUnreadServiceImpl;
+
+    private final GetProxyService getProxyService;
+
+    private final RedisTemplate redisTemplate;
+
+
+    @Value("${user.unread.weiduyingdan}")
+    String unreadUrl;
+    @Value("${user.lxxh.aidianying}")
+    String lxxhUrl;
+    @Value("${user.xiaoyou.yingmiao}")
+    String xiaoyouUrl;
+
+    /**
+     * 调用电影PID 入库 触发接口类
+     */
+    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    public AjaxResult loopGetMoviePid() {
+        String ipAndPort = getProxyService.getProxyIpFromRemote();
+        try {
+
+//            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("八佰", ipAndPort);
+            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
+
+            return AjaxResult.success();
+        } catch (Exception e) {
+            redisTemplate.opsForHash().delete("use_proxy",ipAndPort);
+            return AjaxResult.error();
+        }
+    }
+
+}
