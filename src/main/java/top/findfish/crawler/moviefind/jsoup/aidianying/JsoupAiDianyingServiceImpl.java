@@ -155,7 +155,11 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
         } catch (Exception e) {
             log.error(e.getMessage());
-            redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
+            try {
+                redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
+            }catch (Exception ex){
+                log.error(ex.getMessage());
+            }
 
         }
     }
