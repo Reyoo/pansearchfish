@@ -250,10 +250,12 @@ public class UnReadService {
 
                 List<MovieNameAndUrlModel>  couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_unread",movieNameAndUrlModelList);
 
+                if (couldBeFindUrls.size()>0){
                 //存入数据库
                 movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
                 //存入redis
                 redisTemplate.opsForHash().put("unreadmovie", searchMovieName, couldBeFindUrls);
+                }
             }
 
 

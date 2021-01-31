@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: QiSun
@@ -140,10 +141,13 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
 
+                if (couldBeFindUrls.size()>0){
                 //存入数据库
                 movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
                 //存入redis
                 redisTemplate.opsForHash().put("unreadmovie", searchMovieName, couldBeFindUrls);
+                redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
+                }
             }
         } catch (Exception e) {
             log.error("docment is null" + e.getMessage());

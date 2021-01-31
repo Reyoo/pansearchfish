@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 项目名: pan
@@ -132,11 +133,12 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
                 invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModels);
                 List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
-                if (couldBeFindUrls != null) {
+                if (couldBeFindUrls.size()>0) {
                     //存入数据库
                     movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_xiaoyou");
                     //存入redis
-                    redisTemplate.opsForHash().put("xiaoyoumovie", searchMovieName, movieNameAndUrlModelList);
+                    redisTemplate.opsForHash().put("xiaoyoumovie", searchMovieName, couldBeFindUrls);
+                    redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
                 }
             }
         } catch (Exception e) {
