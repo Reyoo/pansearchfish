@@ -80,8 +80,8 @@ public class CrawlerScheduleTask {
         //执行爬虫
         for(SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList){
 
-//              int num=(int) (Math.random()*(5000-1000+1000)+1000);
-//              Thread.sleep(num);
+              int num=(int) (Math.random()*(5000-1000+1000)+1000);
+              Thread.sleep(num);
             movieName = systemUserSearchMovieModel.getSearchName();
             String ipAndPort  =getProxyService.getProxyIpFromRemote();
             jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);

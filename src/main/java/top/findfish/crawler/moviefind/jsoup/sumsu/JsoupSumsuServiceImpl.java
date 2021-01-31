@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service("jsoupSumuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -130,11 +131,12 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
                     invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieNameAndUrlModels);
                     List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
-                    if (couldBeFindUrls != null) {
+                    if (couldBeFindUrls.size()>0) {
                         //存入数据库
                         movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
                         //存入redis
                         redisTemplate.opsForHash().put("sumsu", searchMovieName, couldBeFindUrls);
+                        redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
                     }
                 }
             }
