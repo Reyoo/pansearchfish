@@ -76,11 +76,11 @@ public class XiaoYouService {
 
             List<MovieNameAndUrlModel> couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou",movieNameAndUrlModelList);
 
-            if (couldBeFindUrls != null){
+            if (couldBeFindUrls.size()>0){
             //存入数据库
             movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_xiaoyou");
             //存入redis
-            redisTemplate.opsForHash().put("xiaoyoumovie", searchMovieName, movieNameAndUrlModelList);
+            redisTemplate.opsForHash().put("xiaoyoumovie", searchMovieName, couldBeFindUrls);
             }
 
             }

@@ -105,7 +105,7 @@ public class CrawlerSumsuService {
 
                 List<MovieNameAndUrlModel>  couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
 
-                if (couldBeFindUrls != null){
+                if (couldBeFindUrls.size()>0){
                     //存入数据库
                     movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
                     //存入redis
@@ -142,6 +142,10 @@ public class CrawlerSumsuService {
                     }
 
                     String movieName = tidDoc.title();
+                    //剪切掉冗余标题
+                    String[]  splitMovieName =movieName.split("百度云下载链接-搜索 - 手机版 - Powered by Discuz!");
+                    movieName = splitMovieName[0];
+
                     Elements elements = tidDoc.select("strong").select("a");
 
 
@@ -152,7 +156,7 @@ public class CrawlerSumsuService {
                             MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                             String baiPan = link.attr("href").toString();
                             movieNameAndUrlModel.setWangPanUrl(baiPan);
-                            movieNameAndUrlModel.setMovieName(tidDoc.title());
+                            movieNameAndUrlModel.setMovieName(movieName);
                             movieNameAndUrlModel.setMovieUrl(sumsuUrl);
 
                             if (link.parent().text().contains("提取码:")) {
