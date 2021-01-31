@@ -54,67 +54,64 @@ public class CrawlerSumsuService {
      * @param movieName
      * @return
      */
-    public void getSumsuUrl(String movieName, String proxyIp, int proxyPort) throws Exception{
+    public void getSumsuUrl(String movieName, String proxyIp, int proxyPort) throws Exception {
 
 
+        log.info("-------------->开始爬取 社区动力<--------------------");
+        List<String> firstSearchUrls = new ArrayList<>();
+        List<MovieNameAndUrlModel> movieList = new ArrayList<>();
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add("User-Agent", FindFishUserAgentUtil.randomUserAgent());
+        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("formhash", "a07b2e14");
+        map.add("srchtxt", movieName);
+        map.add("searchsubmit", "yes");
 
-            log.info("-------------->开始爬取 社区动力<--------------------");
-            List<String> firstSearchUrls = new ArrayList<>();
-            List<MovieNameAndUrlModel> movieList = new ArrayList<>();
-            HttpHeaders requestHeaders = new HttpHeaders();
-            requestHeaders.add("User-Agent", FindFishUserAgentUtil.randomUserAgent());
-            requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.add("formhash", "a07b2e14");
-            map.add("srchtxt", movieName);
-            map.add("searchsubmit", "yes");
+        //重定向
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 
-            //重定向
-            HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().setProxy(new HttpHost(proxyIp, proxyPort))
+                .setRedirectStrategy(new LaxRedirectStrategy()).setConnectionTimeToLive(30L, TimeUnit.SECONDS)
+                .build();
+        factory.setHttpClient(httpClient);
+        this.restTemplate.setRequestFactory(factory);
 
-            CloseableHttpClient httpClient = HttpClientBuilder.create().setProxy(new HttpHost(proxyIp, proxyPort))
-                    .setRedirectStrategy(new LaxRedirectStrategy()).setConnectionTimeToLive(30L, TimeUnit.SECONDS)
-                    .build();
-            factory.setHttpClient(httpClient);
-            this.restTemplate.setRequestFactory(factory);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, requestHeaders);
+        ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange(
+                String.format(url),
+                HttpMethod.POST, requestEntity, String.class);
 
-            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, requestHeaders);
-            ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange(
-                    String.format(url),
-                    HttpMethod.POST, requestEntity, String.class);
-
-            if (resultResponseEntity.getStatusCode() == HttpStatus.OK) {
-                String html = resultResponseEntity.getBody();
-                Document doc = Jsoup.parse(html);
-                Elements elements = doc.select("li").select("a");
-                //获取到第一层的中文搜索  继而拿到tid  查询详细电影
-                for (Element link : elements) {
-                    String linkhref = link.attr("href");
-                    if (linkhref.startsWith("forum.php?mod")) {
-                        firstSearchUrls.add("http://520.sumsu.cn/" + linkhref);
-                        log.info("查询电影名为--> " + movieName + " 获取第一次链接为--> " + linkhref);
-                    }
+        if (resultResponseEntity.getStatusCode() == HttpStatus.OK) {
+            String html = resultResponseEntity.getBody();
+            Document doc = Jsoup.parse(html);
+            Elements elements = doc.select("li").select("a");
+            //获取到第一层的中文搜索  继而拿到tid  查询详细电影
+            for (Element link : elements) {
+                String linkhref = link.attr("href");
+                if (linkhref.startsWith("forum.php?mod")) {
+                    firstSearchUrls.add("http://520.sumsu.cn/" + linkhref);
+                    log.info("查询电影名为--> " + movieName + " 获取第一次链接为--> " + linkhref);
                 }
-                log.info("查询电影名为---> " + movieName + "  第一层次查询完,进入第二次查询获取网盘url");
-                if (firstSearchUrls.size() > 0) {
-                    movieList = getTidSumsuUrl(firstSearchUrls, proxyIp, proxyPort);
+            }
+            log.info("查询电影名为---> " + movieName + "  第一层次查询完,进入第二次查询获取网盘url");
+            if (firstSearchUrls.size() > 0) {
+                movieList = getTidSumsuUrl(firstSearchUrls, proxyIp, proxyPort);
 
-                    //更新前从数据库查询后删除 片名相同但更新中的 无效数据
-                    List<MovieNameAndUrlModel>   movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", movieName);
-                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu",movieNameAndUrlModels);
+                //更新前从数据库查询后删除 片名相同但更新中的 无效数据
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", movieName);
+                invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieNameAndUrlModels);
 
-                List<MovieNameAndUrlModel>  couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
+                List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
 
-                if (couldBeFindUrls.size()>0){
+                if (couldBeFindUrls.size() > 0) {
                     //存入数据库
                     movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
-                    //存入redis
-                    redisTemplate.opsForHash().put("sumsu", movieName, couldBeFindUrls);
-                }
-
                 }
 
             }
+
+        }
 
     }
 
@@ -143,7 +140,7 @@ public class CrawlerSumsuService {
 
                     String movieName = tidDoc.title();
                     //剪切掉冗余标题
-                    String[]  splitMovieName =movieName.split("百度云下载链接-搜索 - 手机版 - Powered by Discuz!");
+                    String[] splitMovieName = movieName.split("百度云下载链接-搜索 - 手机版 - Powered by Discuz!");
                     movieName = splitMovieName[0];
 
                     Elements elements = tidDoc.select("strong").select("a");

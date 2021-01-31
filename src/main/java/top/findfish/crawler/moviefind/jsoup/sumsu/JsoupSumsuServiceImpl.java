@@ -15,18 +15,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
-import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
+import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Service("jsoupSumuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -89,7 +88,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
             String linkhref = null;
             for (Element link : elements) {
-                 linkhref = link.attr("href");
+                linkhref = link.attr("href");
                 if (linkhref.startsWith("https://pan.baidu.com")) {
 //                            System.out.println("--------------------------------");
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
@@ -131,18 +130,15 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
                     invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieNameAndUrlModels);
                     List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
-                    if (couldBeFindUrls.size()>0) {
+                    if (couldBeFindUrls.size() > 0) {
                         //存入数据库
                         movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
-                        //存入redis
-                        redisTemplate.opsForHash().put("sumsu", searchMovieName, couldBeFindUrls);
-                        redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
                     }
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage());
-            redisTemplate.opsForHash().delete("use_proxy",proxyIpAndPort);
+            redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
 
     }
@@ -225,8 +221,6 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
         }
         return movieNameAndUrlModels;
     }
-
-
 
 
 }
