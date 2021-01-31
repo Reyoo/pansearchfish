@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -50,7 +49,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
 
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception{
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
 
 
         Set<String> movieUrlInLxxh = new HashSet();
@@ -59,7 +58,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         String urlAiDianying = lxxhUrl + "/?s=" + encode;
 
 
-        Document document = JsoupFindfishUtils.getDocument(urlAiDianying,proxyIpAndPort);
+        Document document = JsoupFindfishUtils.getDocument(urlAiDianying, proxyIpAndPort);
 
 
         //如果未找到，放弃爬取，直接返回
@@ -69,8 +68,6 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         }
         //解析h2 标签 如果有herf 则取出来,否者 直接获取百度盘
         Elements attr = document.getElementsByTag("h2").select("a");
-
-
 
 
         if (attr.size() != 0) {
@@ -98,7 +95,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
         movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
 
-        Document secorndDocument = JsoupFindfishUtils.getDocument(secondUrlLxxh,proxyIpAndPort);
+        Document secorndDocument = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
         movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text());
         Elements secorndAttr = secorndDocument.getElementsByTag("p").select("span");
         for (Element element : secorndAttr) {
@@ -135,7 +132,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort)  {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) {
 
         try {
 
@@ -146,28 +143,19 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             for (String secondUrlLxxh : movieUrlInLxxh) {
                 movieNameAndUrlModelList.addAll(getWangPanUrl(secondUrlLxxh, proxyIpAndPort));
             }
-//            //由于包含模糊查询、这里记录到数据库中做插入更新操作
-//            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
-//            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
-//            redisTemplate.opsForHash().put("aidianying", searchMovieName, movieNameAndUrlModelList);
-//            redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
-
 
             //更新前从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_aidianying", searchMovieName);
             invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModels);
             List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
-            if (couldBeFindUrls.size()>0) {
+            if (couldBeFindUrls.size() > 0) {
                 //存入数据库
                 movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_aidianying");
-                //存入redis
-                redisTemplate.opsForHash().put("aidianying", searchMovieName, couldBeFindUrls);
-                redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
-            redisTemplate.opsForHash().delete("use_proxy",proxyIpAndPort);
+            redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
 
         }
     }

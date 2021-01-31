@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author: QiSun
@@ -57,7 +56,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         String pUrl = null;
         for (Element link : links) {
             pUrl = link.attr("href");
-            if(pUrl.contains("http://www.unreadmovie.com/?p=")&& !pUrl.contains("#")){
+            if (pUrl.contains("http://www.unreadmovie.com/?p=") && !pUrl.contains("#")) {
                 movieUrlSet.add(pUrl);
             }
 
@@ -74,47 +73,47 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
 
-            MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-            movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-;
+        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+        ;
 
-            Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-                String name = document.getElementsByTag("title").text().trim();
-            System.out.println(name);
-            if (name.contains("– 未读影单")) {
-                name = name.split("– 未读影单")[0].trim();
+        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+        String name = document.getElementsByTag("title").text().trim();
+        System.out.println(name);
+        if (name.contains("– 未读影单")) {
+            name = name.split("– 未读影单")[0].trim();
+        }
+
+        movieNameAndUrlModel.setMovieName(name);
+
+
+        Elements attr = document.getElementsByTag("p");
+        for (Element passwdelement : attr) {
+            if (passwdelement.text().contains("密码")) {
+                movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
+                break;
             }
 
-            movieNameAndUrlModel.setMovieName(name);
-
-
-            Elements attr = document.getElementsByTag("p");
-            for (Element passwdelement : attr) {
-                if (passwdelement.text().contains("密码")) {
-                    movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
-                    break;
-                }
-
-                if (passwdelement.text().contains("提取码")) {
-                    movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
-                    break;
-                }
-
+            if (passwdelement.text().contains("提取码")) {
+                movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
+                break;
             }
 
-            Elements links = document.select("a[href]");
-            String wangPanUrl = null;
-            for (Element link : links) {
-                wangPanUrl = link.attr("href");
-                if (wangPanUrl.contains("pan.baidu.com")) {
-                    break;
-                } else {
-                    continue;
-                }
-            }
+        }
 
-            movieNameAndUrlModel.setWangPanUrl(wangPanUrl);
-            movieNameAndUrlModelList.add(movieNameAndUrlModel);
+        Elements links = document.select("a[href]");
+        String wangPanUrl = null;
+        for (Element link : links) {
+            wangPanUrl = link.attr("href");
+            if (wangPanUrl.contains("pan.baidu.com")) {
+                break;
+            } else {
+                continue;
+            }
+        }
+
+        movieNameAndUrlModel.setWangPanUrl(wangPanUrl);
+        movieNameAndUrlModelList.add(movieNameAndUrlModel);
 
         return movieNameAndUrlModelList;
     }
@@ -141,12 +140,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
 
-                if (couldBeFindUrls.size()>0){
-                //存入数据库
-                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
-                //存入redis
-                redisTemplate.opsForHash().put("unreadmovie", searchMovieName, couldBeFindUrls);
-                redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
+                if (couldBeFindUrls.size() > 0) {
+                    //存入数据库
+                    movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
                 }
             }
         } catch (Exception e) {

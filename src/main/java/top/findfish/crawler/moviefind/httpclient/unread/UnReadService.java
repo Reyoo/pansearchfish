@@ -190,13 +190,13 @@ public class UnReadService {
      * @param movieName
      * @return
      */
-    public Set<String> getNormalUnReadUrl(String movieName,String proxyIp,int proxyPort) {
+    public Set<String> getNormalUnReadUrl(String movieName, String proxyIp, int proxyPort) {
 
         Set<String> movieList = new HashSet<>();
         String url = unreadUrl + "/?s=" + movieName;
 
         try {
-                    Document doc = Jsoup.connect(url).
+            Document doc = Jsoup.connect(url).
                     proxy(proxyIp, proxyPort).
                     userAgent(FindFishUserAgentUtil.randomUserAgent())
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
@@ -207,9 +207,9 @@ public class UnReadService {
                     .timeout(12000)
                     .followRedirects(false).get();
 
-                Elements elements = doc.select("article");
-                for (Element element : elements) {
-                    movieList.add(element.select("a").attr("href"));
+            Elements elements = doc.select("article");
+            for (Element element : elements) {
+                movieList.add(element.select("a").attr("href"));
 
             }
             return movieList;
@@ -228,37 +228,33 @@ public class UnReadService {
      * @return
      */
 
-    public void  getUnReadCrawlerResult(String searchMovieName,String proxyIp, int proxyPort) throws Exception{
+    public void getUnReadCrawlerResult(String searchMovieName, String proxyIp, int proxyPort) throws Exception {
         log.info("-------------->开始爬取 未读<--------------------");
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
-            Set<String> set = getNormalUnReadUrl(searchMovieName,proxyIp,proxyPort);
-            if (set.size() > 0) {
-                for (String url : set) {
-                    //由于包含模糊查询、这里记录到数据库中做插入更新操作
-                    MovieNameAndUrlModel movieNameAndUrlModel = getUnReadMovieLoops(url,proxyIp,proxyPort);
-                    if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu.com")){
-                        movieNameAndUrlModelList.add(movieNameAndUrlModel);
-                    }
-
+        Set<String> set = getNormalUnReadUrl(searchMovieName, proxyIp, proxyPort);
+        if (set.size() > 0) {
+            for (String url : set) {
+                //由于包含模糊查询、这里记录到数据库中做插入更新操作
+                MovieNameAndUrlModel movieNameAndUrlModel = getUnReadMovieLoops(url, proxyIp, proxyPort);
+                if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu.com")) {
+                    movieNameAndUrlModelList.add(movieNameAndUrlModel);
                 }
 
-                //更新前从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel>   movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_unread", searchMovieName);
-                invalidUrlCheckingService.checkUrlMethod("url_movie_unread",movieNameAndUrlModels);
-
-
-                List<MovieNameAndUrlModel>  couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_unread",movieNameAndUrlModelList);
-
-                if (couldBeFindUrls.size()>0){
-                //存入数据库
-                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
-                //存入redis
-                redisTemplate.opsForHash().put("unreadmovie", searchMovieName, couldBeFindUrls);
-                }
             }
 
+            //更新前从数据库查询后删除 片名相同但更新中的 无效数据
+            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_unread", searchMovieName);
+            invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModels);
 
+
+            List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
+
+            if (couldBeFindUrls.size() > 0) {
+                //存入数据库
+                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
+            }
+        }
 
 
     }

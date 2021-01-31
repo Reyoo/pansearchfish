@@ -55,37 +55,32 @@ public class XiaoYouService {
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
 
-
     @Value("$(user.xiaoyou.yingmiao)")
     String xiaoyouUrl;
 
-    public void  getXiaoYouCrawlerResult(String searchMovieName,String proxyIp, int proxyPort) throws Exception {
+    public void getXiaoYouCrawlerResult(String searchMovieName, String proxyIp, int proxyPort) throws Exception {
         log.info("-------------->开始爬取 影喵儿<--------------------");
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
-            Set<String> set = getNormalXiaoYouUrl(searchMovieName,proxyIp,proxyPort);
-            if (set.size() > 0) {
-                for (String url : set) {
-                    //由于包含模糊查询、这里记录到数据库中做插入更新操作
-                    movieNameAndUrlModelList.addAll(getXiaoYouMovieLoops(url,proxyIp,proxyPort));
-                }
+        Set<String> set = getNormalXiaoYouUrl(searchMovieName, proxyIp, proxyPort);
+        if (set.size() > 0) {
+            for (String url : set) {
+                //由于包含模糊查询、这里记录到数据库中做插入更新操作
+                movieNameAndUrlModelList.addAll(getXiaoYouMovieLoops(url, proxyIp, proxyPort));
+            }
 
             //更新前从数据库查询后删除 片名相同但更新中的 无效数据
-            List<MovieNameAndUrlModel>   movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
-            invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou",movieNameAndUrlModels);
+            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
+            invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModels);
 
-            List<MovieNameAndUrlModel> couldBeFindUrls =  invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou",movieNameAndUrlModelList);
+            List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
 
-            if (couldBeFindUrls.size()>0){
-            //存入数据库
-            movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_xiaoyou");
-            //存入redis
-            redisTemplate.opsForHash().put("xiaoyoumovie", searchMovieName, couldBeFindUrls);
+            if (couldBeFindUrls.size() > 0) {
+                //存入数据库
+                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_xiaoyou");
             }
 
-            }
-
-
+        }
 
 
     }
@@ -93,11 +88,12 @@ public class XiaoYouService {
 
     /**
      * 获取 爬虫 第一层url集合
+     *
      * @param searchMovieName
      * @return
      * @throws IOException
      */
-    public Set<String> getNormalXiaoYouUrl(String searchMovieName , String proxyIp , int proxyPort) throws IOException {
+    public Set<String> getNormalXiaoYouUrl(String searchMovieName, String proxyIp, int proxyPort) throws IOException {
 
         log.info("-------------->开始爬取 小悠<--------------------");
 
@@ -107,7 +103,7 @@ public class XiaoYouService {
         try {
             Document document = Jsoup.connect(url)
                     .proxy(proxyIp, proxyPort).
-                    userAgent(FindFishUserAgentUtil.randomUserAgent())
+                            userAgent(FindFishUserAgentUtil.randomUserAgent())
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                     .header("Cache-Control", "max-age=0")
                     .header("Accept-Encoding", "gzip, deflate, sdch")
@@ -125,9 +121,9 @@ public class XiaoYouService {
                 String movieUrl = element.select("a").attr("href");
 
                 //判断是一层链接还是两层链接
-                if (StringUtils.isBlank(movieUrl)){
+                if (StringUtils.isBlank(movieUrl)) {
                     movieList.add(url);
-                }else {
+                } else {
                     movieList.add(movieUrl);
                 }
             }
@@ -140,14 +136,14 @@ public class XiaoYouService {
     }
 
 
-
     /**
      * 获取 爬虫 第二层url集合
+     *
      * @param url
      * @return
      * @throws IOException
      */
-    public  List<MovieNameAndUrlModel> getXiaoYouMovieLoops(String url ,String proxyIp ,int proxyPort) throws IOException {
+    public List<MovieNameAndUrlModel> getXiaoYouMovieLoops(String url, String proxyIp, int proxyPort) throws IOException {
 
         List<MovieNameAndUrlModel> list = new ArrayList();
 
@@ -195,20 +191,20 @@ public class XiaoYouService {
                 if (element.select("a").attr("href").contains("pan.baidu")) {
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
 
-                    if (element.childNodeSize() == 3){
+                    if (element.childNodeSize() == 3) {
 
-    //                    String password = element.childNode(2).toString().split("&nbsp; &nbsp; ")[1];
-                        String password = element.childNode(2).toString().replaceAll("&nbsp;","");
+                        //                    String password = element.childNode(2).toString().split("&nbsp; &nbsp; ")[1];
+                        String password = element.childNode(2).toString().replaceAll("&nbsp;", "");
 
                         movieNameAndUrlModel.setWangPanPassword(password);
                     }
 
                     //判断片名是否需要拼接
                     int indexName = element.childNode(0).toString().indexOf(".视频：");
-                    if (indexName == -1){
+                    if (indexName == -1) {
                         movieNameAndUrlModel.setMovieName(movieName);
-                    }else {
-                        movieNameAndUrlModel.setMovieName(movieName + element.childNode(0).toString().substring(0,indexName));
+                    } else {
+                        movieNameAndUrlModel.setMovieName(movieName + element.childNode(0).toString().substring(0, indexName));
                     }
 
                     movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
@@ -226,10 +222,6 @@ public class XiaoYouService {
             return list;
         }
     }
-
-
-
-
 
 
 }

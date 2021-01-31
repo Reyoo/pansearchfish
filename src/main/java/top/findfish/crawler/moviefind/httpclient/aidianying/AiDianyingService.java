@@ -21,7 +21,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -43,14 +42,14 @@ public class AiDianyingService {
     private final RedisTemplate redisTemplate;
     private final InvalidUrlCheckingService invalidUrlCheckingService;
     private final IMovieNameAndUrlService movieNameAndUrlService;
-    private  final  PhantomJsProxyCallService phantomJsProxyCallService;
+    private final PhantomJsProxyCallService phantomJsProxyCallService;
 
 
     @Value("${user.lxxh.aidianying}")
     String lxxhUrl;
 
 
-    public Set<String> firstFindLxxhUrl(String searchMovieName, String proxyIpAndPort) throws Exception{
+    public Set<String> firstFindLxxhUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
 
 
         Set<String> movieUrlInLxxh = new HashSet();
@@ -67,17 +66,16 @@ public class AiDianyingService {
         WebDriver firstBrowserDriver = null;
         Document document = null;
         try {
-             firstBrowserDriver = phantomJsProxyCallService.create(urlAiDianying, proxyIpAndPort);
-             System.out.println(firstBrowserDriver.getPageSource());
-             document = Jsoup.parse(firstBrowserDriver.getPageSource());
-        }catch (Exception e){
+            firstBrowserDriver = phantomJsProxyCallService.create(urlAiDianying, proxyIpAndPort);
+            System.out.println(firstBrowserDriver.getPageSource());
+            document = Jsoup.parse(firstBrowserDriver.getPageSource());
+        } catch (Exception e) {
             log.error(e.getMessage());
-        }finally {
-            if(firstBrowserDriver!= null){
+        } finally {
+            if (firstBrowserDriver != null) {
                 firstBrowserDriver.close();
             }
         }
-
 
 
         //如果未找到，放弃爬取，直接返回
@@ -111,18 +109,18 @@ public class AiDianyingService {
         log.info("爱电影--》" + secondUrlLxxh);
         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
         movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-        WebDriver  secorndBrowserDriver = null;
+        WebDriver secorndBrowserDriver = null;
         Document secorndDocument = null;
         try {
             //采用phantomJs 无界浏览器形式访问
             secorndBrowserDriver = phantomJsProxyCallService.create(secondUrlLxxh, proxyIpAndPort);
             System.out.println("----------");
             System.out.println(secorndBrowserDriver.getPageSource());
-             secorndDocument = Jsoup.parse(secorndBrowserDriver.getPageSource());
-        }catch (Exception e){
+            secorndDocument = Jsoup.parse(secorndBrowserDriver.getPageSource());
+        } catch (Exception e) {
             log.error(e.getMessage());
-        }finally {
-            if(secorndBrowserDriver!=null){
+        } finally {
+            if (secorndBrowserDriver != null) {
                 secorndBrowserDriver.close();
             }
         }
@@ -169,15 +167,12 @@ public class AiDianyingService {
         log.info("-------------------------开始爬取爱电影 begin ----------------------------");
 
 
-            for (String secondUrlLxxh : movieUrlInLxxh) {
-                movieNameAndUrlModelList.addAll(getWangPanByLxxh(secondUrlLxxh, proxyIpAndPort));
-            }
-            //由于包含模糊查询、这里记录到数据库中做插入更新操作
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
-            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
-            redisTemplate.opsForHash().put("aidianying", searchMovieName, movieNameAndUrlModelList);
-            redisTemplate.expire(searchMovieName, 60, TimeUnit.SECONDS);
-
+        for (String secondUrlLxxh : movieUrlInLxxh) {
+            movieNameAndUrlModelList.addAll(getWangPanByLxxh(secondUrlLxxh, proxyIpAndPort));
+        }
+        //由于包含模糊查询、这里记录到数据库中做插入更新操作
+        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
+        invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
 
 
     }
