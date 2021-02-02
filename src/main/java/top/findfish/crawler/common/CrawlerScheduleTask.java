@@ -1,6 +1,7 @@
 package top.findfish.crawler.common;
 
 
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.proxy.service.GetProxyService;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
@@ -16,7 +18,7 @@ import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -43,20 +45,21 @@ public class CrawlerScheduleTask {
 
     private final GetProxyService getProxyService;
 
-    private RedisTemplate redisTemplate;
+    private final RedisTemplate redisTemplate;
 
 
     @Value("${findfish.crawler.schedule.range}")
     String scheduleRange;
 
+    Set<String>   ipAndPorts = null;
 
     /**
      * 爱电影定时任务
      */
     //3.添加定时任务
-//    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,15,17,19,21,23 * * ? ")
+//    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,16,18,20,22,23 * * ? ")
 //    @Scheduled(cron = "0 30 2,4,6,8,10,12,15,15,17,19,21,23 * * ? ")
-//    @Scheduled(cron = "30 01 18 * * ? ")
+    @Scheduled(cron = "00 03 14 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -70,26 +73,48 @@ public class CrawlerScheduleTask {
         log.info("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-01-28 00:15:15","2021-01-31 09:15:15");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
 
         int i = 1;
 
+
+
+
+
         String movieName = null;
+        String ipAndPort = null;
+        int randomIndex = 0;
         //执行爬虫
         for (SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList) {
+            movieName=systemUserSearchMovieModel.getSearchName();
+            List<String> ipAndPortList=new ArrayList();
+            if(StrUtil.isNotBlank(movieName)){
+                this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+                if(ipAndPorts!= null && ipAndPorts.size()>0){
+                    randomIndex = new Random().nextInt(ipAndPorts.size());
+                    ipAndPortList=new ArrayList<>(this.ipAndPorts);
+                    ipAndPort = ipAndPortList.get(randomIndex);
+                }else {
+                    continue;
+                }
 
-            int num = (int) (Math.random() * (5000 - 1000 + 1000) + 1000);
-            Thread.sleep(num);
-            movieName = systemUserSearchMovieModel.getSearchName();
-            String ipAndPort = getProxyService.getProxyIpFromRemote();
-            jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-            jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-            log.info("第 {} 次 查询", i++);
+                try {
+                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    log.info("第 {} 次 查询", i++);
+                }catch (Exception e){
+                    e.printStackTrace();
+
+                    this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+                    continue;
+                }
+
+            }
 
         }
 
