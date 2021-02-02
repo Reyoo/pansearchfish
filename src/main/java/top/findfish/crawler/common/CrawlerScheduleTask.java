@@ -59,7 +59,7 @@ public class CrawlerScheduleTask {
     //3.添加定时任务
 //    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,16,18,20,22,23 * * ? ")
 //    @Scheduled(cron = "0 30 2,4,6,8,10,12,15,15,17,19,21,23 * * ? ")
-    @Scheduled(cron = "00 03 14 * * ? ")
+    @Scheduled(cron = "0 0 1/2 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -68,13 +68,13 @@ public class CrawlerScheduleTask {
         LocalDateTime localDateTime = LocalDateTime.now();
         String endTime = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 //        String begin = localDateTime.minusHours(Integer.valueOf(scheduleRange)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String begin = localDateTime.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String begin = localDateTime.minusHours(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         log.info("获取用户搜索范围起始时间：{}", begin);
         log.info("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
 
