@@ -1,5 +1,6 @@
 server:
-  port: 8886
+#  port: 8886
+  port: 80
 
 ##Actuator的端点配置，详细了解请点击文上方Actuator连接
 #management:
@@ -134,6 +135,10 @@ findfish:
     schedule:
 #      时间单位 小时  爬取 现在 及 现在-1 小时之前 用户查询的数据 进行定时任务
       range: 1
+
+
+#machine:
+#  tag: maKUnComputer
 
 
 

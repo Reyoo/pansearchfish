@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
@@ -33,7 +34,6 @@ import java.util.Set;
  * @Date: 2020/8/30 16:19
  * @Version: 1.0
  */
-
 @Service("jsoupAiDianyingServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -144,14 +144,18 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                 movieNameAndUrlModelList.addAll(getWangPanUrl(secondUrlLxxh, proxyIpAndPort));
             }
 
-            //更新前从数据库查询后删除 片名相同但更新中的 无效数据
+            //筛选爬虫链接
+            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
+
+            //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_aidianying", searchMovieName);
             invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModels);
-            List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
-            if (couldBeFindUrls.size() > 0) {
-                //存入数据库
-                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_aidianying");
-            }
+
+//            if (couldBeFindUrls.size() > 0) {
+//                //存入数据库
+//                movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_aidianying");
+////                redisTemplate.opsForHash().put(hssh,khshkkl);
+//            }
 
         } catch (Exception e) {
             log.error(e.getMessage());
