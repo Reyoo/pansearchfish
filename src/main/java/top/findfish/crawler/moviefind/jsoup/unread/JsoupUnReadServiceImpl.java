@@ -133,17 +133,18 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
                 }
 
-                //更新前从数据库查询后删除 片名相同但更新中的 无效数据
+                //筛选爬虫链接
+                invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
+
+                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_unread", searchMovieName);
+                //筛选数据库链接
                 invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModels);
 
-
-                List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
-
-                if (couldBeFindUrls.size() > 0) {
-                    //存入数据库
-                    movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
-                }
+//                if (couldBeFindUrls.size() > 0) {
+//                    //存入数据库
+//                    movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_unread");
+//                }
             }
         } catch (Exception e) {
             log.error("docment is null" + e.getMessage());

@@ -24,6 +24,12 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
 
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
+
+//    machine:
+//    tag: maKUnComputer
+
+
+
     @Override
     public List<MovieNameAndUrlModel> findMovieUrl(String tablename,String movieName) throws Exception {
         return movieNameAndUrlMapper.selectMovieUrlByName(tablename,movieName);
@@ -42,7 +48,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
     public void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName) throws Exception {
 
         for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
-
+//            movieNameAndUrlModel.setmach
             if(movieNameAndUrlModel.getMovieName()==null){
                 continue;
             }

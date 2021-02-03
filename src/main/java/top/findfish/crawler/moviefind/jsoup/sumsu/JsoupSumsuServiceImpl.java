@@ -109,7 +109,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModels.add(movieNameAndUrlModel);
                 }
             }
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
+//            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
 
 
         } catch (Exception e) {
@@ -126,14 +126,20 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 ArrayList<MovieNameAndUrlModel> movieList = new ArrayList<>();
                 for (String url : firstSearchUrls) {
                     movieList.addAll(getWangPanUrl(url, proxyIpAndPort));
-                    //更新前从数据库查询后删除 片名相同但更新中的 无效数据
+
+                    //筛选爬虫链接
+                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
+
+                    //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                     List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
+                    //筛选数据库链接
                     invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieNameAndUrlModels);
-                    List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
-                    if (couldBeFindUrls.size() > 0) {
-                        //存入数据库
-                        movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
-                    }
+
+//                    List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
+//                    if (couldBeFindUrls.size() > 0) {
+//                        //存入数据库
+//                        movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
+//                    }
                 }
             }
         } catch (Exception e) {

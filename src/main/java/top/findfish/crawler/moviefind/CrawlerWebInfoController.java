@@ -8,9 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.findfish.crawler.common.AjaxResult;
 import top.findfish.crawler.proxy.service.GetProxyService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * @ProjectName: pansearch
@@ -28,18 +34,22 @@ import top.findfish.crawler.proxy.service.GetProxyService;
 public class CrawlerWebInfoController {
 
 
-    @Qualifier("jsoupSumuServiceImpl")
-    private final ICrawlerCommonService jsoupSumuServiceImpl;
+    @Qualifier("jsoupAiDianyingServiceImpl")
+    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
 
     @Qualifier("jsoupSumuServiceImpl")
-    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
+    private final ICrawlerCommonService jsoupSumuServiceImpl;
 
     @Qualifier("jsoupUnreadServiceImpl")
     private final ICrawlerCommonService jsoupUnreadServiceImpl;
 
+    @Qualifier("jsoupXiaoYouServiceImpl")
+    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
+
     private final GetProxyService getProxyService;
 
     private final RedisTemplate redisTemplate;
+
 
 
     @Value("${user.unread.weiduyingdan}")
@@ -48,6 +58,8 @@ public class CrawlerWebInfoController {
     String lxxhUrl;
     @Value("${user.xiaoyou.yingmiao}")
     String xiaoyouUrl;
+    @Value("${user.sumsu.url}")
+    String sumuUrl;
 
     /**
      * 调用电影PID 入库 触发接口类
@@ -58,13 +70,38 @@ public class CrawlerWebInfoController {
         try {
 
 //            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("八佰", ipAndPort);
-            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
+//            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
+
 
             return AjaxResult.success();
         } catch (Exception e) {
             redisTemplate.opsForHash().delete("use_proxy",ipAndPort);
             return AjaxResult.error();
         }
+    }
+
+
+    //测试
+    @RequestMapping(value = "/textMovieName", method = RequestMethod.GET)
+    public AjaxResult textMovieName(@RequestParam String movieName) {
+        String ipAndPort = null;
+        Set<String> ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+        if (ipAndPorts != null && ipAndPorts.size() > 0) {
+            int randomIndex = new Random().nextInt(ipAndPorts.size());
+            List ipAndPortList = new ArrayList<>(ipAndPorts);
+            ipAndPort = (String) ipAndPortList.get(randomIndex);
+            try {
+//                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                return AjaxResult.success();
+            } catch (Exception e) {
+                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+
+            }
+        }
+        return AjaxResult.error();
     }
 
 }

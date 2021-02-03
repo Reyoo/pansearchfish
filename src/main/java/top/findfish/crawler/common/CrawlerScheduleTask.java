@@ -56,10 +56,8 @@ public class CrawlerScheduleTask {
     /**
      * 爱电影定时任务
      */
-    //3.添加定时任务
-//    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,16,18,20,22,23 * * ? ")
-//    @Scheduled(cron = "0 30 2,4,6,8,10,12,15,15,17,19,21,23 * * ? ")
-    @Scheduled(cron = "0 0 1/2 * * ? ")
+    //3.添加定时任务  双数小时  2，4，6，8，10...
+    @Scheduled(cron = "00 00 0/2 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
