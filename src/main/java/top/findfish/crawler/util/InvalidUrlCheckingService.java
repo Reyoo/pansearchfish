@@ -87,19 +87,32 @@ public class InvalidUrlCheckingService {
     }
 
 
-//    public boolean checkUrlByUrlStrNew(String url) throws IOException {
-//
-////从URL加载HTML
-//        Document document = Jsoup.connect(url).get();
-//        document.getElementsByClass("content").;
-//
-//        //获取html中的标题
-////        System.out.println("title :"+title);
-//        if (title.contains("你来晚了，分享文件已经被取消了")|| title.contains("此链接分享内容可能因为涉及侵权") || title.contains("你所访问的页面不存在了")) {
-//            return true;
-//        }
-//        return false;
-//
-//    }
+    /**
+     * 数据库查询删除无效数据
+     *
+     * @param movieNameAndUrlModels
+     * @return
+     * @throws Exception
+     */
+    public void checkDataBaseUrl(String tableName, List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
+
+            for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
+                String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
+                if (StrUtil.isBlank(wangPanUrl)) {
+                    continue;
+                }
+
+                Document document = Jsoup.connect(wangPanUrl).get();
+                String title = document.title();
+                //获取html中的标题
+                log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
+                if (title.contains("不存在") || title.contains("取消")) {
+                    movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
+                }
+
+            log.info("校验完毕");
+
+        }
+    }
 
 }

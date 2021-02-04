@@ -109,7 +109,6 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModels.add(movieNameAndUrlModel);
                 }
             }
-//            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
 
 
         } catch (Exception e) {
@@ -133,13 +132,8 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                     List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
                     //筛选数据库链接
-                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieNameAndUrlModels);
+                    invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
 
-//                    List<MovieNameAndUrlModel> couldBeFindUrls = invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
-//                    if (couldBeFindUrls.size() > 0) {
-//                        //存入数据库
-//                        movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, "url_movie_sumsu");
-//                    }
                 }
             }
         } catch (Exception e) {
