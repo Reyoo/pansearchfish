@@ -1,7 +1,9 @@
 package top.findfish.crawler.moviefind.jsoup.unread;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -49,13 +51,15 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
         String url = unreadUrl + "/?s=" + encode;
         Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
-        log.info(doc.body().toString());
+//        Document doc = Jsoup.connect(url).get();
+//        log.info(doc.body().toString());
 
-        Elements links = doc.select("a[href]");
+//        Elements links = doc.select("a[href]");
+        Elements links = doc.getElementsByClass("entry-title");
 
         String pUrl = null;
         for (Element link : links) {
-            pUrl = link.attr("href");
+            pUrl = link.select("a").attr("href");
             if (pUrl.contains("http://www.unreadmovie.com/?p=") && !pUrl.contains("#")) {
                 movieUrlSet.add(pUrl);
             }
@@ -77,7 +81,10 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
         ;
 
+        //测试 暂时停用代理
         Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+
+
         String name = document.getElementsByTag("title").text().trim();
         System.out.println(name);
         if (name.contains("– 未读影单")) {

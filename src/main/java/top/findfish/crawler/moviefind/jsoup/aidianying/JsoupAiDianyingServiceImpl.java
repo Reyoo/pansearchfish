@@ -92,43 +92,69 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
         log.info("爱电影--》" + secondUrlLxxh);
-        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+//        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+//        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
 
         Document secorndDocument = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-        movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text());
-        Elements secorndAttr = secorndDocument.getElementsByTag("p").select("span");
+//        movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text());
+
+        Elements secorndAttr = secorndDocument.getElementsByTag("p").select("a");
         for (Element element : secorndAttr) {
             for (Element aTag : element.getElementsByTag("a")) {
+
                 String linkhref = aTag.attr("href");
                 if (linkhref.contains("pan.baidu.com")) {
-                    log.info("这里已经拿到要爬取的url : " + linkhref);
+
+                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+
+                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                    String partName = aTag.parentNode().parentNode().childNode(0).toString().split("：")[0];
+                    movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text()+partName);
+
                     movieNameAndUrlModel.setWangPanUrl(linkhref);
-                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
-                    break;
-                } else {
-                    continue;
+                    if (aTag.parentNode().parentNode().childNodeSize() == 3){
+                        movieNameAndUrlModel.setWangPanPassword(aTag.parentNode().parentNode().childNode(2).toString().replaceAll("&nbsp;","").trim());
+                    }
+                    movieNameAndUrlModelList.add(movieNameAndUrlModel);
                 }
             }
         }
-//     第二种情况 span标签 里没有 url
-        if (StrUtil.isBlank(movieNameAndUrlModel.getWangPanUrl())) {
-            Elements urlFinals = secorndDocument.getElementsByTag("p").select("a");
-            for (Element urlFianl : urlFinals) {
-                String linkhref = urlFianl.attr("href");
-                if (linkhref.contains("pan.baidu.com")) {
-                    log.info("这里已经拿到要爬取的url : " + linkhref);
-                    movieNameAndUrlModel.setWangPanUrl(linkhref);
-                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
-                    System.out.println(linkhref);
-                    break;
-                } else {
-                    continue;
-                }
-            }
-        }
-        movieNameAndUrlModelList.add(movieNameAndUrlModel);
+
         return movieNameAndUrlModelList;
+//        ------------------------------------------------
+
+//        Elements secorndAttr = secorndDocument.getElementsByTag("p").select("span");
+//        for (Element element : secorndAttr) {
+//            for (Element aTag : element.getElementsByTag("a")) {
+//                String linkhref = aTag.attr("href");
+//                if (linkhref.contains("pan.baidu.com")) {
+//                    log.info("这里已经拿到要爬取的url : " + linkhref);
+//                    movieNameAndUrlModel.setWangPanUrl(linkhref);
+//                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
+//                    break;
+//                } else {
+//                    continue;
+//                }
+//            }
+//        }
+////     第二种情况 span标签 里没有 url
+//        if (StrUtil.isBlank(movieNameAndUrlModel.getWangPanUrl())) {
+//            Elements urlFinals = secorndDocument.getElementsByTag("p").select("a");
+//            for (Element urlFianl : urlFinals) {
+//                String linkhref = urlFianl.attr("href");
+//                if (linkhref.contains("pan.baidu.com")) {
+//                    log.info("这里已经拿到要爬取的url : " + linkhref);
+//                    movieNameAndUrlModel.setWangPanUrl(linkhref);
+//                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
+//                    System.out.println(linkhref);
+//                    break;
+//                } else {
+//                    continue;
+//                }
+//            }
+//        }
+//        movieNameAndUrlModelList.add(movieNameAndUrlModel);
+//        return movieNameAndUrlModelList;
     }
 
     @Override

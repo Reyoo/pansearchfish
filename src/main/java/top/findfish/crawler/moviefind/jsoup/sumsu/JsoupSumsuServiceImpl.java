@@ -49,6 +49,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
         Set<String> firstSearchUrls = new HashSet<>();
 
         //先拿到  formhash
+        //测试 暂时关闭代理
         Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
         String formhash = "259f5941";
@@ -78,19 +79,35 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
         try {
-
+            //测试 暂时关闭代理
             Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+
             if (tidDoc.title().contains("404")) {
                 return movieNameAndUrlModels;
             }
 
             Elements elements = tidDoc.select("a[href]");
+//            Elements elements = tidDoc.getElementsByTag("strong");
 
             String linkhref = null;
+
             for (Element link : elements) {
                 linkhref = link.attr("href");
                 if (linkhref.startsWith("https://pan.baidu.com")) {
-//                            System.out.println("--------------------------------");
+
+                   String  ceshi = link.parentNode().toString();
+                   String[] a = ceshi.split("<br>");
+
+                    for (String s : a) {
+                        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+
+                        break;
+
+                    }
+
+
+
+
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                     String baiPan = link.attr("href").toString();
                     movieNameAndUrlModel.setWangPanUrl(baiPan);
@@ -109,6 +126,28 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModels.add(movieNameAndUrlModel);
                 }
             }
+
+//            for (Element link : elements) {
+//                linkhref = link.attr("href");
+//                if (linkhref.startsWith("https://pan.baidu.com")) {
+//                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+//                    String baiPan = link.attr("href").toString();
+//                    movieNameAndUrlModel.setWangPanUrl(baiPan);
+//                    //这个地方控制 powerBy 字段 截取
+//                    String movieName = FindfishStrUtil.getsumSuMovieName(tidDoc.title());
+//                    movieNameAndUrlModel.setMovieName(movieName);
+//                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+//
+//                    if (link.parent().text().contains("提取码")) {
+//                        movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("提取码:")[1].trim());
+//                    }
+//
+//                    if (link.parent().text().contains("密码")) {
+//                        movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("密码:")[1].trim());
+//                    }
+//                    movieNameAndUrlModels.add(movieNameAndUrlModel);
+//                }
+//            }
 
 
         } catch (Exception e) {
