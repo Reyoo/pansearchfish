@@ -1,6 +1,5 @@
 package top.findfish.crawler.moviefind.jsoup.aidianying;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -8,7 +7,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
@@ -57,7 +55,6 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         System.out.println(encode);
         String urlAiDianying = lxxhUrl + "/?s=" + encode;
 
-
         Document document = JsoupFindfishUtils.getDocument(urlAiDianying, proxyIpAndPort);
 
 
@@ -92,69 +89,42 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
         log.info("爱电影--》" + secondUrlLxxh);
-//        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-//        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
 
         Document secorndDocument = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-//        movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text());
 
-        Elements secorndAttr = secorndDocument.getElementsByTag("p").select("a");
+        String titleName = secorndDocument.getElementsByTag("title").first().text();
+
+        Elements secorndAttr = secorndDocument.getElementsByTag("p");
+
         for (Element element : secorndAttr) {
-            for (Element aTag : element.getElementsByTag("a")) {
 
-                String linkhref = aTag.attr("href");
-                if (linkhref.contains("pan.baidu.com")) {
+            String  panUrl =  element.getElementsByTag("a").attr("href");
+           if (panUrl.contains("pan.baidu")){
+               MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+               movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+               movieNameAndUrlModel.setWangPanUrl(panUrl);
 
-                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+               if (element.text().startsWith("视频")){
+                   movieNameAndUrlModel.setMovieName(titleName);
+               }else {
+                   String arr[] =element.text().split("视频");
+                   String lastName = arr[0];
+                   movieNameAndUrlModel.setMovieName(titleName+"  『"+lastName.replace(".","")+"』");
+//                   movieNameAndUrlModel.setWangPanPassword(titleName+"  『"+element.text().split("视频")[0].replace(".","")+"』");
 
-                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-                    String partName = aTag.parentNode().parentNode().childNode(0).toString().split("：")[0];
-                    movieNameAndUrlModel.setMovieName(secorndDocument.getElementsByTag("title").first().text()+partName);
+               }
+               if (element.childNodeSize() == 3){
+                   movieNameAndUrlModel.setWangPanPassword(element.childNode(2).toString().replaceAll("&nbsp;","").trim());
+               }else {
+                   movieNameAndUrlModel.setWangPanPassword("");
+               }
 
-                    movieNameAndUrlModel.setWangPanUrl(linkhref);
-                    if (aTag.parentNode().parentNode().childNodeSize() == 3){
-                        movieNameAndUrlModel.setWangPanPassword(aTag.parentNode().parentNode().childNode(2).toString().replaceAll("&nbsp;","").trim());
-                    }
-                    movieNameAndUrlModelList.add(movieNameAndUrlModel);
-                }
-            }
+               movieNameAndUrlModelList.add(movieNameAndUrlModel);
+           }
         }
 
         return movieNameAndUrlModelList;
-//        ------------------------------------------------
 
-//        Elements secorndAttr = secorndDocument.getElementsByTag("p").select("span");
-//        for (Element element : secorndAttr) {
-//            for (Element aTag : element.getElementsByTag("a")) {
-//                String linkhref = aTag.attr("href");
-//                if (linkhref.contains("pan.baidu.com")) {
-//                    log.info("这里已经拿到要爬取的url : " + linkhref);
-//                    movieNameAndUrlModel.setWangPanUrl(linkhref);
-//                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
-//                    break;
-//                } else {
-//                    continue;
-//                }
-//            }
-//        }
-////     第二种情况 span标签 里没有 url
-//        if (StrUtil.isBlank(movieNameAndUrlModel.getWangPanUrl())) {
-//            Elements urlFinals = secorndDocument.getElementsByTag("p").select("a");
-//            for (Element urlFianl : urlFinals) {
-//                String linkhref = urlFianl.attr("href");
-//                if (linkhref.contains("pan.baidu.com")) {
-//                    log.info("这里已经拿到要爬取的url : " + linkhref);
-//                    movieNameAndUrlModel.setWangPanUrl(linkhref);
-//                    movieNameAndUrlModel.setWangPanPassword("密码：LXXH");
-//                    System.out.println(linkhref);
-//                    break;
-//                } else {
-//                    continue;
-//                }
-//            }
-//        }
-//        movieNameAndUrlModelList.add(movieNameAndUrlModel);
-//        return movieNameAndUrlModelList;
     }
 
     @Override
@@ -170,8 +140,15 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                 movieNameAndUrlModelList.addAll(getWangPanUrl(secondUrlLxxh, proxyIpAndPort));
             }
 
+            //如果爬不到资源 直接返回 跳过校验环节
+            if (movieNameAndUrlModelList.size() == 0){
+                return;
+            }
+
             //筛选爬虫链接
-            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
+//            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
+            //插入更新可用数据
+            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
 
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_aidianying", searchMovieName);

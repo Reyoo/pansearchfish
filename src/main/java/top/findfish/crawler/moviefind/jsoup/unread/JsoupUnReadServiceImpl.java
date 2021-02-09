@@ -3,7 +3,6 @@ package top.findfish.crawler.moviefind.jsoup.unread;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -51,10 +50,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
         String url = unreadUrl + "/?s=" + encode;
         Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
-//        Document doc = Jsoup.connect(url).get();
-//        log.info(doc.body().toString());
 
-//        Elements links = doc.select("a[href]");
         Elements links = doc.getElementsByClass("entry-title");
 
         String pUrl = null;
@@ -76,51 +72,62 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
-
-        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-        ;
-
-        //测试 暂时停用代理
         Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
 
 
-        String name = document.getElementsByTag("title").text().trim();
-        System.out.println(name);
-        if (name.contains("– 未读影单")) {
-            name = name.split("– 未读影单")[0].trim();
+        String movieName = document.getElementsByTag("title").text().trim();
+
+
+        if (movieName.contains("– 未读影单")) {
+            movieName = movieName.split("– 未读影单")[0].trim();
         }
 
-        movieNameAndUrlModel.setMovieName(name);
+        if (StringUtils.isBlank(movieName)){
+            return null;
+        }
 
 
-        Elements attr = document.getElementsByTag("p");
-        for (Element passwdelement : attr) {
-            if (passwdelement.text().contains("密码")) {
-                movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
-                break;
-            }
+//        Elements pTagAttr = document.getElementsByClass("entry-content").select("a[href]");
+        Elements pTagAttr = document.getElementsByClass("entry-content").tagName("div").select("p");
 
-            if (passwdelement.text().contains("提取码")) {
-                movieNameAndUrlModel.setWangPanPassword(passwdelement.text());
-                break;
+        for (int i = 0; i < pTagAttr.size(); i++) {
+            if (pTagAttr.get(i).text().contains("资源链接点这里")){
+
+                String  panUrl =  pTagAttr.get(i).getElementsByTag("a").attr("href");
+
+                MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+                movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                movieNameAndUrlModel.setWangPanUrl(panUrl);
+
+                //判断是否需要拼接片名
+                if (pTagAttr.get(i).text().startsWith("资源链接点这里→")){
+                    movieNameAndUrlModel.setMovieName(movieName);
+                }else {
+
+                    movieNameAndUrlModel.setMovieName(movieName+"  『"+pTagAttr.get(i).text().split("资源链接点这里")[0]+"』");
+                }
+
+
+//                //java获得href中的值
+//                String re = "(?<=(href=\")).*(?=\")";
+//                Pattern compile = Pattern.compile(re);
+//                Matcher matcher = compile.matcher(pTagAttr.get(i).toString());
+//                while(matcher.find()) {
+//                    String group = matcher.group();
+//                    movieNameAndUrlModel.setWangPanUrl(group);
+//                }
+
+
+                if (pTagAttr.get(i+1).text().contains("密码") || pTagAttr.get(i+1).text().contains("提取码")){
+                    movieNameAndUrlModel.setWangPanPassword(pTagAttr.get(i+1).text().trim());
+                }else {
+                    movieNameAndUrlModel.setWangPanPassword("");
+                }
+                movieNameAndUrlModelList.add(movieNameAndUrlModel);
             }
 
         }
 
-        Elements links = document.select("a[href]");
-        String wangPanUrl = null;
-        for (Element link : links) {
-            wangPanUrl = link.attr("href");
-            if (wangPanUrl.contains("pan.baidu.com")) {
-                break;
-            } else {
-                continue;
-            }
-        }
-
-        movieNameAndUrlModel.setWangPanUrl(wangPanUrl);
-        movieNameAndUrlModelList.add(movieNameAndUrlModel);
 
         return movieNameAndUrlModelList;
     }
@@ -139,9 +146,15 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     //由于包含模糊查询、这里记录到数据库中做插入更新操作
                     movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
                 }
+                if (movieNameAndUrlModelList.size() == 0){
+                    return;
+                }
 
                 //筛选爬虫链接
-                invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
+//                invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
+
+                //插入更新可用数据
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_unread");
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_unread", searchMovieName);

@@ -91,10 +91,11 @@ public class CrawlerWebInfoController {
             List ipAndPortList = new ArrayList<>(ipAndPorts);
             ipAndPort = (String) ipAndPortList.get(randomIndex);
             try {
-//                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                 jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+
                 return AjaxResult.success();
             } catch (Exception e) {
                 redisTemplate.opsForHash().delete("use_proxy", ipAndPort);

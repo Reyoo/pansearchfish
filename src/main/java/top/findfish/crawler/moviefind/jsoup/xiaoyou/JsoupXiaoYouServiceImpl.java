@@ -4,7 +4,6 @@ package top.findfish.crawler.moviefind.jsoup.xiaoyou;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -56,10 +55,8 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         String url = "http://y.yuanxiao.net.cn" + "/?s=" + searchMovieName;
 
         try {
-            //测试暂时关闭代理
-//            Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
-            Document document = Jsoup.connect(url).get();
 
+            Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
             //拿到查询结果 片名及链接
             Elements elements = document.getElementById("container").getElementsByClass("entry-title");
@@ -84,9 +81,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
-              //测试暂时关闭代理
-//            Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-            Document document = Jsoup.connect(secondUrlLxxh).get();
+            Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
             String movieName = document.getElementsByTag("title").first().text();
 
             if (movieName.contains("- 小悠家")) {
@@ -108,14 +103,16 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
                     if (element.parentNode().childNodeSize() >= 3) {
                         movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(2).toString().replaceAll("&nbsp;","").trim());
+                    }else {
+                        movieNameAndUrlModel.setWangPanPassword("");
                     }
 
                     //判断片名是否需要拼接
-                    int indexName = element.parentNode().childNode(0).toString().indexOf(".视频：");
+                    int indexName = element.parentNode().childNode(0).toString().indexOf(".视频");
                     if (indexName == -1) {
                         movieNameAndUrlModel.setMovieName(movieName);
                     } else {
-                        movieNameAndUrlModel.setMovieName(movieName + element.parentNode().childNode(0).toString().substring(0, indexName));
+                        movieNameAndUrlModel.setMovieName(movieName +"  『"+ element.parentNode().childNode(0).toString().substring(0, indexName)+"』");
                     }
 
                     movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
@@ -143,7 +140,9 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 }
 
                 //筛选爬虫链接
-                invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
+//                invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
+                //插入更新可用数据
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_xiaoyou");
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
