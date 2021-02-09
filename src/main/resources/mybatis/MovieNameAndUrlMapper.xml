@@ -17,7 +17,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM  ${tablename}
-        WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 10
+        WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 15
 
     </select>
 

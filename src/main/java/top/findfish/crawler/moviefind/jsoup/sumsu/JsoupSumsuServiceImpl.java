@@ -79,7 +79,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
         try {
-            //测试 暂时关闭代理
+
             Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
 
             if (tidDoc.title().contains("404")) {
@@ -87,26 +87,13 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
             }
 
             Elements elements = tidDoc.select("a[href]");
-//            Elements elements = tidDoc.getElementsByTag("strong");
+
 
             String linkhref = null;
 
             for (Element link : elements) {
                 linkhref = link.attr("href");
                 if (linkhref.startsWith("https://pan.baidu.com")) {
-
-                   String  ceshi = link.parentNode().toString();
-                   String[] a = ceshi.split("<br>");
-
-                    for (String s : a) {
-                        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-
-                        break;
-
-                    }
-
-
-
 
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                     String baiPan = link.attr("href").toString();
@@ -115,6 +102,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     String movieName = FindfishStrUtil.getsumSuMovieName(tidDoc.title());
                     movieNameAndUrlModel.setMovieName(movieName);
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                    movieNameAndUrlModel.setWangPanPassword("");
 
                     if (link.parent().text().contains("提取码")) {
                         movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("提取码:")[1].trim());
@@ -165,15 +153,17 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 for (String url : firstSearchUrls) {
                     movieList.addAll(getWangPanUrl(url, proxyIpAndPort));
 
-                    //筛选爬虫链接
-                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
-
-                    //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                    List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
-                    //筛选数据库链接
-                    invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
-
                 }
+
+                //筛选爬虫链接
+//                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
+                //插入更新可用数据
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, "url_movie_sumsu");
+
+                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
+                //筛选数据库链接
+                invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
