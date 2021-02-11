@@ -34,7 +34,7 @@ spring:
         max-wait: -1ms
         max-idle: 8
     # Redis默认情况下有16个分片，这里配置具体使用的分片，默认是0
-    database: 1
+    database: 0
 
   # 配置数据源
   datasource:
