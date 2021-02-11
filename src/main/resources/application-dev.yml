@@ -1,6 +1,6 @@
 server:
-#  port: 8886
-  port: 80
+  port: 8887
+#  port: 80
 
 ##Actuator的端点配置，详细了解请点击文上方Actuator连接
 #management:
@@ -34,7 +34,7 @@ spring:
         max-wait: -1ms
         max-idle: 8
     # Redis默认情况下有16个分片，这里配置具体使用的分片，默认是0
-    database: 0
+    database: 1
 
   # 配置数据源
   datasource:

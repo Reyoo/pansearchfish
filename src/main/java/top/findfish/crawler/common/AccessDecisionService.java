@@ -35,6 +35,7 @@ public class AccessDecisionService {
          */
 
         whiteList.add("/initmovie/**");
+        whiteList.add("/invalid/**");
 
         for (String url : whiteList) {
             if (antPathMatcher.match(url, request.getRequestURI())) {
