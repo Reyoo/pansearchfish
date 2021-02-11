@@ -149,7 +149,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , JSONObject.toJSONString( invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels)), Duration.ofHours(3L));
+                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , JSONObject.toJSONString( invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels)), Duration.ofHours(3L));
 
             }
         } catch (Exception e) {
