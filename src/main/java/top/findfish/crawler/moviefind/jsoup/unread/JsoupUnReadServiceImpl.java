@@ -163,7 +163,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 //筛选数据库链接
 
-                redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels)), Duration.ofHours(3L));
+                redisTemplate.opsForValue().set("unread:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels)), Duration.ofHours(3L));
 
             }
         } catch (Exception e) {

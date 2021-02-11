@@ -1,6 +1,6 @@
 server:
-  port: 8887
-#  port: 80
+#  port: 8886
+  port: 80
 
 ##Actuator的端点配置，详细了解请点击文上方Actuator连接
 #management:
