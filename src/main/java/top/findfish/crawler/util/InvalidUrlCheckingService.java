@@ -94,25 +94,27 @@ public class InvalidUrlCheckingService {
      * @return
      * @throws Exception
      */
-    public void checkDataBaseUrl(String tableName, List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
 
-            for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
-                String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
-                if (StrUtil.isBlank(wangPanUrl)) {
-                    continue;
-                }
-                Document document = Jsoup.connect(wangPanUrl).get();
+        ArrayList arrayList = new ArrayList();
+        for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
+            String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
+            if (StrUtil.isBlank(wangPanUrl)) {
+                continue;
+            }
+            Document document = Jsoup.connect(wangPanUrl).get();
 
-                String title = document.title();
-                //获取html中的标题
-                log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
-                if (title.contains("不存在") || title.contains("取消")) {
-                    movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
-                }
-
+            String title = document.title();
+            //获取html中的标题
+            log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
+            if (title.contains("不存在") || title.contains("取消")) {
+                movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
+            } else {
+                //将有用的信息返回
+                arrayList.add(movieNameAndUrlModel);
+            }
             log.info("校验完毕");
-
         }
+        return arrayList;
     }
-
 }

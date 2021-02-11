@@ -17,6 +17,7 @@ import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,8 +40,8 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
     private final InvalidUrlCheckingService invalidUrlCheckingService;
-    private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
+    private final IMovieNameAndUrlService movieNameAndUrlService;
 
     @Value("${user.lxxh.aidianying}")
     String lxxhUrl;
@@ -150,10 +151,11 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             //插入更新可用数据
             movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
 
+
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_aidianying", searchMovieName);
-            invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels);
 
+            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels), Duration.ofHours(3L));
 
         } catch (Exception e) {
             log.error(e.getMessage());

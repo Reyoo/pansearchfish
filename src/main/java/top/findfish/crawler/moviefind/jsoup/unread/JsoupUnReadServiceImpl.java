@@ -1,5 +1,6 @@
 package top.findfish.crawler.moviefind.jsoup.unread;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -158,8 +160,10 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_unread", searchMovieName);
+
                 //筛选数据库链接
-                invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels);
+
+                redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels)), Duration.ofHours(3L));
 
             }
         } catch (Exception e) {

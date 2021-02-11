@@ -2,6 +2,7 @@ package top.findfish.crawler.moviefind.checkurl.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,7 +11,10 @@ import top.findfish.crawler.common.AjaxResult;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ProjectName: pansearch
@@ -27,6 +31,9 @@ public class InvalidUrlCheckingController {
 
     @Autowired
     InvalidUrlCheckingService invalidUrlCheckingService;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
     /**
@@ -48,6 +55,23 @@ public class InvalidUrlCheckingController {
                     return AjaxResult.success("该链接请求正常");
                 }
             }
+        } catch (Exception e) {
+            return AjaxResult.error("链接失效");
+        }
+        return AjaxResult.error("链接失效");
+    }
+
+
+
+    @RequestMapping(path = "/test", method = RequestMethod.GET)
+    public AjaxResult testRedis() {
+
+        try {
+            Map map =  new HashMap();
+            map.put("123",123);
+            List list = new ArrayList();
+            list.add(map);
+
         } catch (Exception e) {
             return AjaxResult.error("链接失效");
         }

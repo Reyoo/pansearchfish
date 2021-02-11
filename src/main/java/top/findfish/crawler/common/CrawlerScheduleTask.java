@@ -57,7 +57,7 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-//    @Scheduled(cron = "00 00 0/2 * * ? ")
+    @Scheduled(cron = "0 38 11 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -71,15 +71,12 @@ public class CrawlerScheduleTask {
         log.info("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-11 00:00:15","2021-02-12 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
 
         int i = 1;
-
-
-
 
 
         String movieName = null;
@@ -101,9 +98,9 @@ public class CrawlerScheduleTask {
 
                 try {
                     jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     log.info("第 {} 次 查询", i++);
                 }catch (Exception e){
                     e.printStackTrace();
