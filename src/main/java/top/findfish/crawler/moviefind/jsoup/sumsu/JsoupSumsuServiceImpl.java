@@ -1,7 +1,6 @@
 package top.findfish.crawler.moviefind.jsoup.sumsu;
 
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -23,7 +22,6 @@ import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -104,7 +102,9 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     String movieName = FindfishStrUtil.getsumSuMovieName(tidDoc.title());
                     movieNameAndUrlModel.setMovieName(movieName);
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-                    movieNameAndUrlModel.setWangPanPassword("");
+
+                    //这里有点bug，有概率拿不到密码 例如： 发财日记 ， 存默认2323
+                    movieNameAndUrlModel.setWangPanPassword("2323");
 
                     if (link.parent().text().contains("提取码")) {
                         movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("提取码:")[1].trim());
@@ -164,6 +164,8 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
+
+                invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
 
 //                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels)), Duration.ofHours(3L));
 

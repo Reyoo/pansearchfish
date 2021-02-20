@@ -116,7 +116,7 @@ user:
     url: http://520.sumsu.cn/search.php?mod=forum
 #    url: http://520.sumsu.cn/forum.php
   xiaoyou:
-    yingmiao: http://y.yuanxiao.net.cn
+    yingmiao: http://a.yuanxiao.net.cn
 temp:
   filrooet: 'D:/'
   filePath: /temp
