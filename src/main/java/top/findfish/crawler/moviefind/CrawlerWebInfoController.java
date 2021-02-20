@@ -92,9 +92,9 @@ public class CrawlerWebInfoController {
             ipAndPort = (String) ipAndPortList.get(randomIndex);
             try {
                 jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 
                 return AjaxResult.success();
             } catch (Exception e) {

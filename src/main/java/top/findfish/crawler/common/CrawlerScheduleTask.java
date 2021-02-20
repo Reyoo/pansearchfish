@@ -57,8 +57,7 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 30 0/2 * * ? ")
-//    @Scheduled(cron = "0 36 21 * * ? ")
+    @Scheduled(cron = "00 00 1/2 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -67,13 +66,13 @@ public class CrawlerScheduleTask {
         LocalDateTime localDateTime = LocalDateTime.now();
         String endTime = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 //        String begin = localDateTime.minusHours(Integer.valueOf(scheduleRange)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String begin = localDateTime.minusHours(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String begin = localDateTime.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         log.info("获取用户搜索范围起始时间：{}", begin);
         log.info("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
         List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-11 00:00:15","2021-02-13 10:50:15");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
 
@@ -101,10 +100,11 @@ public class CrawlerScheduleTask {
                 }
 
                 try {
-                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+
                     log.info("第 {} 次 查询", i++);
                 }catch (Exception e){
                     e.printStackTrace();
