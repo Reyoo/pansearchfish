@@ -17,6 +17,7 @@ import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -156,7 +157,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
             invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels);
 
-//            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels), Duration.ofHours(3L));
+            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels), Duration.ofHours(2L));
 
         } catch (Exception e) {
             log.error(e.getMessage());

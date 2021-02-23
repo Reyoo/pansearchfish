@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup.sumsu;
 
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -22,6 +23,7 @@ import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -167,7 +169,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
                 invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
 
-//                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels)), Duration.ofHours(3L));
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels)), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {

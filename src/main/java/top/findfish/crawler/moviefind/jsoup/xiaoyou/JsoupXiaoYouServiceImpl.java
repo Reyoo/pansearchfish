@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup.xiaoyou;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -149,7 +151,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
                 invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels);
                 //筛选数据库链接
-//                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , JSONObject.toJSONString( invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels)), Duration.ofHours(3L));
+                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , JSONObject.toJSONString( invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels)), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
