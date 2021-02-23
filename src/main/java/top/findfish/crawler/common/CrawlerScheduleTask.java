@@ -57,7 +57,8 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "00 00 1/2 * * ? ")
+    @Scheduled(cron = "0 30 0/2 * * ? ")
+//    @Scheduled(cron = "0 36 21 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -100,11 +101,10 @@ public class CrawlerScheduleTask {
                 }
 
                 try {
-                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-
+                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     log.info("第 {} 次 查询", i++);
                 }catch (Exception e){
                     e.printStackTrace();
