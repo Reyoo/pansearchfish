@@ -1,6 +1,5 @@
 package top.findfish.crawler.moviefind.jsoup.unread;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -164,7 +163,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 //筛选数据库链接
 
-                redisTemplate.opsForValue().set("unread:"+ searchMovieName , JSONObject.toJSONString(invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels)), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("unread:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_unread", movieNameAndUrlModels), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {

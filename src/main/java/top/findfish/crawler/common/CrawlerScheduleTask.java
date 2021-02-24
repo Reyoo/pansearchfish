@@ -57,8 +57,8 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 30 0/2 * * ? ")
-//    @Scheduled(cron = "0 36 21 * * ? ")
+//    @Scheduled(cron = "0 30 0/2 * * ? ")
+    @Scheduled(cron = "0 41 20 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -66,8 +66,8 @@ public class CrawlerScheduleTask {
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         LocalDateTime localDateTime = LocalDateTime.now();
         String endTime = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//        String begin = localDateTime.minusHours(Integer.valueOf(scheduleRange)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String begin = localDateTime.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String begin = localDateTime.minusHours(Integer.valueOf(scheduleRange)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        String begin = localDateTime.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         log.info("获取用户搜索范围起始时间：{}", begin);
         log.info("获取用户搜索范围结束时间：{}", endTime);
 
