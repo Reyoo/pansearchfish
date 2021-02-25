@@ -18,6 +18,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
+import top.findfish.crawler.util.Constant;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
@@ -118,27 +119,6 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 }
             }
 
-//            for (Element link : elements) {
-//                linkhref = link.attr("href");
-//                if (linkhref.startsWith("https://pan.baidu.com")) {
-//                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-//                    String baiPan = link.attr("href").toString();
-//                    movieNameAndUrlModel.setWangPanUrl(baiPan);
-//                    //这个地方控制 powerBy 字段 截取
-//                    String movieName = FindfishStrUtil.getsumSuMovieName(tidDoc.title());
-//                    movieNameAndUrlModel.setMovieName(movieName);
-//                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-//
-//                    if (link.parent().text().contains("提取码")) {
-//                        movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("提取码:")[1].trim());
-//                    }
-//
-//                    if (link.parent().text().contains("密码")) {
-//                        movieNameAndUrlModel.setWangPanPassword(link.parent().text().split("密码:")[1].trim());
-//                    }
-//                    movieNameAndUrlModels.add(movieNameAndUrlModel);
-//                }
-//            }
 
 
         } catch (Exception e) {
@@ -161,14 +141,13 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, "url_movie_sumsu");
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, Constant.LeiFengJunTableName);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_sumsu", searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.LeiFengJunTableName, searchMovieName);
 
-                invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels);
 
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_sumsu", movieNameAndUrlModels), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LeiFengJunTableName, movieNameAndUrlModels), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
@@ -176,6 +155,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
 
+    }
+
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.LeiFengJunTableName);
     }
 
 
