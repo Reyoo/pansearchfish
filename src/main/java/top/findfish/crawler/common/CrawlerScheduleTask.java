@@ -58,7 +58,7 @@ public class CrawlerScheduleTask {
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
 //    @Scheduled(cron = "0 30 0/2 * * ? ")
-    @Scheduled(cron = "0 41 20 * * ? ")
+    @Scheduled(cron = "0 30 0/2 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -116,6 +116,13 @@ public class CrawlerScheduleTask {
             }
 
         }
+
+        //爬虫后筛除重复url
+        jsoupXiaoyouServiceImpl.checkRepeatMovie();
+        jsoupAiDianyingServiceImpl.checkRepeatMovie();
+        jsoupUnreadServiceImpl.checkRepeatMovie();
+        jsoupSumuServiceImpl.checkRepeatMovie();
+
 
         log.info("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         log.info("词条数量为 {}", systemUserSearchMovieModelList.size());

@@ -16,6 +16,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
+import top.findfish.crawler.util.Constant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.time.Duration;
@@ -143,19 +144,23 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_xiaoyou");
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.XiaoYouTableName);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_xiaoyou", searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.XiaoYouTableName, searchMovieName);
 
-                invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels);
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_xiaoyou", movieNameAndUrlModels), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.XiaoYouTableName, movieNameAndUrlModels), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
             log.error("docment is null ->" + e.getMessage());
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
+    }
+
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.XiaoYouTableName);
     }
 }

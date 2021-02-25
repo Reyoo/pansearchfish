@@ -14,6 +14,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
+import top.findfish.crawler.util.Constant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.net.URLEncoder;
@@ -111,7 +112,6 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                    String arr[] =element.text().split("视频");
                    String lastName = arr[0];
                    movieNameAndUrlModel.setMovieName(titleName+"  『"+lastName.replace(".","")+"』");
-//                   movieNameAndUrlModel.setWangPanPassword(titleName+"  『"+element.text().split("视频")[0].replace(".","")+"』");
 
                }
                if (element.childNodeSize() == 3){
@@ -149,15 +149,13 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             //筛选爬虫链接
 //            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
             //插入更新可用数据
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, "url_movie_aidianying");
+            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.AiDianYingTableName);
 
 
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName("url_movie_aidianying", searchMovieName);
+            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.AiDianYingTableName, searchMovieName);
 
-            invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels);
-
-            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl("url_movie_aidianying", movieNameAndUrlModels), Duration.ofHours(2L));
+            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.AiDianYingTableName, movieNameAndUrlModels), Duration.ofHours(2L));
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -168,6 +166,11 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             }
 
         }
+    }
+
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.AiDianYingTableName);
     }
 
 }
