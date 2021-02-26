@@ -93,13 +93,13 @@ public class CrawlerWebInfoController {
             try {
 
 //                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 //                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 //                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 
-//                jsoupXiaoyouServiceImpl.checkRepeatMovie();
+                jsoupXiaoyouServiceImpl.checkRepeatMovie();
 //                 jsoupSumuServiceImpl.checkRepeatMovie();
-                jsoupAiDianyingServiceImpl.checkRepeatMovie();
+//                jsoupAiDianyingServiceImpl.checkRepeatMovie();
 
 
 
