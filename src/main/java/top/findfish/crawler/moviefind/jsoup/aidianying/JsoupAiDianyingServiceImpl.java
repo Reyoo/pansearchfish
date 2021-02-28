@@ -149,13 +149,13 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             //筛选爬虫链接
 //            invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying", movieNameAndUrlModelList);
             //插入更新可用数据
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.AiDianYingTableName);
+            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.AIDIANYING_TABLENAME);
 
 
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.AiDianYingTableName, searchMovieName);
+            List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.AIDIANYING_TABLENAME, searchMovieName);
 
-            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.AiDianYingTableName, movieNameAndUrlModels), Duration.ofHours(2L));
+            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.AIDIANYING_TABLENAME, movieNameAndUrlModels), Duration.ofHours(2L));
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -170,7 +170,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.AiDianYingTableName);
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.AIDIANYING_TABLENAME);
     }
 
 }
