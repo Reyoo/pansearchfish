@@ -166,7 +166,7 @@ public class InitializeUrl implements ICrawlerCommonService {
          movieNameAndUrlModelList.addAll(getWangPanUrl(url,proxyIpAndPort));
 
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.YouJiangTableName);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
 
     }
 
