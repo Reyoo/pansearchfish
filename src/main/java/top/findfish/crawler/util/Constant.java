@@ -13,4 +13,5 @@ public class Constant {
     public static final String XiaoYouTableName = "url_movie_xiaoyou";
     public static final String WeiDuTableName = "url_movie_unread";
     public static final String LeiFengJunTableName = "url_movie_sumsu";
+    public static final String YouJiangTableName = "url_movie_youjiang";
 }

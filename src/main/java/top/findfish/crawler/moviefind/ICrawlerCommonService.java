@@ -9,6 +9,7 @@ import java.util.Set;
 /**
  * 爬虫通用接口类
  */
+
 public interface ICrawlerCommonService {
 
 
@@ -16,7 +17,7 @@ public interface ICrawlerCommonService {
 
      ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception ;
 
-     void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort)  ;
+     void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) throws Exception;
 
      void checkRepeatMovie();
 
