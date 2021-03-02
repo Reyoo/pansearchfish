@@ -113,10 +113,12 @@ user:
   lxxh:
     aidianying:  http://www.lxxh1.com
   sumsu:
-    url: http://520.sumsu.cn/search.php?mod=forum
-
+    url:  http://520.sumsu.cn/search.php?mod=forum
   xiaoyou:
-    yingmiao: http://a.yuanxiao.net.cn
+    yingmiao:  http://a.yuanxiao.net.cn
+  youjiang:
+    url: http://www.yjys2.store
+
 temp:
   filrooet: 'D:/'
   filePath: /temp

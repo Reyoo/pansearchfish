@@ -19,6 +19,7 @@ import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.Constant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,11 +55,12 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         log.info("-------------->开始爬取 小悠<--------------------");
 
         Set<String> movieList = new HashSet<>();
-        String url = "http://a.yuanxiao.net.cn" + "/?s=" + searchMovieName;
+        String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
+        String url = "http://a.yuanxiao.net.cn"+ "/?s=" + encode;
 
         try {
-            Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
+            Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
             //拿到查询结果 片名及链接
             Elements elements = document.getElementById("container").getElementsByClass("entry-title");
@@ -125,24 +127,6 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
                     list.add(movieNameAndUrlModel);
-
-
-//                    //判断片名是否需要拼接
-//                    int indexName = element.parentNode().childNode(0).toString().indexOf(".视频");
-//                    if (indexName == -1) {
-//                        movieNameAndUrlModel.setMovieName(movieName);
-//                    } else {
-//                        movieNameAndUrlModel.setMovieName(movieName +"  『"+ element.parentNode().childNode(0).toString().substring(0, indexName)+"』");
-//                    }
-//
-//                    //非视频资源更新片名，例如：小说，漫画等形式资源
-//                    if (!element.parentNode().childNode(0).toString().contains("视频")){
-//                        movieNameAndUrlModel.setMovieName(movieName+element.parentNode().childNode(0).toString().replaceAll(":",""));
-//                    }
-//
-//                    movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
-//                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-//                    list.add(movieNameAndUrlModel);
 
                 }
             }

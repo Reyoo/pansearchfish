@@ -46,6 +46,12 @@ public class CrawlerWebInfoController {
     @Qualifier("jsoupXiaoYouServiceImpl")
     private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
 
+    @Qualifier("jsoupYouJiangServiceImpl")
+    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+
+    @Qualifier("initializeUrl")
+    private final ICrawlerCommonService initializeUrl;
+
     private final GetProxyService getProxyService;
 
     private final RedisTemplate redisTemplate;
@@ -60,6 +66,8 @@ public class CrawlerWebInfoController {
     String xiaoyouUrl;
     @Value("${user.sumsu.url}")
     String sumuUrl;
+    @Value("${user.youjiang.url}")
+    String youjiangUrl;
 
     /**
      * 调用电影PID 入库 触发接口类
@@ -92,12 +100,13 @@ public class CrawlerWebInfoController {
             ipAndPort = (String) ipAndPortList.get(randomIndex);
             try {
 
+                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 //                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 //                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 //                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 
-                jsoupXiaoyouServiceImpl.checkRepeatMovie();
+//                jsoupXiaoyouServiceImpl.checkRepeatMovie();
 //                 jsoupSumuServiceImpl.checkRepeatMovie();
 //                jsoupAiDianyingServiceImpl.checkRepeatMovie();
 
@@ -110,6 +119,24 @@ public class CrawlerWebInfoController {
             }
         }
         return AjaxResult.error();
+    }
+
+    //测试初始化URL
+    @RequestMapping(value = "/Initialize", method = RequestMethod.GET)
+    public AjaxResult textMovieName() throws Exception {
+
+        String proxyIpAndPort = "123";
+        String searchMovieName = "123";
+        
+        for (int i = 56436; i <= 80000; i++) {
+            searchMovieName = "http://www.yjys2.store"+ "/" + i;
+            System.out.println("第"+i+"次查询爬取 "+searchMovieName);
+            initializeUrl.saveOrFreshRealMovieUrl(searchMovieName,  proxyIpAndPort);
+        }
+
+
+        return AjaxResult.success();
+
     }
 
 }
