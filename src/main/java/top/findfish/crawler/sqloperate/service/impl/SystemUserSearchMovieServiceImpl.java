@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import top.findfish.crawler.sqloperate.mapper.SystemUserSearchMovieMapper;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
@@ -18,6 +20,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Transactional(timeout = 3000,propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
 public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSearchMovieMapper, SystemUserSearchMovieModel> implements ISystemUserSearchMovieService {
 
     private  final SystemUserSearchMovieMapper systemUserSearchMovieMapper;
