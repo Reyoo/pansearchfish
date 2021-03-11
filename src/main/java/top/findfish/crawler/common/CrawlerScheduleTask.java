@@ -104,6 +104,7 @@ public class CrawlerScheduleTask {
                 }
 
                 try {
+                    log.info("------------------> {} 当前查询片名",movieName);
                     jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
                     jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
