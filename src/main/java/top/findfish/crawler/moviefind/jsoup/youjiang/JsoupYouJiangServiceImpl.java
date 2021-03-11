@@ -53,7 +53,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
-        String url = "http://www.yjys2.store"+ "/?s=" + encode;
+        String url = "http://www.jjj01.work"+ "/?s=" + encode;
         String url2 = youjiangUrl+ "/?s=" + encode;
         System.out.println(url2);
 
@@ -208,7 +208,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.YOUJIANG_TABLENAME, searchMovieName);
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.YOUJIANG_TABLENAME, movieNameAndUrlModels), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
 
             }
         } catch (Exception e) {
@@ -224,7 +224,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
 
 
-    public static void setMovieName(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName , int i){
+    public void setMovieName(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName , int i){
 
         //判断片名是否需要拼接
         int indexName = element.parentNode().childNode(i).toString().indexOf(".视频");
@@ -239,7 +239,9 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    public static void setMovieNameAndPassword(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName ,int i){
+    public void setMovieNameAndPassword(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName ,int i){
+
+
 
         if (element.parentNode().childNode(i).toString().contains("提取码") || element.parentNode().childNode(i).toString().contains("密码")){
             movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(i).toString().replaceAll("&nbsp;","").trim());

@@ -1,12 +1,14 @@
 package top.findfish.crawler.util;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
@@ -94,7 +96,7 @@ public class InvalidUrlCheckingService {
      * @return
      * @throws Exception
      */
-    public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels ,String proxyIpAndPort) throws Exception {
 
         ArrayList arrayList = new ArrayList();
         for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
@@ -102,9 +104,15 @@ public class InvalidUrlCheckingService {
             if (StrUtil.isBlank(wangPanUrl)) {
                 continue;
             }
-            Document document = Jsoup.connect(wangPanUrl).get();
+//            Document document = Jsoup.connect(wangPanUrl).get();
+            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort);
 
             String title = document.title();
+            if (StringUtils.isBlank(title)){
+                continue;
+            }
+
+
             //获取html中的标题
             log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
             if (title.contains("不存在") || title.contains("取消")) {

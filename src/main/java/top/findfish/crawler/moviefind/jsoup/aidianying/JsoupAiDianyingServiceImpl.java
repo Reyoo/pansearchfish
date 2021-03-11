@@ -155,7 +155,7 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.AIDIANYING_TABLENAME, searchMovieName);
 
-            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.AIDIANYING_TABLENAME, movieNameAndUrlModels), Duration.ofHours(2L));
+            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.AIDIANYING_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
 
         } catch (Exception e) {
             log.error(e.getMessage());

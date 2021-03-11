@@ -56,7 +56,8 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
-        String url = "http://a.yuanxiao.net.cn"+ "/?s=" + encode;
+        String url = "http://i.yuanxiao.net.cn"+ "/?s=" + encode;
+
 
         try {
 
@@ -157,7 +158,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.XIAOYOU_TABLENAME, searchMovieName);
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.XIAOYOU_TABLENAME, movieNameAndUrlModels), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.XIAOYOU_TABLENAME, movieNameAndUrlModels,proxyIpAndPort), Duration.ofHours(1L));
 
             }
         } catch (Exception e) {
