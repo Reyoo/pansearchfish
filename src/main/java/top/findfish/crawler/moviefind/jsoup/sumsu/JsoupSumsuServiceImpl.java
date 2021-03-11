@@ -147,7 +147,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.LEIFENGJUN_TABLENAME, searchMovieName);
 
 
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
 
             }
         } catch (Exception e) {
