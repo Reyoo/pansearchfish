@@ -63,8 +63,11 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
+//            Document document = Jsoup.connect(url).get();
+
+
             //拿到查询结果 片名及链接
-            Elements elements = document.getElementById("container").getElementsByClass("entry-title");
+            Elements elements = document.getElementById("grid-wrapper").getElementsByClass("post-title entry-title");
 
             for (Element element : elements) {
                 String movieUrl = element.select("a").attr("href");
@@ -82,11 +85,83 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         }
     }
 
+
+
+//    @Override
+//    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
+//        ArrayList<MovieNameAndUrlModel> list = new ArrayList();
+//
+////            Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+//        Document document = Jsoup.connect(secondUrlLxxh).get();
+//        String movieName = document.getElementsByTag("title").first().text();
+//
+//        if (movieName.contains("- 小悠家")) {
+//            movieName = movieName.split("- 小悠家")[0];
+//        }
+//
+//
+//        Elements pTagAttr = document.select("a[href]");
+//
+//        for (Element element : pTagAttr) {
+//
+//
+//                List<Node> nodes = element.parentNode().childNodes();
+//                for (Node node : nodes) {
+//                    if (node.attr("href").contains("pan.baidu")){
+//                        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+//
+//                        //没写完，找时间再写吧
+//
+//                    }
+//                }
+//
+//
+//
+//
+//
+//                if (element.parentNode().childNode(1).attr("href").contains("pan.baidu")){
+//
+//                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+//
+//
+//                    if (element.parentNode().childNodeSize() >= 3) {
+//                        movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(2).toString().replaceAll("&nbsp;","").trim());
+//                    }else {
+//                        movieNameAndUrlModel.setWangPanPassword("");
+//                    }
+//
+//                    //判断片名是否需要拼接
+//                    int indexName = element.parentNode().childNode(0).toString().indexOf(".视频");
+//                    if (indexName != -1) {
+//                        movieNameAndUrlModel.setMovieName(movieName +"  『"+ element.parentNode().childNode(0).toString().substring(0, indexName)+"』");
+//                    }
+//                    else if (!element.parentNode().childNode(0).toString().contains("视频")){
+//                        movieNameAndUrlModel.setMovieName(movieName+"  『"+element.parentNode().childNode(0).toString().replaceAll("：","")+"』");
+//                    }
+//                    else {
+//                        movieNameAndUrlModel.setMovieName(movieName);
+//                    }
+//
+//
+//                    movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
+//                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+//                    list.add(movieNameAndUrlModel);
+//
+//                }
+//
+//
+//        }
+//
+//        return list;
+//    }
+
+
     @Override
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
             Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+//            Document document = Jsoup.connect(secondUrlLxxh).get();
             String movieName = document.getElementsByTag("title").first().text();
 
             if (movieName.contains("- 小悠家")) {
@@ -100,6 +175,10 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
 
                 if (element.parentNode().childNodeSize()>1){
+
+
+
+
 
                 if (element.parentNode().childNode(1).attr("href").contains("pan.baidu")){
 
@@ -136,6 +215,8 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
         return list;
     }
+
+
 
     @Override
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) {
