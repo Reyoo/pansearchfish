@@ -14,7 +14,7 @@ import java.util.List;
  * @Description: 统计一段时间用户搜索电影名词记录
  */
 
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+
 public interface ISystemUserSearchMovieService extends IService<SystemUserSearchMovieModel> {
 
 
