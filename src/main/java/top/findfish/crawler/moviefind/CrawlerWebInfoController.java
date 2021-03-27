@@ -62,7 +62,7 @@ public class CrawlerWebInfoController {
     String unreadUrl;
     @Value("${user.lxxh.aidianying}")
     String lxxhUrl;
-    @Value("${user.xiaoyou.yingmiao}")
+    @Value("${user.xiaoyou.url}")
     String xiaoyouUrl;
     @Value("${user.sumsu.url}")
     String sumuUrl;

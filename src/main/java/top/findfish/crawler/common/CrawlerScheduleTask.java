@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.proxy.service.GetProxyService;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
@@ -32,7 +30,6 @@ public class CrawlerScheduleTask {
 
     private final ISystemUserSearchMovieService systemUserSearchMovieService;
 
-
     @Qualifier("jsoupAiDianyingServiceImpl")
     private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
 
@@ -48,9 +45,6 @@ public class CrawlerScheduleTask {
     @Qualifier("jsoupYouJiangServiceImpl")
     private final ICrawlerCommonService jsoupYouJiangServiceImpl;
 
-
-    private final GetProxyService getProxyService;
-
     private final RedisTemplate redisTemplate;
 
 
@@ -63,7 +57,7 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 12 1/1 * * ? ")
+//    @Scheduled(cron = "0 12 1/1 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -80,11 +74,7 @@ public class CrawlerScheduleTask {
         List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-02-02 01:15:15","2021-02-02 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
-
-
         int i = 1;
-
-
 
         String movieName = null;
         String ipAndPort = null;
@@ -102,9 +92,7 @@ public class CrawlerScheduleTask {
                 }else {
                     continue;
                 }
-
                 try {
-                    log.info("------------------> {} 当前查询片名",movieName);
                     jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
                     jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
@@ -117,20 +105,14 @@ public class CrawlerScheduleTask {
                     this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
                     continue;
                 }
-
             }
-
         }
-
         //爬虫后筛除重复url
         jsoupXiaoyouServiceImpl.checkRepeatMovie();
         jsoupUnreadServiceImpl.checkRepeatMovie();
-
         jsoupYouJiangServiceImpl.checkRepeatMovie();
         jsoupSumuServiceImpl.checkRepeatMovie();
-
         jsoupAiDianyingServiceImpl.checkRepeatMovie();
-
 
         log.info("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         log.info("词条数量为 {}", systemUserSearchMovieModelList.size());

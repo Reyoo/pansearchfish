@@ -8,7 +8,6 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.springframework.stereotype.Component;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -16,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author: QiSun
  * @date: 2021-01-27
- * @Description:
+ * @Description:  phantomjs  爬虫方式 暂时不使用
  */
 @Slf4j
-@Component
+//@Component
 public class PhantomJsProxyCallService {
 
 

@@ -24,18 +24,15 @@ import java.util.List;
 public class AccessDecisionService {
 
 
-
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
-
     public boolean hasPermission(HttpServletRequest request, Authentication auth) {
-
         List<String> whiteList = new ArrayList();
         /**
          * 注册接口放过
          */
-
         whiteList.add("/initmovie/**");
         whiteList.add("/invalid/**");
+        whiteList.add("/test/**");
 
         for (String url : whiteList) {
             if (antPathMatcher.match(url, request.getRequestURI())) {

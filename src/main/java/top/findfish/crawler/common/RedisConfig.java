@@ -31,12 +31,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-/**
- *
- * Description:redis配置，EnableCaching开启缓存
- * @author huangweicheng
- * @date 2019/10/22
- */
 @Configuration
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport
@@ -69,10 +63,6 @@ public class RedisConfig extends CachingConfigurerSupport
     {
         RedisTemplate redisTemplate = new RedisTemplate<Object, Object>();
         redisTemplate.setConnectionFactory(factory);
-//        FastJsonRedisSerializer<Object> fastJsonRedisSerializer = new FastJsonRedisSerializer<>(Object.class);
-//        /*设置value值的序列化*/
-//        redisTemplate.setValueSerializer(fastJsonRedisSerializer);
-//        redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
 
         Jackson2JsonRedisSerializer<Object> j2jrs = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper om = new ObjectMapper();

@@ -44,7 +44,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
 
-    @Value("$(user.youjiang.url)")
+    @Value("${user.youjiang.url}")
     String youjiangUrl;
 
     @Override
@@ -53,20 +53,21 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
-        String url = "http://www.jjj01.work"+ "/?s=" + encode;
-        String url2 = youjiangUrl+ "/?s=" + encode;
-        System.out.println(url2);
 
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(youjiangUrl);
+        stringBuffer.append("/?s=");
+        stringBuffer.append(encode);
 
         try {
 
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(stringBuffer.toString()).get();
             Elements elements = document.getElementsByClass("post-content");
             for (Element element : elements) {
                 String movieUrl = element.select("a").attr("href");
                 //判断是一层链接还是两层链接
                 if (StringUtils.isBlank(movieUrl)) {
-                    movieList.add(url);
+                    movieList.add(stringBuffer.toString());
                 } else {
                     movieList.add(movieUrl);
                 }

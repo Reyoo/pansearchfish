@@ -122,9 +122,10 @@ user:
   sumsu:
     url: http://520.sumsu.cn/search.php?mod=forum
   xiaoyou:
-    yingmiao: http://a.yuanxiao.net.cn
+    url: http://i.yuanxiao.net.cn
   youjiang:
     url: http://www.jjj01.work
+
 
 
 
