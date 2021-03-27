@@ -1,7 +1,6 @@
 package top.findfish.crawler.proxy.service;
 
 import lombok.Cleanup;
-import org.springframework.stereotype.Component;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 
 import java.io.BufferedInputStream;
@@ -10,8 +9,9 @@ import java.net.URL;
 import java.net.URLConnection;
 
 
-@Component
-
+/**
+ *  url 爬虫方式 暂时不使用
+ */
 public class FindFishUrlConnection {
 
 

@@ -58,9 +58,7 @@ public class GetProxyService {
 
     public String getProxyIpFromRemote() {
         HttpHeaders requestHeaders = new HttpHeaders();
-
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-
         CloseableHttpClient httpClient = HttpClientBuilder.create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .build();
@@ -72,7 +70,6 @@ public class GetProxyService {
         requestHeaders.add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
         requestHeaders.add("Upgrade-Insecure-Requests", "1");
         requestHeaders.add("Cache-Control", "max-age=0");
-
         HttpEntity<String> httpEntity = new HttpEntity<>(requestHeaders);
         ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange("http://127.0.0.1:5010/get", HttpMethod.GET, httpEntity, String.class);
         ProxyIpAndPortModel proxyIpAndPortModel = JSONObject.parseObject(resultResponseEntity.getBody(), ProxyIpAndPortModel.class);
@@ -80,24 +77,8 @@ public class GetProxyService {
         return proxyIpAndPortModel.getProxy();
     }
 
-
     public void removeUnableProxy(String ipAndPort) {
-
-//        this.redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-
-//        String map = (String)  this.redisTemplate.opsForHash().get("use_proxy", ipAndPort);
-//        ProxyIpAndPortModel proxyIpAndPortModel = JSONObject.parseObject(map, ProxyIpAndPortModel.class);
-//
-//        //        失败次数大于10次
-//        if (proxyIpAndPortModel.getFail_count() >= 10) {
-            redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-//        } else {
-//            int count = proxyIpAndPortModel.getFail_count() + 1;
-//            proxyIpAndPortModel.setFail_count(count);
-//            Object obj = JSON.toJSON(proxyIpAndPortModel);
-//            redisTemplate.opsForHash().put("use_proxy", ipAndPort, obj.toString());
-//        }
-
+        redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
     }
 
 }

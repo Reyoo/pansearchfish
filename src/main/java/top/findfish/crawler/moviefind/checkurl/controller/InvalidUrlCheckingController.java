@@ -11,10 +11,7 @@ import top.findfish.crawler.common.AjaxResult;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ProjectName: pansearch
@@ -35,7 +32,6 @@ public class InvalidUrlCheckingController {
     @Autowired
     RedisTemplate redisTemplate;
 
-
     /**
      * 校验url 是否正常使用、这里应当做一个操作、即如果url  未启用接口
      * @param wangPanUrls
@@ -47,8 +43,6 @@ public class InvalidUrlCheckingController {
         try {
             for (MovieNameAndUrlModel movieNameAndUrlModel : wangPanUrls) {
                 boolean isValid = invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getWangPanUrl());
-//                boolean isValid = invalidUrlCheckingService.checkUrlByUrlStrNew(movieNameAndUrlModel.getWangPanUrl());
-
                 if (isValid) {
                     return AjaxResult.success("链接失效");
                 } else {
@@ -60,22 +54,4 @@ public class InvalidUrlCheckingController {
         }
         return AjaxResult.error("链接失效");
     }
-
-
-
-    @RequestMapping(path = "/test", method = RequestMethod.GET)
-    public AjaxResult testRedis() {
-
-        try {
-            Map map =  new HashMap();
-            map.put("123",123);
-            List list = new ArrayList();
-            list.add(map);
-
-        } catch (Exception e) {
-            return AjaxResult.error("链接失效");
-        }
-        return AjaxResult.error("链接失效");
-    }
-
 }

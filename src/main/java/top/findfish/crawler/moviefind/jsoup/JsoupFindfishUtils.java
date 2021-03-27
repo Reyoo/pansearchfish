@@ -32,10 +32,10 @@ public class JsoupFindfishUtils {
     public static Document getDocument(String url, String proxyIpAndPort) {
         try {
 
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
+//            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
             return Jsoup.connect(url)
                     .timeout(TIME_OUT)
-                    .proxy(proxy)
+//                    .proxy(proxy)
                     .header("Accept", "application/json, text/javascript, */*; q=0.01")
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())

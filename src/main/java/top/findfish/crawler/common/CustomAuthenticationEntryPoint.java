@@ -22,12 +22,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-
-
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/javascript;charset=utf-8");
         response.getWriter().print(JSONObject.toJSONString(AjaxResult.error("")));
-
     }
 
 }

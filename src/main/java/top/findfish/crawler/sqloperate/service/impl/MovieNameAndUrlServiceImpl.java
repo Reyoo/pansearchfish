@@ -24,18 +24,10 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
 
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-
-//    machine:
-//    tag: maKUnComputer
-
-
-
     @Override
     public List<MovieNameAndUrlModel> findMovieUrl(String tablename,String movieName) throws Exception {
         return movieNameAndUrlMapper.selectMovieUrlByName(tablename,movieName);
     }
-
-
 
     /**
      * 插入更新操作、如果数据库中 不存在 则插入、如果存在 则更新  由于分表、每个爬虫资源影单单独一套 Controller Servcie Mapper
@@ -48,7 +40,6 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
     public void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName) throws Exception {
 
         for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
-//            movieNameAndUrlModel.setmach
             if(movieNameAndUrlModel.getMovieName()==null){
                 continue;
             }
