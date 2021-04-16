@@ -142,12 +142,14 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 //                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieList, Constant.LEIFENGJUN_TABLENAME);
-
+                //删除无效数据
+                movieNameAndUrlService.deleteUnAviliableUrl(movieList,Constant.LEIFENGJUN_TABLENAME);
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.LEIFENGJUN_TABLENAME, searchMovieName);
 
 
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+                        Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
@@ -157,10 +159,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
     }
 
-    @Override
-    public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.LEIFENGJUN_TABLENAME);
-    }
+
 
 
     /**

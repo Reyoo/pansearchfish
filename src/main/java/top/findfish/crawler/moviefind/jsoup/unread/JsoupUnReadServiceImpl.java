@@ -157,13 +157,16 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.WEIDU_TABLENAME);
+                //删除无效数据
+                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList,Constant.WEIDU_TABLENAME);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.WEIDU_TABLENAME, searchMovieName);
 
                 //筛选数据库链接
 
-                redisTemplate.opsForValue().set("unread:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.WEIDU_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
+                redisTemplate.opsForValue().set("unread:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.WEIDU_TABLENAME, movieNameAndUrlModels,
+                        proxyIpAndPort), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
@@ -172,9 +175,6 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    @Override
-    public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.WEIDU_TABLENAME);
-    }
+
 
 }

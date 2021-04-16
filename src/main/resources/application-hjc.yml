@@ -138,7 +138,7 @@ findfish:
   crawler:
     schedule:
 #      时间单位 小时  爬取 现在 及 现在-1 小时之前 用户查询的数据 进行定时任务
-      range: 1
+      range: 2
 
 
 #machine:

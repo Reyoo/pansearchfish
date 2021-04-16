@@ -20,13 +20,24 @@ import top.findfish.crawler.moviefind.ICrawlerCommonService;
 @Slf4j
 public class TestInterfaceController {
 
+
+    @Qualifier("jsoupSumuServiceImpl")
+    private final ICrawlerCommonService jsoupSumuServiceImpl;
+
+    @Qualifier("jsoupUnreadServiceImpl")
+    private final ICrawlerCommonService jsoupUnreadServiceImpl;
+
+    @Qualifier("jsoupXiaoYouServiceImpl")
+    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
+
     @Qualifier("jsoupYouJiangServiceImpl")
     private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+
 
     @RequestMapping(value = "/find/{name}", method = RequestMethod.GET)
     public void findNotifyByPage(@PathVariable("name") String name) throws Exception {
 
-        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(name,"");
+        jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(name,"");
         System.out.println("---------------");
     }
 }

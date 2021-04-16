@@ -28,4 +28,7 @@ public interface IMovieNameAndUrlService extends IService<MovieNameAndUrlModel> 
 
 
     int dropMovieUrl (String tableName,MovieNameAndUrlModel movieNameAndUrlModel) throws Exception;
+
+
+    void deleteUnAviliableUrl(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName);
 }
