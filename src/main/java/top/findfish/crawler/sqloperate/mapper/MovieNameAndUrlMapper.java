@@ -45,7 +45,13 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
     int deleteUrlMovieUrls(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
 
 
-
+    /**
+     * 删除重复资源
+     * @param tableName
+     * @param normalWebUrl
+     * @return
+     */
+    int deleteUnAviliableUrl(String tableName,String normalWebUrl);
 
 
     /**
@@ -56,9 +62,5 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
     int updateUrlMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
 
 
-    /**
-     * 校验重复资源
-     */
-    void checkRepeatMovie(String tableName);
 
 }

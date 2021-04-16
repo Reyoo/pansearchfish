@@ -218,12 +218,6 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    @Override
-    public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.YOUJIANG_TABLENAME);
-    }
-
-
 
     public void setMovieName(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName , int i){
 

@@ -86,13 +86,22 @@
     </update>
 
 
-    <delete id="checkRepeatMovie"  statementType="STATEMENT">
-        DELETE
-        FROM ${tableName}
-        WHERE id NOT IN
-        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)
-    </delete>
 
+
+    <delete id="deleteUnAviliableUrl"  statementType="STATEMENT">
+        DELETE
+        FROM
+             ${tableName}
+        WHERE
+            movie_url = ${"'"+normalWebUrl+"'"}
+          AND id NOT IN (
+            SELECT
+                a.id
+            FROM
+                ( SELECT max( id ) AS id FROM  ${tableName} WHERE movie_url = ${"'"+normalWebUrl+"'"} ) a
+        )
+
+    </delete>
 
 
     <!--    由于设置了自增长ID 无法使用插入更新  ON DUPLICATE KEY UPDATE-->

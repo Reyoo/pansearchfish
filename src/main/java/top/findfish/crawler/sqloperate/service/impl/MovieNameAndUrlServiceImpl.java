@@ -62,6 +62,10 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
         return movieNameAndUrlMapper.deleteUrlMovieUrls(tableName  ,movieNameAndUrlModel);
     }
 
-
-
+    @Override
+    public void deleteUnAviliableUrl(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) {
+        for(MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels){
+            movieNameAndUrlMapper.deleteUnAviliableUrl(movieNameAndUrlModel.getMovieUrl(),tableName);
+        }
+    }
 }

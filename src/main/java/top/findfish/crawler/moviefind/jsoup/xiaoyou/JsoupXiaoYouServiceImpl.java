@@ -1,7 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup.xiaoyou;
 
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -65,18 +65,18 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
 
             //拿到查询结果 片名及链接
-            Elements elements = document.getElementById("grid-wrapper").getElementsByClass("post-title entry-title");
+            Elements elements = document.getElementsByTag("a");
 
-            for (Element element : elements) {
-                String movieUrl = element.select("a").attr("href");
-                //判断是一层链接还是两层链接
-                if (StringUtils.isBlank(movieUrl)) {
-                    movieList.add(url);
-                } else {
-                    movieList.add(movieUrl);
+            elements.stream().forEach(element -> {
+                String a = element.select("a").attr("href");
+
+                if(a.contains(xiaoyouUrl)&& !a.contains("#") && !a.contains("category") && a.length() !=25){
+                    movieList.add(a);
                 }
-            }
+            });
+
             return movieList;
+
         } catch (Exception e) {
             log.error("line 210 ->" + e.getMessage());
             return movieList;
@@ -91,7 +91,8 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
             Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-//            Document document = Jsoup.connect(secondUrlLxxh).get();
+            log.info(document.toString());
+
             String movieName = document.getElementsByTag("title").first().text();
 
             if (movieName.contains("- 小悠家")) {
@@ -99,36 +100,32 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
             }
 
 
-         Elements pTagAttr = document.select("a[href]");
+         Elements pTagAttr = document.select("p");
 
             for (Element element : pTagAttr) {
+                MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+                System.out.println(element.text());
+                if(element.text().contains("视频")){
+                    movieNameAndUrlModel.setWangPanUrl(element.getElementsByTag("a").attr("href"));
+                    System.out.println(element.getElementsByTag("a").attr("href"));
+                }
 
-                if (element.parentNode().childNodeSize()>1){
-                if (element.parentNode().childNode(1).attr("href").contains("pan.baidu")){
-                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-                    if (element.parentNode().childNodeSize() >= 3) {
-                        movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(2).toString().replaceAll("&nbsp;","").trim());
-                    }else {
-                        movieNameAndUrlModel.setWangPanPassword("");
-                    }
-
-                    //判断片名是否需要拼接
-                    int indexName = element.parentNode().childNode(0).toString().indexOf(".视频");
-                    if (indexName != -1) {
-                        movieNameAndUrlModel.setMovieName(movieName +"  『"+ element.parentNode().childNode(0).toString().substring(0, indexName)+"』");
-                    }
-                    else if (!element.parentNode().childNode(0).toString().contains("视频")){
-                        movieNameAndUrlModel.setMovieName(movieName+"  『"+element.parentNode().childNode(0).toString().replaceAll("：","")+"』");
-                    }
-                    else {
-                        movieNameAndUrlModel.setMovieName(movieName);
-                    }
-
-                    movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
+                if(element.text().contains("提取码：")){
+                    System.out.println(element.text());
+                    movieNameAndUrlModel.setWangPanPassword(element.text().split("提取码：")[1].trim());
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                    movieNameAndUrlModel.setMovieName(movieName);
+                    list.add(movieNameAndUrlModel);
+                    break;
+                }
+
+
+
+                if(StrUtil.isNotBlank(movieNameAndUrlModel.getWangPanUrl())){
+                    movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                    movieNameAndUrlModel.setMovieName(movieName);
                     list.add(movieNameAndUrlModel);
                 }
-            }
         }
 
         return list;
@@ -153,11 +150,13 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.XIAOYOU_TABLENAME);
 
-                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
+                //删除无效数据
+                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList,Constant.XIAOYOU_TABLENAME);
+
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.XIAOYOU_TABLENAME, searchMovieName);
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.XIAOYOU_TABLENAME, movieNameAndUrlModels,proxyIpAndPort), Duration.ofHours(1L));
+                redisTemplate.opsForValue().set("xiaoyou:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.XIAOYOU_TABLENAME, movieNameAndUrlModels,proxyIpAndPort), Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
@@ -166,8 +165,4 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    @Override
-    public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.XIAOYOU_TABLENAME);
-    }
 }
