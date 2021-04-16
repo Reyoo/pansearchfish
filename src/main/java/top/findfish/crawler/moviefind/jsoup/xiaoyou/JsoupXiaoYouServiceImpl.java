@@ -91,7 +91,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
             Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-            log.info(document.toString());
+//            log.info(document.toString());
 
             String movieName = document.getElementsByTag("title").first().text();
 
@@ -104,14 +104,14 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
             for (Element element : pTagAttr) {
                 MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-                System.out.println(element.text());
+//                System.out.println(element.text());
                 if(element.text().contains("视频")){
                     movieNameAndUrlModel.setWangPanUrl(element.getElementsByTag("a").attr("href"));
                     System.out.println(element.getElementsByTag("a").attr("href"));
                 }
 
                 if(element.text().contains("提取码：")){
-                    System.out.println(element.text());
+//                    System.out.println(element.text());
                     movieNameAndUrlModel.setWangPanPassword(element.text().split("提取码：")[1].trim());
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
                     movieNameAndUrlModel.setMovieName(movieName);
