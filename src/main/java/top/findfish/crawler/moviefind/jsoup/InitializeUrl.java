@@ -157,10 +157,6 @@ public class InitializeUrl implements ICrawlerCommonService {
 
     }
 
-    @Override
-    public void checkRepeatMovie() {
-
-    }
 
     public static void setMovieName(Element element, MovieNameAndUrlModel movieNameAndUrlModel, String movieName, int i) {
 
