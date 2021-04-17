@@ -1,5 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup;
 
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -32,13 +34,14 @@ public class JsoupFindfishUtils {
     public static Document getDocument(String url, String proxyIpAndPort) {
         try {
 
-//            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
             return Jsoup.connect(url)
                     .timeout(TIME_OUT)
-//                    .proxy(proxy)
+                    .proxy(proxy)
                     .header("Accept", "application/json, text/javascript, */*; q=0.01")
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+//                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
                     .header("X-Requested-With", "XMLHttpRequest")
                     .method(Connection.Method.GET)
                     .ignoreContentType(true).get();
@@ -62,6 +65,7 @@ public class JsoupFindfishUtils {
 
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
             String userAgent = FindFishUserAgentUtil.randomUserAgent();
+
             //带着cookies 继续访问
             Connection.Response finalResponse = Jsoup.connect(url)
                     .proxy(proxy)
@@ -75,7 +79,7 @@ public class JsoupFindfishUtils {
                     .method(Connection.Method.POST)
                     .followRedirects(true).timeout(TIME_OUT).execute();
 
-            log.info("获取到sumu第一层url {}" ,finalResponse.url().toString());
+            log.info("获取到sumu第一层url {}", finalResponse.url().toString());
 
             return getDocument(finalResponse.url().toString(), proxyIpAndPort);
         } catch (IOException e) {
@@ -84,6 +88,36 @@ public class JsoupFindfishUtils {
         }
     }
 
+
+    /**
+     * 参考：https://www.it610.com/article/1283199667462488064.htm
+     * @param url
+     * @param proxyIpAndPort
+     * @return
+     */
+    public static Document getDocumentBysimulationIe(String url,String proxyIpAndPort) {
+        try {
+
+            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED,proxyIpAndPort.split(":")[0],Integer.valueOf(proxyIpAndPort.split(":")[1]));
+            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setJavaScriptEnabled(false);
+            webClient.getOptions().setUseInsecureSSL(true);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
+
+            webClient.waitForBackgroundJavaScript(900 * 1000);
+            webClient.addRequestHeader("User-Agent",FindFishUserAgentUtil.randomUserAgent());
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            HtmlPage page = webClient.getPage(url);
+//            HtmlInput usernameInput = page.getHtmlElementById("s");
+//        /这个线程的等待 因为js加载需要时间的
+            Thread.sleep(1000);
+            return Jsoup.parse(page.asXml());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }

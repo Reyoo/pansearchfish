@@ -45,7 +45,6 @@ public class CrawlerScheduleTask {
 
     @Qualifier("jsoupYouJiangServiceImpl")
     private final ICrawlerCommonService jsoupYouJiangServiceImpl;
-
     private final RedisTemplate redisTemplate;
 
 
@@ -58,8 +57,8 @@ public class CrawlerScheduleTask {
      * 爱电影定时任务
      */
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,15,17,19,21,23 * * ? ")
-//    @Scheduled(cron = "0 10 0 * * ? ")
+//    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,15,17,19,21,23 * * ? ")
+    @Scheduled(cron = "0 31 22 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -73,7 +72,7 @@ public class CrawlerScheduleTask {
 
         //获取到用户查询的关键词实体类
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-04-16 00:15:15","2021-04-17 10:50:15");
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-04-17 00:15:15","2021-04-17 10:50:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
         int i = 1;
 
