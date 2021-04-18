@@ -61,7 +61,6 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
         try {
             Document document =  JsoupFindfishUtils.getDocument(stringBuffer.toString(), proxyIpAndPort);
-            log.info(document.toString());
             Elements elements = document.getElementsByClass("post-content");
             for (Element element : elements) {
                 String movieUrl = element.select("a").attr("href");
