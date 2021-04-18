@@ -3,7 +3,6 @@ package top.findfish.crawler.moviefind.jsoup.youjiang;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
@@ -60,8 +60,8 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
         stringBuffer.append(encode);
 
         try {
-
-            Document document = Jsoup.connect(stringBuffer.toString()).get();
+            Document document =  JsoupFindfishUtils.getDocument(stringBuffer.toString(), proxyIpAndPort);
+            log.info(document.toString());
             Elements elements = document.getElementsByClass("post-content");
             for (Element element : elements) {
                 String movieUrl = element.select("a").attr("href");
@@ -84,108 +84,71 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
-//        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-        Document document = Jsoup.connect(secondUrlLxxh).get();
+        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+
         String movieName = document.getElementsByTag("title").first().text();
 
         if (movieName.contains("- 酱酱家")) {
             movieName = movieName.split("- 酱酱家")[0];
         }
 
-
         Elements pTagAttr = document.select("a[href]");
-
         for (Element element : pTagAttr) {
-
-
             if (element.parentNode().childNodeSize()>1){
-
                 if (element.parentNode().childNode(1).attr("href").contains("pan.baidu")){
-
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-
-
                     if (element.parentNode().childNodeSize() == 3) {
-
                         movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(2).toString().trim().replaceAll("&nbsp;",""));
                         setMovieName(element , movieNameAndUrlModel ,movieName , 0);
                     }else if (element.parentNode().childNodeSize() == 4 || element.parentNode().childNodeSize() == 6){
-
-
                         if (list.size()!=0 && list.size()%2 == 1){
-
                             String name = element.parentNode().childNode(0).toString().split(".视频")[0];
-
                             if (list.get(list.size()-1).getMovieName().contains(name)){
                                 movieNameAndUrlModel.setWangPanPassword("");
-
                                 if (element.parentNode().childNodeSize() == 4){
                                     setMovieName(element , movieNameAndUrlModel ,movieName , 2);
                                 }else {
                                     setMovieName(element , movieNameAndUrlModel ,movieName , 3);
                                 }
-
                             }
-
                         }else {
                             movieNameAndUrlModel.setWangPanPassword("");
                             setMovieName(element , movieNameAndUrlModel ,movieName , 0);
                         }
 //
                     }
-
                     else if (element.parentNode().childNodeSize() == 5){
 
-
                         if (list.size()!=0 && list.size()%2 == 1){
-
                             String name = element.parentNode().childNode(0).toString().split(".视频")[0];
-
                             if (list.get(list.size()-1).getMovieName().contains(name)){
-
-
                                 setMovieNameAndPassword(element , movieNameAndUrlModel , movieName , 4);
-
-
                             }
                         }else {
-
                             setMovieNameAndPassword(element , movieNameAndUrlModel , movieName , 2);
                             setMovieName(element , movieNameAndUrlModel ,movieName , 0);
                         }
 
-
                     }
-
-
-
                     else {
                         movieNameAndUrlModel.setWangPanPassword("");
                         setMovieName(element , movieNameAndUrlModel ,movieName , 0);
                     }
 
                     Elements p = document.select("p").select("href");
-
                     for (Element element1 : p) {
                         if (document.select("p").contains("pan.baidu")){
                             String text = element1.text();
                             System.out.println(text);
                         }
                     }
-
-
                     movieNameAndUrlModel.setWangPanUrl(element.select("a").attr("href"));
                     movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
                     list.add(movieNameAndUrlModel);
-
-
                 }
             }
 
         }
-
-
-
         return list;
     }
 
@@ -235,8 +198,6 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     }
 
     public void setMovieNameAndPassword(Element element , MovieNameAndUrlModel movieNameAndUrlModel , String movieName ,int i){
-
-
 
         if (element.parentNode().childNode(i).toString().contains("提取码") || element.parentNode().childNode(i).toString().contains("密码")){
             movieNameAndUrlModel.setWangPanPassword(element.parentNode().childNode(i).toString().replaceAll("&nbsp;","").trim());

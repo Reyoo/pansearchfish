@@ -9,13 +9,10 @@ import top.findfish.crawler.moviefind.ICrawlerCommonService;
 @SpringBootTest
 class FindfishCrawlerApplicationTests {
 
-//    @Qualifier("jsoupXiaoYouServiceImpl")
-//    @Autowired
-//    ICrawlerCommonService jsoupXiaoyouServiceImpl;
 
-    @Qualifier("jsoupAiDianyingServiceImpl")
-    @Autowired
-    ICrawlerCommonService jsoupAiDianyingServiceImpl;
+//    @Qualifier("jsoupAiDianyingServiceImpl")
+//    @Autowired
+//    ICrawlerCommonService jsoupAiDianyingServiceImpl;
 //
 //    @Qualifier("jsoupSumuServiceImpl")
 //    @Autowired
@@ -25,14 +22,15 @@ class FindfishCrawlerApplicationTests {
 //    @Autowired
 //    ICrawlerCommonService jsoupUnreadServiceImpl;
 //
-//    @Qualifier("jsoupYouJiangServiceImpl")
-//    @Autowired
-//    ICrawlerCommonService jsoupYouJiangServiceImpl;
+    @Qualifier("jsoupYouJiangServiceImpl")
+    @Autowired
+    ICrawlerCommonService jsoupYouJiangServiceImpl;
+
 
 
     @Test
     void contextLoads() throws Exception {
-        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("司藤", "165.225.77.47:443");
+        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("长歌行", "");
     }
 
 }
