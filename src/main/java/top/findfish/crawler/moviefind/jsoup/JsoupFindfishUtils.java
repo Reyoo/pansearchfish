@@ -1,6 +1,8 @@
 package top.findfish.crawler.moviefind.jsoup;
 
-import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Connection;
@@ -99,6 +101,7 @@ public class JsoupFindfishUtils {
         try {
 
             WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED,proxyIpAndPort.split(":")[0],Integer.valueOf(proxyIpAndPort.split(":")[1]));
+//            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
             webClient.getOptions().setUseInsecureSSL(true);
