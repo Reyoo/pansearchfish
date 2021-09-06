@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 
+import java.lang.reflect.Constructor;
+
 @SpringBootTest
 class FindfishCrawlerApplicationTests {
 
@@ -32,5 +34,8 @@ class FindfishCrawlerApplicationTests {
     void contextLoads() throws Exception {
         jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("长歌行", "");
     }
+
+
+
 
 }
