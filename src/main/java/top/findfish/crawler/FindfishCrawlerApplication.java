@@ -10,6 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * @author sun7127@126.com
+ */
 @SpringBootApplication
 public class FindfishCrawlerApplication {
 
