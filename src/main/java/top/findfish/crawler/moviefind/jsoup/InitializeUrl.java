@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.Constant;
+import top.findfish.crawler.util.WebPageConstant;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public class InitializeUrl implements ICrawlerCommonService {
         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
 
         //插入更新可用数据
-        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
+        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
 
     }
 
