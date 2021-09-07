@@ -58,7 +58,8 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         stringBuffer.append(URLEncoder.encode(searchMovieName.trim(), "UTF8"));
         log.info(stringBuffer.toString());
 
-        Document document = JsoupFindfishUtils.getDocumentBysimulationIe(stringBuffer.toString(),proxyIpAndPort);
+        Document document = JsoupFindfishUtils.getDocument(stringBuffer.toString(),proxyIpAndPort);
+        log.info(document.text());
         //如果未找到，放弃爬取，直接返回
         if (document.getElementsByClass("entry-title").text().equals("未找到")) {
             log.info("----------------爱电影网站未找到-> " + searchMovieName + " <-放弃爬取---------------");

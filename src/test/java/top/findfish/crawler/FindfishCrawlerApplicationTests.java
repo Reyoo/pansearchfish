@@ -24,7 +24,7 @@ class FindfishCrawlerApplicationTests {
 //    @Autowired
 //    ICrawlerCommonService jsoupUnreadServiceImpl;
 //
-    @Qualifier("jsoupYouJiangServiceImpl")
+    @Qualifier("jsoupAiDianyingServiceImpl")
     @Autowired
     ICrawlerCommonService jsoupYouJiangServiceImpl;
 
@@ -32,7 +32,7 @@ class FindfishCrawlerApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("长歌行", "");
+        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("扫黑", "");
     }
 
 
