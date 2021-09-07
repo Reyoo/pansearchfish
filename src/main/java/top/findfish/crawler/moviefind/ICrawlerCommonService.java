@@ -41,5 +41,6 @@ public interface ICrawlerCommonService {
      */
     void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) throws Exception;
 
+     void checkRepeatMovie();
 
 }

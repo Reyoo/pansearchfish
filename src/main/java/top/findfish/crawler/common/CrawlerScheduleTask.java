@@ -31,8 +31,8 @@ public class CrawlerScheduleTask {
 
     private final ISystemUserSearchMovieService systemUserSearchMovieService;
 
-    @Qualifier("jsoupAiDianyingServiceImpl")
-    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
+//    @Qualifier("jsoupAiDianyingServiceImpl")
+//    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
 
     @Qualifier("jsoupSumuServiceImpl")
     private final ICrawlerCommonService jsoupSumuServiceImpl;
@@ -43,8 +43,9 @@ public class CrawlerScheduleTask {
     @Qualifier("jsoupXiaoYouServiceImpl")
     private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
 
-    @Qualifier("jsoupYouJiangServiceImpl")
-    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+//    @Qualifier("jsoupYouJiangServiceImpl")
+//    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+
     private final RedisTemplate redisTemplate;
 
 
@@ -53,12 +54,9 @@ public class CrawlerScheduleTask {
 
     Set<String> ipAndPorts = null;
 
-    /**
-     * 爱电影定时任务
-     */
+
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,15,17,19,21,23 * * ? ")
-//    @Scheduled(cron = "0 30 19 * * ? ")
+    @Scheduled(cron = "0 50 1/1 * * ? ")
 
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
@@ -93,12 +91,13 @@ public class CrawlerScheduleTask {
                     continue;
                 }
                 try {
-                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
+//                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+//                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
                     jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                     log.info("第 {} 次 查询", i++);
+                    log.info("当前查询内容为 ："+movieName);
                 }catch (Exception e){
                     log.error(e.getMessage());
                     this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
@@ -106,6 +105,14 @@ public class CrawlerScheduleTask {
                 }
             }
         }
+
+        //爬虫后筛除重复url
+        jsoupXiaoyouServiceImpl.checkRepeatMovie();
+        jsoupUnreadServiceImpl.checkRepeatMovie();
+        jsoupSumuServiceImpl.checkRepeatMovie();
+
+//        jsoupYouJiangServiceImpl.checkRepeatMovie();
+//        jsoupAiDianyingServiceImpl.checkRepeatMovie();
 
 
         log.info("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

@@ -103,6 +103,13 @@
 
     </delete>
 
+    <delete id="checkRepeatMovie"  statementType="STATEMENT">
+        DELETE
+        FROM ${tableName}
+        WHERE id NOT IN
+        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)
+    </delete>
+
 
     <!--    由于设置了自增长ID 无法使用插入更新  ON DUPLICATE KEY UPDATE-->
 

@@ -62,5 +62,9 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
     int updateUrlMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
 
 
+    /**
+     * 校验重复资源
+     */
+    void checkRepeatMovie(String tableName);
 
 }

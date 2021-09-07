@@ -167,6 +167,9 @@ public class JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         }
     }
 
-
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.AIDIANYING_TABLENAME);
+    }
 
 }
