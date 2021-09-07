@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 
+import java.lang.reflect.Constructor;
+
 @SpringBootTest
 class FindfishCrawlerApplicationTests {
 
@@ -22,7 +24,7 @@ class FindfishCrawlerApplicationTests {
 //    @Autowired
 //    ICrawlerCommonService jsoupUnreadServiceImpl;
 //
-    @Qualifier("jsoupYouJiangServiceImpl")
+    @Qualifier("jsoupAiDianyingServiceImpl")
     @Autowired
     ICrawlerCommonService jsoupYouJiangServiceImpl;
 
@@ -30,7 +32,10 @@ class FindfishCrawlerApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("长歌行", "");
+        jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl("扫黑", "");
     }
+
+
+
 
 }

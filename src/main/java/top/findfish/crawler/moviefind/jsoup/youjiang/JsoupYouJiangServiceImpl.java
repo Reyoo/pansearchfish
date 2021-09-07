@@ -15,7 +15,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.Constant;
+import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
 import java.net.URLEncoder;
@@ -165,18 +165,18 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
 
 
                 //删除无效数据
                 movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.YOUJIANG_TABLENAME, searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.YOUJIANG_TABLENAME, searchMovieName);
 
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
+                redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
 
             }
         } catch (Exception e) {
