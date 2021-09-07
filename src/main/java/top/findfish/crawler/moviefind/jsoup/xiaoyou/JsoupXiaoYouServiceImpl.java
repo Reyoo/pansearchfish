@@ -2,6 +2,7 @@ package top.findfish.crawler.moviefind.jsoup.xiaoyou;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -54,22 +55,27 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
-        String url = "http://i.yuanxiao.net.cn" + "/?s=" + encode;
+        String url = "http://888.xuj.cool/" + "/?s=" + encode;
 
 
         try {
 
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
+//            Document document = Jsoup.connect(url).get();
 
             //拿到查询结果 片名及链接
-            Elements elements = document.getElementsByTag("a");
+             Elements elements = document.getElementsByTag("a");
 
             elements.stream().forEach(element -> {
                 String a = element.select("a").attr("href");
 
-                if (a.contains(xiaoyouUrl) && !a.contains("#") && !a.contains("category") && a.length() != 25) {
+                if (a.contains("yuanxiao.net.cn/STMP/20") || a.contains("xuj.cool/STMP/20")) {
                     movieList.add(a);
                 }
+
+//                if (a.contains(xiaoyouUrl) && !a.contains("#") && !a.contains("category") && a.length() != 25) {
+//                    movieList.add(a);
+//                }
             });
 
             return movieList;
@@ -86,7 +92,9 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
         Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-//            log.info(document.toString());
+//        Document document = Jsoup.connect(secondUrlLxxh).get();
+
+
 
         String movieName = document.getElementsByTag("title").first().text();
 
@@ -101,8 +109,12 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
             MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
 //                System.out.println(element.text());
             if (element.text().contains("视频")) {
+                System.out.println(element.text());
+                if (StringUtils.isBlank(element.getElementsByTag("a").attr("href")) || element.text().contains("在线播放")){
+                    break;
+                }
                 movieNameAndUrlModel.setWangPanUrl(element.getElementsByTag("a").attr("href"));
-                log.info(element.getElementsByTag("a").attr("href"));
+
             }
 
             if (element.text().contains("提取码：")) {
@@ -158,4 +170,8 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         }
     }
 
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.XIAOYOU_TABLENAME);
+    }
 }

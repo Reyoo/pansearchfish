@@ -175,6 +175,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         }
     }
 
-
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.WEIDU_TABLENAME);
+    }
 
 }

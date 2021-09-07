@@ -167,8 +167,13 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
 
+
+                //删除无效数据
+                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
+
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.YOUJIANG_TABLENAME, searchMovieName);
+
 
                 //筛选数据库链接
                 redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
@@ -207,4 +212,10 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
             movieNameAndUrlModel.setWangPanPassword("");
         }
     }
+
+    @Override
+    public void checkRepeatMovie() {
+        movieNameAndUrlMapper.checkRepeatMovie(Constant.YOUJIANG_TABLENAME);
+    }
+
 }

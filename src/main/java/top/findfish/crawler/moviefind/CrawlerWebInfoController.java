@@ -100,17 +100,17 @@ public class CrawlerWebInfoController {
             ipAndPort = (String) ipAndPortList.get(randomIndex);
             try {
 
-//                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
                 jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-//                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
 
-//                jsoupXiaoyouServiceImpl.checkRepeatMovie();
-//                jsoupSumuServiceImpl.checkRepeatMovie();
-//                jsoupAiDianyingServiceImpl.checkRepeatMovie();
-//                jsoupYouJiangServiceImpl.checkRepeatMovie();
-//                jsoupUnreadServiceImpl.checkRepeatMovie();
+                jsoupXiaoyouServiceImpl.checkRepeatMovie();
+                jsoupSumuServiceImpl.checkRepeatMovie();
+                jsoupAiDianyingServiceImpl.checkRepeatMovie();
+                jsoupYouJiangServiceImpl.checkRepeatMovie();
+                jsoupUnreadServiceImpl.checkRepeatMovie();
 
 
 
