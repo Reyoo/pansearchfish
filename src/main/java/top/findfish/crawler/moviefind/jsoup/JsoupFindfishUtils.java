@@ -99,7 +99,6 @@ public class JsoupFindfishUtils {
      */
     public static Document getDocumentBysimulationIe(String url,String proxyIpAndPort) {
         try {
-
             WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED,proxyIpAndPort.split(":")[0],Integer.valueOf(proxyIpAndPort.split(":")[1]));
 //            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
             webClient.getOptions().setCssEnabled(false);
