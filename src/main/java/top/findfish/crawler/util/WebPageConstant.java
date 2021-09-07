@@ -7,7 +7,7 @@ package top.findfish.crawler.util;
  * 创建时间:2021/2/25 10:09
  * 描述: TODO  常量类命名要全部大写~
  */
-public class Constant {
+public class WebPageConstant {
 
     public static final String AIDIANYING_TABLENAME = "url_movie_aidianying";
     public static final String XIAOYOU_TABLENAME = "url_movie_xiaoyou";

@@ -18,7 +18,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.Constant;
+import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
@@ -141,14 +141,14 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, Constant.LEIFENGJUN_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
                 //删除无效数据
-                movieNameAndUrlService.deleteUnAviliableUrl(movieList,Constant.LEIFENGJUN_TABLENAME);
+                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(Constant.LEIFENGJUN_TABLENAME, searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
 
 
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(Constant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
                         Duration.ofHours(2L));
 
             }
