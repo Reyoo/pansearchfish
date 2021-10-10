@@ -82,7 +82,6 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         //直接获取百度网盘  这段代码可能有问题
         if (movieUrlInLxxh.size() == 0) {
             movieUrlInLxxh.add(stringBuffer.toString());
-
         }
         return movieUrlInLxxh;
     }

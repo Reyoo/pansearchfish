@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,7 +20,9 @@ public class FindfishCrawlerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FindfishCrawlerApplication.class, args);
+
     }
+
 
     @Bean
     public RestTemplate restTemplate() {

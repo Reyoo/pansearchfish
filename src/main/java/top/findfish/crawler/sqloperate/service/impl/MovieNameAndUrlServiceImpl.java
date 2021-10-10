@@ -1,5 +1,7 @@
 package top.findfish.crawler.sqloperate.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +27,8 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
     @Override
-    public List<MovieNameAndUrlModel> findMovieUrl(String tablename,String movieName) throws Exception {
-        return movieNameAndUrlMapper.selectMovieUrlByName(tablename,movieName);
+    public List<MovieNameAndUrlModel> findMovieUrl(String tablename, String movieName) throws Exception {
+        return movieNameAndUrlMapper.selectMovieUrlByName(tablename, movieName);
     }
 
     /**
@@ -37,35 +39,38 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
      * @throws Exception
      */
     @Override
-    public void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName) throws Exception {
-
-        for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
-            if(movieNameAndUrlModel.getMovieName()==null){
-                continue;
-            }
-            List<MovieNameAndUrlModel> list = movieNameAndUrlMapper.selectMovieUrlByName(tableName, movieNameAndUrlModel.getMovieName().trim());
-            if (list.size() > 0) {
-//                如果查询到数据 则更新
-                movieNameAndUrlMapper.updateUrlMovieUrl(tableName,movieNameAndUrlModel);
-                log.info("更新电影列表-->" + movieNameAndUrlModel);
-
-            } else {
-                movieNameAndUrlMapper.insertMovieUrl(tableName,movieNameAndUrlModel);
-                log.info("插入电影列表-->" + movieNameAndUrlModel);
-            }
+    public void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) throws Exception {
+        if(ObjectUtil.isNull(movieNameAndUrlModels)){
+            return;
         }
 
+        movieNameAndUrlModels.parallelStream().forEach(t -> {
+                    if (StrUtil.isBlank(t.getMovieName())) {
+                        return;
+                    }
+                    List<MovieNameAndUrlModel> list = movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim());
+                    if (list.size() > 0) {
+//                如果查询到数据 则更新
+                        movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
+                        log.info("更新电影列表-->" + t);
+
+                    } else {
+                        movieNameAndUrlMapper.insertMovieUrl(tableName, t);
+                        log.info("插入电影列表-->" + t);
+                    }
+                }
+        );
     }
 
     @Override
-    public int dropMovieUrl(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel) throws Exception {
-        return movieNameAndUrlMapper.deleteUrlMovieUrls(tableName  ,movieNameAndUrlModel);
+    public int dropMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel) throws Exception {
+        return movieNameAndUrlMapper.deleteUrlMovieUrls(tableName, movieNameAndUrlModel);
     }
 
     @Override
     public void deleteUnAviliableUrl(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) {
-        for(MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels){
-            movieNameAndUrlMapper.deleteUnAviliableUrl(tableName ,movieNameAndUrlModel.getMovieUrl());
+        for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
+            movieNameAndUrlMapper.deleteUnAviliableUrl(tableName, movieNameAndUrlModel.getMovieUrl());
         }
     }
 }
