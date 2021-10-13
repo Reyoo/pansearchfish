@@ -48,6 +48,13 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     String lxxhUrl;
 
 
+    /**
+     * 爱电影这部分要先拿到cookies  做验证  第二步再去请求
+     * @param searchMovieName
+     * @param proxyIpAndPort
+     * @return
+     * @throws Exception
+     */
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
 
