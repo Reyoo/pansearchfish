@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup.sumsu;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service("jsoupSumuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -54,26 +56,28 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
         //测试 暂时关闭代理
         Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
 
-        String formhash = "259f5941";
+        AtomicReference<String> formhash = new AtomicReference<>("259f5941");
         Elements formhashElements = doc.getElementsByAttributeValue("name", "formhash");
-        //拿到 formhash
-        for (Element formhashElement : formhashElements) {
-            formhash = formhashElement.val();
+
+        if(ObjectUtil.isNotNull(formhashElements)){
+            formhashElements.parallelStream().forEach( t -> {
+                formhash.set(t.val());
+            });
         }
 
-
-        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash, proxyIpAndPort);
-
+        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort);
 
         Elements elements = redirectDocument.select("li").select("a");
         //获取到第一层的中文搜索  继而拿到tid  查询详细电影
-        for (Element link : elements) {
+
+        elements.parallelStream().forEach( link ->{
             String linkhref = link.attr("href");
             if (linkhref.startsWith("forum.php?mod")) {
                 firstSearchUrls.add("http://520.sumsu.cn/" + linkhref);
                 log.info("查询电影名为--> " + searchMovieName + " 获取第一次链接为--> " + linkhref);
             }
-        }
+        });
+
         return firstSearchUrls;
     }
 
@@ -91,11 +95,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
             Elements elements = tidDoc.select("a[href]");
 
 
-            String linkhref = null;
+            AtomicReference<String> linkhref = null;
 
-            for (Element link : elements) {
-                linkhref = link.attr("href");
-                if (linkhref.startsWith("https://pan.baidu.com")) {
+            elements.parallelStream().forEach( link -> {
+                linkhref.set(link.attr("href"));
+                if (linkhref.get().startsWith("https://pan.baidu.com")) {
 
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                     String baiPan = link.attr("href").toString();
@@ -117,9 +121,8 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     }
                     movieNameAndUrlModels.add(movieNameAndUrlModel);
                 }
-            }
 
-
+            });
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -133,11 +136,15 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
             Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort);
             if (firstSearchUrls.size() > 0) {
                 ArrayList<MovieNameAndUrlModel> movieList = new ArrayList<>();
-                for (String url : firstSearchUrls) {
-                    movieList.addAll(getWangPanUrl(url, proxyIpAndPort));
 
-                }
-
+                firstSearchUrls.parallelStream().forEach( url ->{
+                    try {
+                        movieList.addAll(getWangPanUrl(url, proxyIpAndPort));
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
                 //筛选爬虫链接
 //                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
@@ -146,8 +153,6 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
-
-
                 redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
                         Duration.ofHours(2L));
 
@@ -198,8 +203,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
                 Elements elements = tidDoc.select("strong").select("a");
 
+                if(ObjectUtil.isNull(elements)){
+                    return movieNameAndUrlModels;
+                }
 
-                for (Element link : elements) {
+                elements.parallelStream().forEach( link -> {
                     String linkhref = link.attr("href");
                     if (linkhref.startsWith("pan.baidu.com")) {
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
@@ -226,8 +234,9 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
                         movieNameAndUrlModels.add(movieNameAndUrlModel);
                     }
+                });
 
-                }
+
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
 
 //                invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying",movieNameAndUrlModels,proxyIp,Integer.valueOf(proxyPort));
