@@ -2,6 +2,8 @@ package top.findfish.crawler.learnCode;
 
 import lombok.SneakyThrows;
 
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
+import java.lang.reflect.InvocationHandler;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +32,11 @@ public class ThreadPoolToLearn {
             threadPoolExecutor.execute(new MyTask(i));
         }
 
+        ThreadLocal<Object> objectThreadLocal = new ThreadLocal<>();
+        objectThreadLocal.set(new MyTask(1));
+//        new KeyValue()
 
+//        InvocationHandler
     }
 
 
