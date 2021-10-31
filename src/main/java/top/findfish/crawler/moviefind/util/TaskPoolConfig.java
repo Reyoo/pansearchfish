@@ -24,7 +24,7 @@ public class TaskPoolConfig {
     //线程最大的空闲存活时间，单位为秒
     public static final int KEEPALIVETIME=60;
     //任务缓存队列长度
-    public static final int BLOCKINGQUEUE_LENGTH=500;
+    public static final int BLOCKINGQUEUE_LENGTH=50;
 
     @Bean("crawler-Executor")
     public Executor taskExecutro(){
