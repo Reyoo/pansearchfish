@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +15,8 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
+import top.findfish.crawler.util.WebPageConstant;
 
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -165,6 +164,11 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
             log.error("docment is null" + e.getMessage());
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
+    }
+
+    @Override
+    public void checkRepeatMovie() {
+
     }
 
 
