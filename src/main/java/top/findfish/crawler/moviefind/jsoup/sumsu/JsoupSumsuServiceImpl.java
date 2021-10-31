@@ -161,7 +161,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.LEIFENGJUN_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LEIFENGJUN_TABLENAME);
     }
 
 

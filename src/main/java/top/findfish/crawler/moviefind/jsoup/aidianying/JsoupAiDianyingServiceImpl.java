@@ -14,8 +14,8 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
+import top.findfish.crawler.util.WebPageConstant;
 
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -51,6 +51,8 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
 
+        log.info("-------------->开始爬取 爱电影<--------------------");
+
         Set<String> movieUrlInLxxh = new HashSet();
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(lxxhUrl);
@@ -59,6 +61,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         log.info(stringBuffer.toString());
 
         Document document = JsoupFindfishUtils.getDocument(stringBuffer.toString(),proxyIpAndPort);
+
         log.info(document.text());
         //如果未找到，放弃爬取，直接返回
         if (document.getElementsByClass("entry-title").text().equals("未找到")) {
