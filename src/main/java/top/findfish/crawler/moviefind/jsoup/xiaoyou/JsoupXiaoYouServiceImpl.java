@@ -172,6 +172,6 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.XIAOYOU_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
     }
 }

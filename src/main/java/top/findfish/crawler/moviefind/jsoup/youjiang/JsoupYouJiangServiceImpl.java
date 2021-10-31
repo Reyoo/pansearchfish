@@ -169,7 +169,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
 
                 //删除无效数据
-                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, Constant.YOUJIANG_TABLENAME);
+                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.YOUJIANG_TABLENAME, searchMovieName);
@@ -215,7 +215,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(Constant.YOUJIANG_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.YOUJIANG_TABLENAME);
     }
 
 }
