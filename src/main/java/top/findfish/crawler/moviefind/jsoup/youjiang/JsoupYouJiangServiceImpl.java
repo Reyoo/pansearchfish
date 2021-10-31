@@ -35,6 +35,7 @@ import java.util.Set;
 @Service("jsoupYouJiangServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
+@Deprecated
 public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
