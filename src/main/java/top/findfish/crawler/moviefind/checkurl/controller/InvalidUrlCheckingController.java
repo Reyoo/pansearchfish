@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.checkurl.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,14 +24,15 @@ import java.util.List;
  * @Version: 1.0
  */
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping(value = "/invalid")
 public class InvalidUrlCheckingController {
 
-    @Autowired
-    InvalidUrlCheckingService invalidUrlCheckingService;
 
-    @Autowired
-    RedisTemplate redisTemplate;
+   private final InvalidUrlCheckingService invalidUrlCheckingService;
+
+
+   private final RedisTemplate redisTemplate;
 
 
     final static String  LINK_OVERDUE = "链接失效";
