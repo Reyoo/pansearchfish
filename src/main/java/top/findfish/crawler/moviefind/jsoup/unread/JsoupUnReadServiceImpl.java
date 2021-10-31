@@ -1,5 +1,6 @@
 package top.findfish.crawler.moviefind.jsoup.unread;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,14 +56,16 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
         Elements links = doc.getElementsByClass("entry-title");
 
-        String pUrl = null;
-        for (Element link : links) {
-            pUrl = link.select("a").attr("href");
+        if (ObjectUtil.isNull(links)) {
+            return movieUrlSet;
+        }
+
+        links.parallelStream().forEach(link -> {
+            String pUrl = link.select("a").attr("href");
             if (pUrl.contains("http://www.unreadmovie.com/?p=") && !pUrl.contains("#")) {
                 movieUrlSet.add(pUrl);
             }
-
-        }
+        });
 
         return movieUrlSet;
 
@@ -73,43 +76,34 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
-
         Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
-
-
         String movieName = document.getElementsByTag("title").text().trim();
-
-
         if (movieName.contains("– 未读影单")) {
             movieName = movieName.split("– 未读影单")[0].trim();
         }
 
-        if (StringUtils.isBlank(movieName)){
-            return null;
+        if (StringUtils.isBlank(movieName)) {
+            return movieNameAndUrlModelList;
         }
-
 
 //        Elements pTagAttr = document.getElementsByClass("entry-content").select("a[href]");
         Elements pTagAttr = document.getElementsByClass("entry-content").tagName("div").select("p");
 
         for (int i = 0; i < pTagAttr.size(); i++) {
-            if (pTagAttr.get(i).text().contains("资源链接点这里")){
+            if (pTagAttr.get(i).text().contains("资源链接点这里")) {
 
-                String  panUrl =  pTagAttr.get(i).getElementsByTag("a").attr("href");
+                String panUrl = pTagAttr.get(i).getElementsByTag("a").attr("href");
 
                 MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                 movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
                 movieNameAndUrlModel.setWangPanUrl(panUrl);
 
                 //判断是否需要拼接片名
-                if (pTagAttr.get(i).text().startsWith("资源链接点这里→")){
+                if (pTagAttr.get(i).text().startsWith("资源链接点这里→")) {
                     movieNameAndUrlModel.setMovieName(movieName);
-                }else {
-
-                    movieNameAndUrlModel.setMovieName(movieName+"  『"+pTagAttr.get(i).text().split("资源链接点这里")[0]+"』");
+                } else {
+                    movieNameAndUrlModel.setMovieName(movieName + "  『" + pTagAttr.get(i).text().split("资源链接点这里")[0] + "』");
                 }
-
-
 //                //java获得href中的值
 //                String re = "(?<=(href=\")).*(?=\")";
 //                Pattern compile = Pattern.compile(re);
@@ -118,11 +112,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 //                    String group = matcher.group();
 //                    movieNameAndUrlModel.setWangPanUrl(group);
 //                }
-
-
-                if (pTagAttr.get(i+1).text().contains("密码") || pTagAttr.get(i+1).text().contains("提取码")){
-                    movieNameAndUrlModel.setWangPanPassword(pTagAttr.get(i+1).text().trim());
-                }else {
+                if (pTagAttr.get(i + 1).text().contains("密码") || pTagAttr.get(i + 1).text().contains("提取码")) {
+                    movieNameAndUrlModel.setWangPanPassword(pTagAttr.get(i + 1).text().trim());
+                } else {
                     movieNameAndUrlModel.setWangPanPassword("");
                 }
                 movieNameAndUrlModelList.add(movieNameAndUrlModel);
@@ -141,19 +133,20 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
         try {
-
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort);
-            if (set.size() > 0) {
-                for (String url : set) {
-                    //由于包含模糊查询、这里记录到数据库中做插入更新操作
-                    movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
-                }
-                if (movieNameAndUrlModelList.size() == 0){
+            if (ObjectUtil.isNotEmpty(set)) {
+
+                set.parallelStream().forEach(url -> {
+                    try {
+                        movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                if (movieNameAndUrlModelList.size() == 0) {
                     return;
                 }
-
-                //筛选爬虫链接
-//                invalidUrlCheckingService.checkUrlMethod("url_movie_unread", movieNameAndUrlModelList);
 
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
@@ -162,22 +155,17 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.WEIDU_TABLENAME, searchMovieName);
-
                 //筛选数据库链接
-
-                redisTemplate.opsForValue().set("unread:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.WEIDU_TABLENAME, movieNameAndUrlModels,
+                redisTemplate.opsForValue().set("unread:" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.WEIDU_TABLENAME, movieNameAndUrlModels,
                         proxyIpAndPort), Duration.ofHours(2L));
 
             }
+
         } catch (Exception e) {
             log.error("docment is null" + e.getMessage());
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
     }
 
-    @Override
-    public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.WEIDU_TABLENAME);
-    }
 
 }

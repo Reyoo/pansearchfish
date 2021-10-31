@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.checkurl.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,14 +24,20 @@ import java.util.List;
  * @Version: 1.0
  */
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping(value = "/invalid")
 public class InvalidUrlCheckingController {
 
-    @Autowired
-    InvalidUrlCheckingService invalidUrlCheckingService;
 
-    @Autowired
-    RedisTemplate redisTemplate;
+   private final InvalidUrlCheckingService invalidUrlCheckingService;
+
+
+   private final RedisTemplate redisTemplate;
+
+
+    final static String  LINK_OVERDUE = "链接失效";
+    final static String  LINK_SUCCESS = "该链接请求正常";
+
 
     /**
      * 校验url 是否正常使用、这里应当做一个操作、即如果url  未启用接口
@@ -44,14 +51,14 @@ public class InvalidUrlCheckingController {
             for (MovieNameAndUrlModel movieNameAndUrlModel : wangPanUrls) {
                 boolean isValid = invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getWangPanUrl());
                 if (isValid) {
-                    return AjaxResult.success("链接失效");
+                    return AjaxResult.success(LINK_OVERDUE);
                 } else {
-                    return AjaxResult.success("该链接请求正常");
+                    return AjaxResult.success(LINK_SUCCESS);
                 }
             }
         } catch (Exception e) {
-            return AjaxResult.error("链接失效");
+            return AjaxResult.error(LINK_OVERDUE);
         }
-        return AjaxResult.error("链接失效");
+        return AjaxResult.error(LINK_OVERDUE);
     }
 }

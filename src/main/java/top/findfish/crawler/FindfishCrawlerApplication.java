@@ -6,9 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author sun7127@126.com
@@ -19,6 +16,7 @@ public class FindfishCrawlerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FindfishCrawlerApplication.class, args);
+
     }
 
     @Bean
@@ -26,7 +24,6 @@ public class FindfishCrawlerApplication {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(60000);
         factory.setReadTimeout(10000);
-//        ConcurrentHashMap
         return new RestTemplate(factory);
     }
 }
