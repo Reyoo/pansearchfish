@@ -41,12 +41,10 @@ public class GetProxyService {
         if (list.size()>0){
             int randomIndex = new Random().nextInt(list.size());
             String randomItem = list.get(randomIndex-1);
-            System.out.println(randomItem);
             return randomItem;
         }else {
             return "";
         }
-
     }
 
 
@@ -73,7 +71,6 @@ public class GetProxyService {
         HttpEntity<String> httpEntity = new HttpEntity<>(requestHeaders);
         ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange("http://127.0.0.1:5010/get", HttpMethod.GET, httpEntity, String.class);
         ProxyIpAndPortModel proxyIpAndPortModel = JSONObject.parseObject(resultResponseEntity.getBody(), ProxyIpAndPortModel.class);
-        System.out.println(proxyIpAndPortModel.getProxy());
         return proxyIpAndPortModel.getProxy();
     }
 
