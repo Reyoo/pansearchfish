@@ -32,6 +32,11 @@ public class InvalidUrlCheckingController {
     @Autowired
     RedisTemplate redisTemplate;
 
+
+    final static String  LINK_OVERDUE = "链接失效";
+    final static String  LINK_SUCCESS = "该链接请求正常";
+
+
     /**
      * 校验url 是否正常使用、这里应当做一个操作、即如果url  未启用接口
      * @param wangPanUrls
@@ -44,14 +49,14 @@ public class InvalidUrlCheckingController {
             for (MovieNameAndUrlModel movieNameAndUrlModel : wangPanUrls) {
                 boolean isValid = invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getWangPanUrl());
                 if (isValid) {
-                    return AjaxResult.success("链接失效");
+                    return AjaxResult.success(LINK_OVERDUE);
                 } else {
-                    return AjaxResult.success("该链接请求正常");
+                    return AjaxResult.success(LINK_SUCCESS);
                 }
             }
         } catch (Exception e) {
-            return AjaxResult.error("链接失效");
+            return AjaxResult.error(LINK_OVERDUE);
         }
-        return AjaxResult.error("链接失效");
+        return AjaxResult.error(LINK_OVERDUE);
     }
 }
