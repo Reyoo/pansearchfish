@@ -12,7 +12,6 @@ import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import top.findfish.crawler.proxy.model.ProxyIpAndPortModel;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 
 import java.util.ArrayList;
@@ -70,8 +69,8 @@ public class GetProxyService {
         requestHeaders.add("Cache-Control", "max-age=0");
         HttpEntity<String> httpEntity = new HttpEntity<>(requestHeaders);
         ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange("http://127.0.0.1:5010/get", HttpMethod.GET, httpEntity, String.class);
-        ProxyIpAndPortModel proxyIpAndPortModel = JSONObject.parseObject(resultResponseEntity.getBody(), ProxyIpAndPortModel.class);
-        return proxyIpAndPortModel.getProxy();
+         JSONObject jsonObject = JSONObject.parseObject(resultResponseEntity.getBody());
+        return jsonObject.get("proxy").toString();
     }
 
     public void removeUnableProxy(String ipAndPort) {

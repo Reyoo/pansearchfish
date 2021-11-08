@@ -1,5 +1,7 @@
 package top.findfish.crawler.learnCode;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * TODO
  *
@@ -9,8 +11,12 @@ package top.findfish.crawler.learnCode;
  */
 public class Test {
     public static void main(String[] args) {
-        MyTestClass2 myTestClass2 = MyTestClass2.getInstance();
-        System.out.println("myTestClass2.a : " + myTestClass2.getA());
-        System.out.println("myTestClass2.b : " + myTestClass2.getB());
+//        MyTestClass2 myTestClass2 = MyTestClass2.getInstance();
+//        System.out.println("myTestClass2.a : " + myTestClass2.getA());
+//        System.out.println("myTestClass2.b : " + myTestClass2.getB());
+        ConcurrentHashMap<String, String> stringStringConcurrentHashMap = new ConcurrentHashMap<>();
+
+        stringStringConcurrentHashMap.put("aa","abb");
+
     }
 }
