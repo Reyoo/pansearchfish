@@ -49,10 +49,11 @@ public class GetProxyService {
 
     /**
      * 远程调用 获取ip
-     *
+     * 内部rpc 占用贷款
      * @return
      */
 
+    @Deprecated
     public String getProxyIpFromRemote() {
         HttpHeaders requestHeaders = new HttpHeaders();
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
