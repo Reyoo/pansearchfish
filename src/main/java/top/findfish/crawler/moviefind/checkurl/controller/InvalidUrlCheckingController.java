@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import top.findfish.crawler.common.AjaxResult;
+import top.findfish.crawler.common.FindfishConstant;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.util.InvalidUrlCheckingService;
 
@@ -28,15 +29,9 @@ import java.util.List;
 @RequestMapping(value = "/invalid")
 public class InvalidUrlCheckingController {
 
+    private final InvalidUrlCheckingService invalidUrlCheckingService;
 
-   private final InvalidUrlCheckingService invalidUrlCheckingService;
-
-
-   private final RedisTemplate redisTemplate;
-
-
-    final static String  LINK_OVERDUE = "链接失效";
-    final static String  LINK_SUCCESS = "该链接请求正常";
+    private final RedisTemplate redisTemplate;
 
 
     /**
@@ -51,14 +46,14 @@ public class InvalidUrlCheckingController {
             for (MovieNameAndUrlModel movieNameAndUrlModel : wangPanUrls) {
                 boolean isValid = invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getWangPanUrl());
                 if (isValid) {
-                    return AjaxResult.success(LINK_OVERDUE);
+                    return AjaxResult.success(FindfishConstant.LINK_OVERDUE.getDescription());
                 } else {
-                    return AjaxResult.success(LINK_SUCCESS);
+                    return AjaxResult.success(FindfishConstant.LINK_SUCCESS.getDescription());
                 }
             }
         } catch (Exception e) {
-            return AjaxResult.error(LINK_OVERDUE);
+            return AjaxResult.error(FindfishConstant.LINK_OVERDUE.getDescription());
         }
-        return AjaxResult.error(LINK_OVERDUE);
+        return AjaxResult.error(FindfishConstant.LINK_OVERDUE.getDescription());
     }
 }

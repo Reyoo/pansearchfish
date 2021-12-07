@@ -1,16 +1,17 @@
 package top.findfish.crawler.util;
 
-public class FindfishStrUtil {
+import top.findfish.crawler.common.FindfishConstant;
 
+public class FindfishStrUtil {
 
     public static String getsumSuMovieName(String movieName){
         String resultSearchName = movieName;
-        if (movieName.contains("百度云")) {
-            resultSearchName = movieName.split("百度云")[0].trim();
+        if (movieName.contains(FindfishConstant.BAIDUYUN_STR.getDescription())) {
+            resultSearchName = movieName.split(FindfishConstant.BAIDUYUN_STR.getDescription())[0].trim();
         }
 
-        if (resultSearchName.contains("Powered by Discuz")) {
-            resultSearchName = resultSearchName.split("Powered")[0].trim();
+        if (resultSearchName.contains(FindfishConstant.POWERED_BY_DISCUZ.getDescription())) {
+            resultSearchName = resultSearchName.split(FindfishConstant.POWERED_STR.getDescription())[0].trim();
         }
         return resultSearchName;
     }

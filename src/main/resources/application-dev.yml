@@ -1,5 +1,5 @@
 server:
-#  port: 8886
+  #  port: 8886
   port: 8088
 
 ##Actuator的端点配置，详细了解请点击文上方Actuator连接
@@ -20,8 +20,6 @@ server:
 
 spring:
   redis:
-    host: 121.36.6.92
-    port: 36379
     password: findfish
     # redis client配置，使用lettuce
     lettuce:
@@ -36,6 +34,9 @@ spring:
     # Redis默认情况下有16个分片，这里配置具体使用的分片，默认是0
     database: 0
     timeout: 10000
+    cluster:
+      nodes:
+        - 121.36.6.92:36379
 
   # 配置数据源
   datasource:
@@ -44,9 +45,9 @@ spring:
     username: root
     password: libbytian123QWE
 
-#    url: jdbc:mysql://114.116.229.225:33306/findfish?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong
-#    username: root
-#    password: libbytian123QWE!@#
+    #    url: jdbc:mysql://114.116.229.225:33306/findfish?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong
+    #    username: root
+    #    password: libbytian123QWE!@#
 
     type: com.alibaba.druid.pool.DruidDataSource
     filters: stat
@@ -136,7 +137,7 @@ temp:
 findfish:
   crawler:
     schedule:
-#      时间单位 小时  爬取 现在 及 现在-1 小时之前 用户查询的数据 进行定时任务
+      #      时间单位 小时  爬取 现在 及 现在-1 小时之前 用户查询的数据 进行定时任务
       range: 2
 
 

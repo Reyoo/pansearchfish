@@ -12,6 +12,7 @@ import java.net.URLConnection;
 /**
  *  url 爬虫方式 暂时不使用
  */
+@Deprecated
 public class FindFishUrlConnection {
 
 
