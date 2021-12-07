@@ -51,6 +51,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+
         log.info("-------------->开始爬取 小悠<--------------------");
 
         Set<String> movieList = new HashSet<>();

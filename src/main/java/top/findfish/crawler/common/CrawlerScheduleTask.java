@@ -57,8 +57,8 @@ public class CrawlerScheduleTask {
 
     //3.添加定时任务  双数小时  2，4，6，8，10...
 
-//    @Scheduled(cron = "0 29 00 ? * MON-FRI")
-    @Scheduled(cron = "0 40 1/1 * * ? ")
+//    @Scheduled(cron = "0 40 1/1 * * ? ")
+    @Scheduled(cron = "0 20 1/1 * * ? ")
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
     private void crawlerMovieTasks() throws InterruptedException {
