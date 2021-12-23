@@ -27,12 +27,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-
 public class InvalidUrlCheckingService {
 
-
     private final IMovieNameAndUrlService movieNameAndUrlService;
-
 
     /**
      * 判断是否失效、失效则数据库中删除

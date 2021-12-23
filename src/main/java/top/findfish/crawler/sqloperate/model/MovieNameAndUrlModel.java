@@ -39,9 +39,4 @@ public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
     @TableField("wangpan_passwd")
     String wangPanPassword;
 
-
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
 }
