@@ -48,13 +48,13 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
 
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
         log.info("-------------->开始爬取 社区动力<--------------------");
         Set<String> firstSearchUrls = new HashSet<>();
 
         //先拿到  formhash
         //测试 暂时关闭代理
-        Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort);
+        Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort,useProxy);
 
         AtomicReference<String> formhash = new AtomicReference<>("259f5941");
         Elements formhashElements = doc.getElementsByAttributeValue("name", "formhash");
@@ -65,11 +65,10 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
             });
         }
 
-        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort);
+        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort,useProxy);
 
         Elements elements = redirectDocument.select("li").select("a");
         //获取到第一层的中文搜索  继而拿到tid  查询详细电影
-
         elements.parallelStream().forEach( link ->{
             String linkhref = link.attr("href");
             if (linkhref.startsWith("forum.php?mod")) {
@@ -82,11 +81,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
         try {
 
-            Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+            Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort,useProxy);
 
             if (tidDoc.title().contains("404")) {
                 return movieNameAndUrlModels;
@@ -131,15 +130,15 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) {
         try {
-            Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort);
+            Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort,useProxy);
             if (firstSearchUrls.size() > 0) {
                 ArrayList<MovieNameAndUrlModel> movieList = new ArrayList<>();
 
                 firstSearchUrls.parallelStream().forEach( url ->{
                     try {
-                        movieList.addAll(getWangPanUrl(url, proxyIpAndPort));
+                        movieList.addAll(getWangPanUrl(url, proxyIpAndPort,useProxy));
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         e.printStackTrace();

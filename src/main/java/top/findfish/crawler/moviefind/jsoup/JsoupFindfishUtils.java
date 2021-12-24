@@ -33,20 +33,32 @@ public class JsoupFindfishUtils {
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getDocument(String url, String proxyIpAndPort) {
+    public static Document getDocument(String url, String proxyIpAndPort,Boolean useProxy) {
         try {
 
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
-            return Jsoup.connect(url)
-                    .timeout(TIME_OUT)
-                    .proxy(proxy)
-                    .header("Accept", "application/json, text/javascript, */*; q=0.01")
-                    .header("Content-Type", "application/json; charset=UTF-8")
-                    .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+            if(useProxy){
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
+                return Jsoup.connect(url)
+                        .timeout(TIME_OUT)
+                        .proxy(proxy)
+                        .header("Accept", "application/json, text/javascript, */*; q=0.01")
+                        .header("Content-Type", "application/json; charset=UTF-8")
+                        .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
 //                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
-                    .header("X-Requested-With", "XMLHttpRequest")
-                    .method(Connection.Method.GET)
-                    .ignoreContentType(true).get();
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .method(Connection.Method.GET)
+                        .ignoreContentType(true).get();
+            }else {
+                return Jsoup.connect(url)
+                        .timeout(TIME_OUT)
+                        .header("Accept", "application/json, text/javascript, */*; q=0.01")
+                        .header("Content-Type", "application/json; charset=UTF-8")
+                        .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+//                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .method(Connection.Method.GET)
+                        .ignoreContentType(true).get();
+            }
 
         } catch (IOException e) {
             log.error(ERROR_DESC + url);
@@ -62,7 +74,7 @@ public class JsoupFindfishUtils {
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getRedirectDocument(String url, String searchMovieName, String formhash, String proxyIpAndPort) {
+    public static Document getRedirectDocument(String url, String searchMovieName, String formhash, String proxyIpAndPort,boolean useproxy) {
         try {
 
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
@@ -83,7 +95,7 @@ public class JsoupFindfishUtils {
 
             log.info("获取到sumu第一层url {}", finalResponse.url().toString());
 
-            return getDocument(finalResponse.url().toString(), proxyIpAndPort);
+            return getDocument(finalResponse.url().toString(), proxyIpAndPort,useproxy);
         } catch (IOException e) {
             log.error(ERROR_DESC + url);
             return null;

@@ -49,7 +49,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     String youjiangUrl;
 
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
         log.info("-------------->开始爬取 悠酱<--------------------");
 
         Set<String> movieList = new HashSet<>();
@@ -61,7 +61,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
         stringBuffer.append(encode);
 
         try {
-            Document document =  JsoupFindfishUtils.getDocument(stringBuffer.toString(), proxyIpAndPort);
+            Document document =  JsoupFindfishUtils.getDocument(stringBuffer.toString(), proxyIpAndPort,useProxy);
             Elements elements = document.getElementsByClass("post-content");
             for (Element element : elements) {
                 String movieUrl = element.select("a").attr("href");
@@ -81,10 +81,10 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
-        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
+        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort,useProxy);
 
         String movieName = document.getElementsByTag("title").first().text();
 
@@ -153,14 +153,14 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) {
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
         try {
-            Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort);
+            Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort,useProxy);
             if (set.size() > 0) {
                 for (String url : set) {
                     //由于包含模糊查询、这里记录到数据库中做插入更新操作
-                    movieNameAndUrlModelList.addAll(getWangPanUrl(url,proxyIpAndPort));
+                    movieNameAndUrlModelList.addAll(getWangPanUrl(url,proxyIpAndPort,useProxy));
                 }
 
                 //筛选爬虫链接

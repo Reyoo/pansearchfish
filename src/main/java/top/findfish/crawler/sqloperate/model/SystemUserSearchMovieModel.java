@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,11 @@ import java.time.LocalDateTime;
  * @date: 2021-01-29
  * @Description: 用户电影search
  */
-
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Accessors(chain = true)
 @TableName("user_movie_search")
 public class SystemUserSearchMovieModel extends Model<SystemUserSearchMovieModel> {
 

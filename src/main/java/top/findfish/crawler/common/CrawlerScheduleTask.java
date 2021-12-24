@@ -93,11 +93,11 @@ public class CrawlerScheduleTask {
                     continue;
                 }
                 try {
-                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
 //                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
-                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
                     log.info("第 {} 次 查询", i++);
                     log.info("当前查询内容为 ：" + movieName);
                 } catch (Exception e) {

@@ -12,35 +12,38 @@ import java.util.Set;
 
 public interface ICrawlerCommonService {
 
-
     /**
      * 获取第一层 url
      * @param searchMovieName
      * @param proxyIpAndPort
+     * @param useProxy
      * @return
      * @throws Exception
      */
-    Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception;
+    Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception;
 
     /**
      * 获取网盘url list
-     *
      * @param secondUrlLxxh
      * @param proxyIpAndPort
+     * @param useProxy
      * @return
      * @throws Exception
      */
-    List<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception;
+    List<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort, Boolean useProxy) throws Exception;
 
     /**
      * 保存网盘到数据库 和reids
-     *
      * @param searchMovieName
      * @param proxyIpAndPort
+     * @param useProxy
      * @throws Exception
      */
-    void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) throws Exception;
+    void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception;
 
-     void checkRepeatMovie();
+    /**
+     * 校验重复电影
+     */
+    void checkRepeatMovie();
 
 }

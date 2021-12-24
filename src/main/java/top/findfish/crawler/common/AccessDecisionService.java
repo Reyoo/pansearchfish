@@ -24,21 +24,26 @@ import java.util.List;
 public class AccessDecisionService {
 
 
-    private AntPathMatcher antPathMatcher = new AntPathMatcher();
-    public boolean hasPermission(HttpServletRequest request, Authentication auth) {
-        List<String> whiteList = new ArrayList();
-        /**
-         * 注册接口放过
-         */
-        whiteList.add("/initmovie/**");
-        whiteList.add("/invalid/**");
+    final static String INITMOVIE_URLS = "/initmovie/**";
+    final static String INVALID_URLS = "/invalid/**";
 
-        for (String url : whiteList) {
-            if (antPathMatcher.match(url, request.getRequestURI())) {
-                return true;
-            }
-        }
-        return false;
+    static List<String> whiteList = new ArrayList<String>();
+
+
+    static {
+        whiteList.add(INITMOVIE_URLS);
+        whiteList.add(INVALID_URLS);
+    }
+
+    private AntPathMatcher antPathMatcher = new AntPathMatcher();
+
+
+    public Boolean hasPermission(HttpServletRequest request, Authentication auth) {
+
+        boolean flag = whiteList.parallelStream().anyMatch(url -> {
+            return antPathMatcher.match(url, request.getRequestURI());
+        });
+        return flag;
     }
 
 }

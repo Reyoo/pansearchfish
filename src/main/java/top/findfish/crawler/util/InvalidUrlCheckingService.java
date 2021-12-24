@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
@@ -72,13 +73,13 @@ public class InvalidUrlCheckingService {
     }
 
 
-    public boolean checkUrlByUrlStr(String url) throws Exception {
-
+    @Async
+    public Boolean checkUrlByUrlStr(String url) throws Exception {
         //从URL加载HTML
+//        这个地方有问题  不用代理请求百度 问题很大
         Document document = Jsoup.connect(url).get();
         String title = document.title();
-        //获取html中的标题
-//        System.out.println("title :"+title);
+        log.debug(title);
         if ("百度网盘-链接不存在".contains(title) || "页面不存在".contains(title)) {
             return true;
         }
@@ -96,30 +97,33 @@ public class InvalidUrlCheckingService {
     public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels ,String proxyIpAndPort) throws Exception {
 
         ArrayList arrayList = new ArrayList();
-        for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
+        movieNameAndUrlModels.parallelStream().forEach(movieNameAndUrlModel ->{
             String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
             if (StrUtil.isBlank(wangPanUrl)) {
-                continue;
+                return;
             }
-//            Document document = Jsoup.connect(wangPanUrl).get();
-            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort);
-
+            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort,false);
             String title = document.title();
             if (StringUtils.isBlank(title)){
-                continue;
+                return;
             }
-
-
             //获取html中的标题
             log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
             if (title.contains("不存在") || title.contains("取消")) {
-                movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
+                try {
+                    movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    e.printStackTrace();
+                }
             } else {
                 //将有用的信息返回
                 arrayList.add(movieNameAndUrlModel);
             }
             log.info("校验完毕");
-        }
+
+        });
+
         return arrayList;
     }
 }

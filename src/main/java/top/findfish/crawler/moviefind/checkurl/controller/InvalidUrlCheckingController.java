@@ -1,7 +1,9 @@
 package top.findfish.crawler.moviefind.checkurl.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +29,10 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping(value = "/invalid")
+@Slf4j
 public class InvalidUrlCheckingController {
 
    private final InvalidUrlCheckingService invalidUrlCheckingService;
-
-   private final RedisTemplate redisTemplate;
 
 
     /**
@@ -42,18 +43,17 @@ public class InvalidUrlCheckingController {
     @RequestMapping(path = "/url", method = RequestMethod.POST)
     public AjaxResult checkInvalidUrl(@RequestBody List<MovieNameAndUrlModel> wangPanUrls) {
 
-        try {
-            for (MovieNameAndUrlModel movieNameAndUrlModel : wangPanUrls) {
-                boolean isValid = invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getWangPanUrl());
-                if (isValid) {
-                    return AjaxResult.success(FindfishConstant.LINK_OVERDUE.getDescription());
-                } else {
-                    return AjaxResult.success(FindfishConstant.LINK_SUCCESS.getDescription());
-                }
+            if(CollectionUtil.isNotEmpty(wangPanUrls)){
+                wangPanUrls.parallelStream().anyMatch( movieNameAndUrlModel -> {
+                    try {
+                        return invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getMovieUrl());
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        return false;
+                    }
+                });
             }
-        } catch (Exception e) {
-            return AjaxResult.error(FindfishConstant.LINK_OVERDUE.getDescription());
-        }
+
         return AjaxResult.error(FindfishConstant.LINK_OVERDUE.getDescription());
     }
 }

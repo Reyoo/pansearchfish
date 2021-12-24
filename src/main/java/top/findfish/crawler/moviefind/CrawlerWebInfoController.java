@@ -100,11 +100,11 @@ public class CrawlerWebInfoController {
             ipAndPort = (String) ipAndPortList.get(randomIndex);
             try {
 
-                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
-                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort);
+                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
 
                 jsoupXiaoyouServiceImpl.checkRepeatMovie();
                 jsoupSumuServiceImpl.checkRepeatMovie();
@@ -133,7 +133,7 @@ public class CrawlerWebInfoController {
         for (int i = 56436; i <= 80000; i++) {
             searchMovieName = "http://www.yjys2.store"+ "/" + i;
             System.out.println("第"+i+"次查询爬取 "+searchMovieName);
-            initializeUrl.saveOrFreshRealMovieUrl(searchMovieName,  proxyIpAndPort);
+            initializeUrl.saveOrFreshRealMovieUrl(searchMovieName,  proxyIpAndPort,false);
         }
 
 

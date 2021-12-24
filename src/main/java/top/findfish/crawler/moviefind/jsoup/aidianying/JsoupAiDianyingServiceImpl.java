@@ -56,7 +56,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
      * @throws Exception
      */
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
 
         log.info("-------------->开始爬取 爱电影<--------------------");
 
@@ -67,7 +67,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         stringBuffer.append(URLEncoder.encode(searchMovieName.trim(), "UTF8"));
         log.info(stringBuffer.toString());
 
-        Document document = JsoupFindfishUtils.getDocument(stringBuffer.toString(),proxyIpAndPort);
+        Document document = JsoupFindfishUtils.getDocument(stringBuffer.toString(),proxyIpAndPort,useProxy);
 
         log.info(document.text());
         //如果未找到，放弃爬取，直接返回
@@ -97,7 +97,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
         log.info("爱电影--》" + secondUrlLxxh);
@@ -129,13 +129,13 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) {
         try {
-            Set<String> movieUrlInLxxh = firstFindUrl(searchMovieName, proxyIpAndPort);
+            Set<String> movieUrlInLxxh = firstFindUrl(searchMovieName, proxyIpAndPort,useProxy);
             ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
             log.info("-------------------------开始爬取爱电影 begin ----------------------------");
             for (String secondUrlLxxh : movieUrlInLxxh) {
-                movieNameAndUrlModelList.addAll(getWangPanUrl(secondUrlLxxh, proxyIpAndPort));
+                movieNameAndUrlModelList.addAll(getWangPanUrl(secondUrlLxxh, proxyIpAndPort,useProxy));
             }
             //如果爬不到资源 直接返回 跳过校验环节
             if (movieNameAndUrlModelList.size() == 0){

@@ -7,16 +7,19 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+
+/**
+ * @Author:SunQi
+ * @Description: 拦截开始
+ */
 @Configuration
 @EnableWebSecurity  //启用Web安全功能
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.authorizeRequests()
                 //访问白名单
                 .anyRequest().access("@accessDecisionService.hasPermission(request , authentication)")
-
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()

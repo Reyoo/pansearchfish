@@ -1,16 +1,19 @@
 package top.findfish.crawler.sqloperate.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +43,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
      */
     @Override
     public void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) throws Exception {
-        if(ObjectUtil.isNull(movieNameAndUrlModels)){
+        if (CollectionUtil.isEmpty(movieNameAndUrlModels)) {
             return;
         }
 
@@ -48,8 +51,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                     if (StrUtil.isBlank(t.getMovieName())) {
                         return;
                     }
-                    List<MovieNameAndUrlModel> list = movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim());
-                    if (list.size() > 0) {
+                    if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim()).size() > 0) {
 //                如果查询到数据 则更新
                         movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
                         log.info("更新电影列表-->" + t);

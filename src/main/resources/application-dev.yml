@@ -33,7 +33,7 @@ spring:
         max-idle: 50
     # Redis默认情况下有16个分片，这里配置具体使用的分片，默认是0
     database: 0
-    timeout: 10000
+    timeout: 20000
     cluster:
       nodes:
         - 121.36.6.92:36379
@@ -123,7 +123,7 @@ user:
   sumsu:
     url: http://520.sumsu.cn/search.php?mod=forum
   xiaoyou:
-    url: http://ssss.xuj.cool/
+    url: http://zyz.xiaouj.cn
   youjiang:
     url: http://www.jjj01.work
 

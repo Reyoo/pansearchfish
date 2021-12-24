@@ -34,12 +34,13 @@ public class InitializeUrl implements ICrawlerCommonService {
 
 
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
+        /**  第一步为空*/
         return null;
     }
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList();
 
 //        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort);
@@ -145,12 +146,12 @@ public class InitializeUrl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort) throws Exception {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
         String url = searchMovieName;
 
-        movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort));
+        movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort,useProxy));
 
         //插入更新可用数据
         movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
