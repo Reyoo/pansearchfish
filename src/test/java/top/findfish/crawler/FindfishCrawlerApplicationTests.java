@@ -46,7 +46,7 @@ class FindfishCrawlerApplicationTests {
 
 //        redisTemplate.opsForValue().set("111111111111111","22222222222222222");
 //        System.out.println("-------------------------");
-        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("斗罗大陆","",false);
+        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("奥特曼","",false);
 
 //        final DeviceCodeCredential credential = new DeviceCodeCredentialBuilder()
 //                .clientId(appid)

@@ -39,38 +39,38 @@ public class InvalidUrlCheckingService {
      * @return
      * @throws Exception
      */
-    public List<MovieNameAndUrlModel> checkUrlMethod(String tableName, List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
-
-        List<MovieNameAndUrlModel> couldBeFindUrls = new ArrayList<>();
-        if (movieNameAndUrlModels == null || movieNameAndUrlModels.size() == 0) {
-            log.info("入参 电影列表为空 未找到资源");
-            return couldBeFindUrls;
-        } else {
-
-            for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
-                String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
-                if (StrUtil.isBlank(wangPanUrl)) {
-                    continue;
-                }
-//                Document document = Jsoup.connect(wangPanUrl).proxy(proxyIp,proxyPort).get();
-                Document document = Jsoup.connect(wangPanUrl).get();
-                String title = document.title();
-                //获取html中的标题
-                log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
-                if (title.contains("不存在") || title.contains("取消")) {
-                    movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
-                } else {
-                    couldBeFindUrls.add(movieNameAndUrlModel);
-                }
-            }
-
-            //插入更新可用数据
-            movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, tableName);
-
-            log.info("校验完毕");
-            return couldBeFindUrls;
-        }
-    }
+//    public List<MovieNameAndUrlModel> checkUrlMethod(String tableName, List<MovieNameAndUrlModel> movieNameAndUrlModels) throws Exception {
+//
+//        List<MovieNameAndUrlModel> couldBeFindUrls = new ArrayList<>();
+//        if (movieNameAndUrlModels == null || movieNameAndUrlModels.size() == 0) {
+//            log.info("入参 电影列表为空 未找到资源");
+//            return couldBeFindUrls;
+//        } else {
+//
+//            for (MovieNameAndUrlModel movieNameAndUrlModel : movieNameAndUrlModels) {
+//                String wangPanUrl = movieNameAndUrlModel.getWangPanUrl();
+//                if (StrUtil.isBlank(wangPanUrl)) {
+//                    continue;
+//                }
+////                Document document = Jsoup.connect(wangPanUrl).proxy(proxyIp,proxyPort).get();
+//                Document document = Jsoup.connect(wangPanUrl).get();
+//                String title = document.title();
+//                //获取html中的标题
+//                log.info("title--> :" + title + " 网盘URL --> " + wangPanUrl + " 原资源 --> " + movieNameAndUrlModel.getMovieUrl());
+//                if (title.contains("不存在") || title.contains("取消")) {
+//                    movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
+//                } else {
+//                    couldBeFindUrls.add(movieNameAndUrlModel);
+//                }
+//            }
+//
+//            //插入更新可用数据
+//            movieNameAndUrlService.addOrUpdateMovieUrls(couldBeFindUrls, tableName);
+//
+//            log.info("校验完毕");
+//            return couldBeFindUrls;
+//        }
+//    }
 
 
     @Async

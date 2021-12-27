@@ -119,10 +119,15 @@ public class JsoupFindfishUtils {
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getDocumentBysimulationIe(String url, String proxyIpAndPort) {
+    public static Document getDocumentBysimulationIe(String url, String proxyIpAndPort,Boolean useProxy) {
         try {
-            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED, proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1]));
-//            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
+            WebClient webClient = null ;
+
+            if(useProxy){
+                webClient = new WebClient(BrowserVersion.BEST_SUPPORTED, proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1]));
+            }else {
+                webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
+            }
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
             webClient.getOptions().setUseInsecureSSL(true);

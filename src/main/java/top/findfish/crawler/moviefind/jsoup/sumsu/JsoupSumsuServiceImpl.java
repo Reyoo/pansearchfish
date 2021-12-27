@@ -48,21 +48,21 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
 
     @Override
-    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
+    public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
         log.info("-------------->开始爬取 社区动力<--------------------");
         Set<String> firstSearchUrls = new HashSet<>();
-        Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort,useProxy);
+        Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);
         AtomicReference<String> formhash = new AtomicReference<>("259f5941");
         Elements formhashElements = doc.getElementsByAttributeValue("name", "formhash");
-        if(ObjectUtil.isNotNull(formhashElements)){
-            formhashElements.parallelStream().forEach( t -> {
+        if (ObjectUtil.isNotNull(formhashElements)) {
+            formhashElements.parallelStream().forEach(t -> {
                 formhash.set(t.val());
             });
         }
-        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort,useProxy);
+        Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort, useProxy);
         Elements elements = redirectDocument.select("li").select("a");
         //获取到第一层的中文搜索  继而拿到tid  查询详细电影
-        elements.parallelStream().forEach( link ->{
+        elements.parallelStream().forEach(link -> {
             String linkhref = link.attr("href");
             if (linkhref.startsWith("forum.php?mod")) {
                 firstSearchUrls.add("http://520.sumsu.cn/" + linkhref);
@@ -74,11 +74,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort, Boolean useProxy) throws Exception {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
         try {
 
-            Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort,useProxy);
+            Document tidDoc = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort, useProxy);
 
             if (tidDoc.title().contains("404")) {
                 return movieNameAndUrlModels;
@@ -89,7 +89,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
             AtomicReference<String> linkhref = null;
 
-            elements.parallelStream().forEach( link -> {
+            elements.parallelStream().forEach(link -> {
                 linkhref.set(link.attr("href"));
                 if (linkhref.get().startsWith("https://pan.baidu.com")) {
 
@@ -123,26 +123,24 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     }
 
     @Override
-    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) {
+    public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) {
         try {
-            Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort,useProxy);
+            Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);
             if (CollectionUtil.isNotEmpty(firstSearchUrls)) {
                 ArrayList<MovieNameAndUrlModel> movieList = new ArrayList<>();
 
-                firstSearchUrls.parallelStream().forEach( url ->{
+                firstSearchUrls.parallelStream().forEach(url -> {
                     try {
-                        movieList.addAll(getWangPanUrl(url, proxyIpAndPort,useProxy));
+                        movieList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
                     } catch (Exception e) {
                         log.error(e.getMessage());
                         e.printStackTrace();
                     }
                 });
-                //筛选爬虫链接
-//                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
-//                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //删除无效数据
-//                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
 //                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
 //                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
@@ -199,11 +197,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
                 Elements elements = tidDoc.select("strong").select("a");
 
-                if(ObjectUtil.isNull(elements)){
+                if (ObjectUtil.isNull(elements)) {
                     return movieNameAndUrlModels;
                 }
 
-                elements.parallelStream().forEach( link -> {
+                elements.parallelStream().forEach(link -> {
                     String linkhref = link.attr("href");
                     if (linkhref.startsWith("pan.baidu.com")) {
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();

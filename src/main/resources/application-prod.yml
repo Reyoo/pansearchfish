@@ -51,7 +51,7 @@ spring:
   messages:
     encoding: UTF-8
     basename: message/messages_zh
-  level: debug
+  level: error
 #  # 定位模板的目录,给返回的页面添加后缀名
 #  thymeleaf:
 #    prefix: classpath:/templates/

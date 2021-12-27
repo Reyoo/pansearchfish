@@ -13,6 +13,7 @@ import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                     if (StrUtil.isBlank(t.getMovieName())) {
                         return;
                     }
+                    t.setUpdateTime(LocalDateTime.now());
                     if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim()).size() > 0) {
 //                如果查询到数据 则更新
                         movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);

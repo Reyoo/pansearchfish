@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @ProjectName: pan
@@ -40,5 +41,7 @@ public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
     String wangPanUrl;
     @TableField("wangpan_passwd")
     String wangPanPassword;
+    @TableField("updatetime")
+    LocalDateTime updateTime;
 
 }
