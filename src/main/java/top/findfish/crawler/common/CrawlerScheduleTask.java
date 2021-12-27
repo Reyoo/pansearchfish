@@ -74,11 +74,9 @@ public class CrawlerScheduleTask {
         List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-12-27 00:00:15", "2021-12-27 23:10:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
         int i = 1;
-
-        String movieName = null;
+        ;
         String ipAndPort = null;
         final AtomicInteger[] randomIndex = {new AtomicInteger()};
-
         this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
         if (CollectionUtil.isNotEmpty(ipAndPorts)) {
             randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
@@ -87,7 +85,6 @@ public class CrawlerScheduleTask {
         }
 
         final String[] finalIpAndPort = {ipAndPort};
-
         systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
@@ -101,30 +98,6 @@ public class CrawlerScheduleTask {
             });
 
         });
-
-
-//        //执行爬虫
-//        for (SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList) {
-//            movieName=systemUserSearchMovieModel.getSearchName();
-//            List<String> ipAndPortList=new ArrayList();
-//            if(StrUtil.isNotBlank(movieName)){
-//
-//                try {
-//                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-////                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
-//                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-//                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-//                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-//                    log.info("第 {} 次 查询", i++);
-//                    log.info("当前查询内容为 ："+movieName);
-//                }catch (Exception e){
-//                    log.error(e.getMessage());
-//                    this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-//                    continue;
-//                }
-//            }
-//        }
-
 
         log.debug("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         log.debug("词条数量为 {}", systemUserSearchMovieModelList.size());
