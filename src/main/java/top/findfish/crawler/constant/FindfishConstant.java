@@ -1,4 +1,4 @@
-package top.findfish.crawler.common;
+package top.findfish.crawler.constant;
 
 /**
  * *************************************************************************

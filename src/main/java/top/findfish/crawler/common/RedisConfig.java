@@ -32,22 +32,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
-@EnableCaching
-public class RedisConfig extends CachingConfigurerSupport {
-    @Bean
-    @Override
-    public KeyGenerator keyGenerator() {
-        return (o, method, objects) ->
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(o.getClass().getName());
-            stringBuilder.append(method.getName());
-            for (Object obj : objects) {
-                stringBuilder.append(obj.toString());
-            }
-            return stringBuilder.toString();
-        };
-    }
+public class RedisConfig   {
 
     /**
      * Description: redisTemplate序列化
@@ -78,7 +63,6 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {

@@ -2,24 +2,14 @@ package top.findfish.crawler;
 
 
 import org.junit.jupiter.api.Test;
+
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-
-
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import okhttp3.Request;
-
-
 
 
 @SpringBootTest
@@ -45,19 +35,19 @@ class FindfishCrawlerApplicationTests {
 //    private static GraphServiceClient<Request> graphClient = null;
 //    private static TokenCredentialAuthProvider authProvider = null;
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @Autowired
+    RedissonClient redissonClient;
+
     @Test
     void contextLoads() throws Exception {
 
-        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("雪中","",false);
+//        redisTemplate.opsForValue().set("111111111111111","22222222222222222");
+//        System.out.println("-------------------------");
+        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("斗罗大陆","",false);
 
-//        String a = "提取码: p6fx →亲，影片失";
-//
-//        System.out.println(a.split("提取码").length);
-//        System.out.println(a.split("提取码")[1].trim().substring(1,6).trim());
-
-
-
-       String appid = "78f0eff-5a31-4064-8bab-87fe8b399598";
 //        final DeviceCodeCredential credential = new DeviceCodeCredentialBuilder()
 //                .clientId(appid)
 //                .challengeConsumer(challenge -> System.out.println(challenge.getMessage()))
@@ -124,10 +114,6 @@ class FindfishCrawlerApplicationTests {
 //                .buildRequest()
 //                .post(user);
     }
-
-
-
-
 
 
 }

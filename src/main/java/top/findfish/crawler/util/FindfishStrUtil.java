@@ -1,6 +1,6 @@
 package top.findfish.crawler.util;
 
-import top.findfish.crawler.common.FindfishConstant;
+import top.findfish.crawler.constant.FindfishConstant;
 
 public class FindfishStrUtil {
 

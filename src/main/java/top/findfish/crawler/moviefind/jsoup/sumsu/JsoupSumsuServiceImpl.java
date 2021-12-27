@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.jsoup.sumsu;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,22 +51,15 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) throws Exception {
         log.info("-------------->开始爬取 社区动力<--------------------");
         Set<String> firstSearchUrls = new HashSet<>();
-
-        //先拿到  formhash
-        //测试 暂时关闭代理
         Document doc = JsoupFindfishUtils.getDocument(url, proxyIpAndPort,useProxy);
-
         AtomicReference<String> formhash = new AtomicReference<>("259f5941");
         Elements formhashElements = doc.getElementsByAttributeValue("name", "formhash");
-
         if(ObjectUtil.isNotNull(formhashElements)){
             formhashElements.parallelStream().forEach( t -> {
                 formhash.set(t.val());
             });
         }
-
         Document redirectDocument = JsoupFindfishUtils.getRedirectDocument(url, searchMovieName, formhash.get(), proxyIpAndPort,useProxy);
-
         Elements elements = redirectDocument.select("li").select("a");
         //获取到第一层的中文搜索  继而拿到tid  查询详细电影
         elements.parallelStream().forEach( link ->{
@@ -132,7 +126,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort,Boolean useProxy) {
         try {
             Set<String> firstSearchUrls = firstFindUrl(searchMovieName, proxyIpAndPort,useProxy);
-            if (firstSearchUrls.size() > 0) {
+            if (CollectionUtil.isNotEmpty(firstSearchUrls)) {
                 ArrayList<MovieNameAndUrlModel> movieList = new ArrayList<>();
 
                 firstSearchUrls.parallelStream().forEach( url ->{
@@ -146,16 +140,17 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                    invalidUrlCheckingService.checkUrlMethod("url_movie_sumsu", movieList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
-                //删除无效数据
-                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
-                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
-                        Duration.ofHours(2L));
+//                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+//                //删除无效数据
+//                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+//                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
+//                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
+//                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+//                        Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }

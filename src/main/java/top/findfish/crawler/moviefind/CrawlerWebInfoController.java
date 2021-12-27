@@ -34,111 +34,111 @@ import java.util.Set;
 public class CrawlerWebInfoController {
 
 
-    @Qualifier("jsoupAiDianyingServiceImpl")
-    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
-
-    @Qualifier("jsoupSumuServiceImpl")
-    private final ICrawlerCommonService jsoupSumuServiceImpl;
-
-    @Qualifier("jsoupUnreadServiceImpl")
-    private final ICrawlerCommonService jsoupUnreadServiceImpl;
-
-    @Qualifier("jsoupXiaoYouServiceImpl")
-    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
-
-    @Qualifier("jsoupYouJiangServiceImpl")
-    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
-
-    @Qualifier("initializeUrl")
-    private final ICrawlerCommonService initializeUrl;
-
-    private final GetProxyService getProxyService;
-
-    private final RedisTemplate redisTemplate;
-
-
-
-    @Value("${user.unread.weiduyingdan}")
-    String unreadUrl;
-    @Value("${user.lxxh.aidianying}")
-    String lxxhUrl;
-    @Value("${user.xiaoyou.url}")
-    String xiaoyouUrl;
-    @Value("${user.sumsu.url}")
-    String sumuUrl;
-    @Value("${user.youjiang.url}")
-    String youjiangUrl;
-
-    /**
-     * 调用电影PID 入库 触发接口类
-     */
-    @RequestMapping(value = "/getall", method = RequestMethod.GET)
-    public AjaxResult loopGetMoviePid() {
-        String ipAndPort = getProxyService.getProxyIpFromRemote();
-        try {
-
-//            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("八佰", ipAndPort);
-//            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
-
-
-            return AjaxResult.success();
-        } catch (Exception e) {
-            redisTemplate.opsForHash().delete("use_proxy",ipAndPort);
-            return AjaxResult.error();
-        }
-    }
-
-
-    //测试
-    @RequestMapping(value = "/textMovieName", method = RequestMethod.GET)
-    public AjaxResult textMovieName(@RequestParam String movieName) {
-        String ipAndPort = null;
-        Set<String> ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-        if (ipAndPorts != null && ipAndPorts.size() > 0) {
-            int randomIndex = new Random().nextInt(ipAndPorts.size());
-            List ipAndPortList = new ArrayList<>(ipAndPorts);
-            ipAndPort = (String) ipAndPortList.get(randomIndex);
-            try {
-
-                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-
-                jsoupXiaoyouServiceImpl.checkRepeatMovie();
-                jsoupSumuServiceImpl.checkRepeatMovie();
-                jsoupAiDianyingServiceImpl.checkRepeatMovie();
-                jsoupYouJiangServiceImpl.checkRepeatMovie();
-                jsoupUnreadServiceImpl.checkRepeatMovie();
-
-
-
-                return AjaxResult.success();
-            } catch (Exception e) {
-                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-
-            }
-        }
-        return AjaxResult.error();
-    }
-
-    //测试初始化URL
-    @RequestMapping(value = "/Initialize", method = RequestMethod.GET)
-    public AjaxResult textMovieName() throws Exception {
-
-        String proxyIpAndPort = "123";
-        String searchMovieName = "123";
-        
-        for (int i = 56436; i <= 80000; i++) {
-            searchMovieName = "http://www.yjys2.store"+ "/" + i;
-            System.out.println("第"+i+"次查询爬取 "+searchMovieName);
-            initializeUrl.saveOrFreshRealMovieUrl(searchMovieName,  proxyIpAndPort,false);
-        }
-
-
-        return AjaxResult.success();
-
-    }
+//    @Qualifier("jsoupAiDianyingServiceImpl")
+//    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
+//
+//    @Qualifier("jsoupSumuServiceImpl")
+//    private final ICrawlerCommonService jsoupSumuServiceImpl;
+//
+//    @Qualifier("jsoupUnreadServiceImpl")
+//    private final ICrawlerCommonService jsoupUnreadServiceImpl;
+//
+//    @Qualifier("jsoupXiaoYouServiceImpl")
+//    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
+//
+//    @Qualifier("jsoupYouJiangServiceImpl")
+//    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+//
+//    @Qualifier("initializeUrl")
+//    private final ICrawlerCommonService initializeUrl;
+//
+//    private final GetProxyService getProxyService;
+//
+//    private final RedisTemplate redisTemplate;
+//
+//
+//
+//    @Value("${user.unread.weiduyingdan}")
+//    String unreadUrl;
+//    @Value("${user.lxxh.aidianying}")
+//    String lxxhUrl;
+//    @Value("${user.xiaoyou.url}")
+//    String xiaoyouUrl;
+//    @Value("${user.sumsu.url}")
+//    String sumuUrl;
+//    @Value("${user.youjiang.url}")
+//    String youjiangUrl;
+//
+//    /**
+//     * 调用电影PID 入库 触发接口类
+//     */
+//    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+//    public AjaxResult loopGetMoviePid() {
+//        String ipAndPort = getProxyService.getProxyIpFromRemote();
+//        try {
+//
+////            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("八佰", ipAndPort);
+////            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
+//
+//
+//            return AjaxResult.success();
+//        } catch (Exception e) {
+//            redisTemplate.opsForHash().delete("use_proxy",ipAndPort);
+//            return AjaxResult.error();
+//        }
+//    }
+//
+//
+//    //测试
+//    @RequestMapping(value = "/textMovieName", method = RequestMethod.GET)
+//    public AjaxResult textMovieName(@RequestParam String movieName) {
+//        String ipAndPort = null;
+//        Set<String> ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+//        if (ipAndPorts != null && ipAndPorts.size() > 0) {
+//            int randomIndex = new Random().nextInt(ipAndPorts.size());
+//            List ipAndPortList = new ArrayList<>(ipAndPorts);
+//            ipAndPort = (String) ipAndPortList.get(randomIndex);
+//            try {
+//
+//                jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//
+//                jsoupXiaoyouServiceImpl.checkRepeatMovie();
+//                jsoupSumuServiceImpl.checkRepeatMovie();
+//                jsoupAiDianyingServiceImpl.checkRepeatMovie();
+//                jsoupYouJiangServiceImpl.checkRepeatMovie();
+//                jsoupUnreadServiceImpl.checkRepeatMovie();
+//
+//
+//
+//                return AjaxResult.success();
+//            } catch (Exception e) {
+//                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+//
+//            }
+//        }
+//        return AjaxResult.error();
+//    }
+//
+//    //测试初始化URL
+//    @RequestMapping(value = "/Initialize", method = RequestMethod.GET)
+//    public AjaxResult textMovieName() throws Exception {
+//
+//        String proxyIpAndPort = "123";
+//        String searchMovieName = "123";
+//
+//        for (int i = 56436; i <= 80000; i++) {
+//            searchMovieName = "http://www.yjys2.store"+ "/" + i;
+//            System.out.println("第"+i+"次查询爬取 "+searchMovieName);
+//            initializeUrl.saveOrFreshRealMovieUrl(searchMovieName,  proxyIpAndPort,false);
+//        }
+//
+//
+//        return AjaxResult.success();
+//
+//    }
 
 }

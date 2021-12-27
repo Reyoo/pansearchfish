@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import top.findfish.crawler.common.AjaxResult;
-import top.findfish.crawler.common.FindfishConstant;
+import top.findfish.crawler.constant.FindfishConstant;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 

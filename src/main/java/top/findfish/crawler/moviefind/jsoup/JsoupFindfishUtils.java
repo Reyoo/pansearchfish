@@ -33,10 +33,10 @@ public class JsoupFindfishUtils {
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getDocument(String url, String proxyIpAndPort,Boolean useProxy) {
+    public static Document getDocument(String url, String proxyIpAndPort, Boolean useProxy) {
         try {
 
-            if(useProxy){
+            if (useProxy) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
                 return Jsoup.connect(url)
                         .timeout(TIME_OUT)
@@ -48,7 +48,7 @@ public class JsoupFindfishUtils {
                         .header("X-Requested-With", "XMLHttpRequest")
                         .method(Connection.Method.GET)
                         .ignoreContentType(true).get();
-            }else {
+            } else {
                 return Jsoup.connect(url)
                         .timeout(TIME_OUT)
                         .header("Accept", "application/json, text/javascript, */*; q=0.01")
@@ -74,28 +74,37 @@ public class JsoupFindfishUtils {
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getRedirectDocument(String url, String searchMovieName, String formhash, String proxyIpAndPort,boolean useproxy) {
+    public static Document getRedirectDocument(String url, String searchMovieName, String formhash, String proxyIpAndPort, boolean useproxy) {
         try {
-
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
             String userAgent = FindFishUserAgentUtil.randomUserAgent();
-
-            //带着cookies 继续访问
-            Connection.Response finalResponse = Jsoup.connect(url)
-                    .proxy(proxy)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .header("User-Agent", userAgent)
-                    .header("X-Requested-With", "XMLHttpRequest")
-                    .data("formhash", formhash)
-                    .data("srchtxt", searchMovieName)
-                    .data("searchsubmit", "yes")
-                    .method(Connection.Method.POST)
-                    .followRedirects(true).timeout(TIME_OUT).execute();
-
+            Connection.Response finalResponse = null;
+            if (useproxy) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
+                finalResponse = Jsoup.connect(url)
+                        .proxy(proxy)
+                        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .header("User-Agent", userAgent)
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .data("formhash", formhash)
+                        .data("srchtxt", searchMovieName)
+                        .data("searchsubmit", "yes")
+                        .method(Connection.Method.POST)
+                        .followRedirects(true).timeout(TIME_OUT).execute();
+            } else {
+                finalResponse = Jsoup.connect(url)
+                        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .header("User-Agent", userAgent)
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .data("formhash", formhash)
+                        .data("srchtxt", searchMovieName)
+                        .data("searchsubmit", "yes")
+                        .method(Connection.Method.POST)
+                        .followRedirects(true).timeout(TIME_OUT).execute();
+            }
             log.info("获取到sumu第一层url {}", finalResponse.url().toString());
-
-            return getDocument(finalResponse.url().toString(), proxyIpAndPort,useproxy);
+            return getDocument(finalResponse.url().toString(), proxyIpAndPort, useproxy);
         } catch (IOException e) {
             log.error(ERROR_DESC + url);
             return null;
@@ -105,13 +114,14 @@ public class JsoupFindfishUtils {
 
     /**
      * 参考：https://www.it610.com/article/1283199667462488064.htm
+     *
      * @param url
      * @param proxyIpAndPort
      * @return
      */
-    public static Document getDocumentBysimulationIe(String url,String proxyIpAndPort) {
+    public static Document getDocumentBysimulationIe(String url, String proxyIpAndPort) {
         try {
-            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED,proxyIpAndPort.split(":")[0],Integer.valueOf(proxyIpAndPort.split(":")[1]));
+            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED, proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1]));
 //            WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
             webClient.getOptions().setCssEnabled(false);
             webClient.getOptions().setJavaScriptEnabled(false);
@@ -120,7 +130,7 @@ public class JsoupFindfishUtils {
             webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             webClient.waitForBackgroundJavaScript(900 * 1000);
-            webClient.addRequestHeader("User-Agent",FindFishUserAgentUtil.randomUserAgent());
+            webClient.addRequestHeader("User-Agent", FindFishUserAgentUtil.randomUserAgent());
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             HtmlPage page = webClient.getPage(url);
 //            HtmlInput usernameInput = page.getHtmlElementById("s");
