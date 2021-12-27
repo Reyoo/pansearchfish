@@ -1,7 +1,7 @@
 package top.findfish.crawler.common;
 
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,8 @@ import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -54,64 +52,82 @@ public class CrawlerScheduleTask {
     Set<String> ipAndPorts = null;
 
 
-    @Scheduled(cron = "0 20 1/1 * * ? ")
+//        @Scheduled(cron = "30 26 16 * * ? ")
+    @Scheduled(cron = "0 0 0/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
+
+        Map<String, ICrawlerCommonService> map = new HashMap<>();
+        map.put("爱电影", jsoupAiDianyingServiceImpl);
+        map.put("社区动力", jsoupSumuServiceImpl);
+        map.put("未读", jsoupUnreadServiceImpl);
+        map.put("小优", jsoupXiaoyouServiceImpl);
+
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         LocalDateTime localDateTime = LocalDateTime.now();
         String endTime = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String begin = localDateTime.minusHours(Integer.valueOf(scheduleRange)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        log.info("获取用户搜索范围起始时间：{}", begin);
-        log.info("获取用户搜索范围结束时间：{}", endTime);
+        log.debug("获取用户搜索范围起始时间：{}", begin);
+        log.debug("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-04-18 12:15:15","2021-04-18 20:50:15");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-12-27 00:00:15", "2021-12-27 23:10:15");
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
         int i = 1;
 
         String movieName = null;
         String ipAndPort = null;
-        int randomIndex = 0;
-        //执行爬虫
-        for (SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList) {
-            movieName=systemUserSearchMovieModel.getSearchName();
-            List<String> ipAndPortList=new ArrayList();
-            if(StrUtil.isNotBlank(movieName)){
-                this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-                if(ipAndPorts!= null && ipAndPorts.size()>0){
-                    randomIndex = new Random().nextInt(ipAndPorts.size());
-                    ipAndPortList=new ArrayList<>(this.ipAndPorts);
-                    ipAndPort = ipAndPortList.get(randomIndex);
-                }else {
-                    continue;
-                }
-                try {
-                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-//                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
-                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
-                    log.info("第 {} 次 查询", i++);
-                    log.info("当前查询内容为 ："+movieName);
-                }catch (Exception e){
-                    log.error(e.getMessage());
-                    this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-                    continue;
-                }
-            }
+        final AtomicInteger[] randomIndex = {new AtomicInteger()};
+
+        this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+        if (CollectionUtil.isNotEmpty(ipAndPorts)) {
+            randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
+            ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
+            ipAndPort = ipAndPortList.get(randomIndex[0].get());
         }
 
-        //爬虫后筛除重复url
-        jsoupXiaoyouServiceImpl.checkRepeatMovie();
-        jsoupUnreadServiceImpl.checkRepeatMovie();
-        jsoupSumuServiceImpl.checkRepeatMovie();
+        final String[] finalIpAndPort = {ipAndPort};
 
-//        jsoupYouJiangServiceImpl.checkRepeatMovie();
-        jsoupAiDianyingServiceImpl.checkRepeatMovie();
+        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
+            map.forEach((k, v) -> {
+                try {
+                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
+                } catch (Exception e) {
+                    randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
+                    ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
+                    finalIpAndPort[0] = ipAndPortList.get(randomIndex[0].get());
+                    e.printStackTrace();
+                }
+            });
+
+        });
 
 
-        log.info("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        log.info("词条数量为 {}", systemUserSearchMovieModelList.size());
+//        //执行爬虫
+//        for (SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList) {
+//            movieName=systemUserSearchMovieModel.getSearchName();
+//            List<String> ipAndPortList=new ArrayList();
+//            if(StrUtil.isNotBlank(movieName)){
+//
+//                try {
+//                    jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+////                    jsoupYouJiangServiceImpl.saveOrFreshRealMovieUrl(movieName,ipAndPort);
+//                    jsoupSumuServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                    jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                    jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
+//                    log.info("第 {} 次 查询", i++);
+//                    log.info("当前查询内容为 ："+movieName);
+//                }catch (Exception e){
+//                    log.error(e.getMessage());
+//                    this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+//                    continue;
+//                }
+//            }
+//        }
+
+
+        log.debug("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        log.debug("词条数量为 {}", systemUserSearchMovieModelList.size());
 
     }
 
