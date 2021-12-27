@@ -31,7 +31,7 @@ public class GetProxyService {
 
     private final RestTemplate restTemplate;
 
-//
+    //
 //    /**
 //     * 这个可以 但是就是慢
 //     */
@@ -70,7 +70,7 @@ public class GetProxyService {
         requestHeaders.add("Cache-Control", "max-age=0");
         HttpEntity<String> httpEntity = new HttpEntity<>(requestHeaders);
         ResponseEntity<String> resultResponseEntity = this.restTemplate.exchange("http://127.0.0.1:5010/get", HttpMethod.GET, httpEntity, String.class);
-         JSONObject jsonObject = JSONObject.parseObject(resultResponseEntity.getBody());
+        JSONObject jsonObject = JSONObject.parseObject(resultResponseEntity.getBody());
         return jsonObject.get("proxy").toString();
     }
 

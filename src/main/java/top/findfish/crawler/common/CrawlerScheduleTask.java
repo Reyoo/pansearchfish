@@ -56,9 +56,9 @@ public class CrawlerScheduleTask {
 
 
     //3.添加定时任务  双数小时  2，4，6，8，10...
-    @Scheduled(cron = "0 30 1,3,5,7,9,11,13,15,17,19,21,23 * * ? ")
-//    @Scheduled(cron = "0 30 19 * * ? ")
 
+    //    @Scheduled(cron = "0 40 1/1 * * ? ")
+    @Scheduled(cron = "0 20 1/1 * * ? ")
     //或直接指定时间间隔，例如：5秒
 //    @Scheduled(fixedRate=5000)
     private void crawlerMovieTasks() throws InterruptedException {
@@ -79,17 +79,16 @@ public class CrawlerScheduleTask {
         String ipAndPort = null;
         int randomIndex = 0;
         //执行爬虫
-        List<String> ipAndPortList = new ArrayList();
         for (SystemUserSearchMovieModel systemUserSearchMovieModel : systemUserSearchMovieModelList) {
-            movieName = systemUserSearchMovieModel.getSearchName();
-
-            if (StrUtil.isNotBlank(movieName)) {
+            movieName=systemUserSearchMovieModel.getSearchName();
+            List<String> ipAndPortList=new ArrayList();
+            if(StrUtil.isNotBlank(movieName)){
                 this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-                if (ipAndPorts != null && ipAndPorts.size() > 0) {
+                if(ipAndPorts!= null && ipAndPorts.size()>0){
                     randomIndex = new Random().nextInt(ipAndPorts.size());
-                    ipAndPortList = new ArrayList<>(this.ipAndPorts);
+                    ipAndPortList=new ArrayList<>(this.ipAndPorts);
                     ipAndPort = ipAndPortList.get(randomIndex);
-                } else {
+                }else {
                     continue;
                 }
                 try {
@@ -99,8 +98,8 @@ public class CrawlerScheduleTask {
                     jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
                     jsoupXiaoyouServiceImpl.saveOrFreshRealMovieUrl(movieName, ipAndPort,false);
                     log.info("第 {} 次 查询", i++);
-                    log.info("当前查询内容为 ：" + movieName);
-                } catch (Exception e) {
+                    log.info("当前查询内容为 ："+movieName);
+                }catch (Exception e){
                     log.error(e.getMessage());
                     this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
                     continue;
