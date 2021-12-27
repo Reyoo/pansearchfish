@@ -26,7 +26,7 @@ import okhttp3.Request;
 class FindfishCrawlerApplicationTests {
 
 
-    @Qualifier("jsoupXiaoyouServiceImpl")
+    @Qualifier("jsoupUnreadServiceImpl")
     @Autowired
     ICrawlerCommonService jsoupAiDianyingServiceImpl;
 //
@@ -49,6 +49,13 @@ class FindfishCrawlerApplicationTests {
     void contextLoads() throws Exception {
 
         jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("雪中","",false);
+
+//        String a = "提取码: p6fx →亲，影片失";
+//
+//        System.out.println(a.split("提取码").length);
+//        System.out.println(a.split("提取码")[1].trim().substring(1,6).trim());
+
+
 
        String appid = "78f0eff-5a31-4064-8bab-87fe8b399598";
 //        final DeviceCodeCredential credential = new DeviceCodeCredentialBuilder()
