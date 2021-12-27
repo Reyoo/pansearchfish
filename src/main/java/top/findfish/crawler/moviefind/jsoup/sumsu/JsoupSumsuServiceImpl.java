@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +21,7 @@ import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
-import top.findfish.crawler.util.InvalidUrlCheckingService;
+import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 
 import java.time.Duration;
 import java.util.ArrayList;

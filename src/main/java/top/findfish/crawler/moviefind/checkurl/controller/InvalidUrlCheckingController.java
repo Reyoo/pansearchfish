@@ -5,7 +5,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.findfish.crawler.common.AjaxResult;
 import top.findfish.crawler.common.FindfishConstant;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
-import top.findfish.crawler.util.InvalidUrlCheckingService;
+import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package top.findfish.crawler.util;
+package top.findfish.crawler.moviefind.checkurl.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
