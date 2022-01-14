@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.util.WebPageConstant;
 
 import java.net.URLEncoder;
@@ -46,6 +46,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
+
         Set<String> movieUrlSet = new HashSet();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF8");
         String url = unreadUrl + "/?s=" + encode;
@@ -65,17 +66,18 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
 
     @Override
-    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort, Boolean useProxy) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String movieUrl, String proxyIpAndPort, Boolean useProxy) throws Exception {
 
-        ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
-        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort, useProxy);
+        ArrayList<MovieNameAndUrlModel> list = new ArrayList<>();
+        Document document = JsoupFindfishUtils.getDocument(movieUrl, proxyIpAndPort, useProxy);
         String movieName = document.getElementsByTag("title").text().trim();
         if (movieName.contains("– 未读影单")) {
             movieName = movieName.split("– 未读影单")[0].trim();
         }
         if (StringUtils.isBlank(movieName)) {
-            return movieNameAndUrlModelList;
+            return list;
         }
+
         Elements pTagAttrs = document.getElementsByClass("entry-content").tagName("div").select("p");
         String finalMovieName = movieName;
         pTagAttrs.parallelStream().forEach(
@@ -83,7 +85,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     if (pTagAttr.text().contains("资源链接点这里")) {
                         String panUrl = pTagAttr.getElementsByTag("a").attr("href");
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-                        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                        movieNameAndUrlModel.setMovieUrl(movieUrl);
                         movieNameAndUrlModel.setWangPanUrl(panUrl);
 
                         //判断是否需要拼接片名
@@ -100,11 +102,11 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                         } else {
                             movieNameAndUrlModel.setWangPanPassword("");
                         }
-                        movieNameAndUrlModelList.add(movieNameAndUrlModel);
+                        list.add(movieNameAndUrlModel);
                     }
                 }
         );
-        return movieNameAndUrlModelList;
+        return list;
     }
 
     @Override

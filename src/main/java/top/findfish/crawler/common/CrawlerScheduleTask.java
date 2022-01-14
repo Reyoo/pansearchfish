@@ -41,8 +41,11 @@ public class CrawlerScheduleTask {
     @Qualifier("jsoupXiaoYouServiceImpl")
     private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
 
-//    @Qualifier("jsoupYouJiangServiceImpl")
-//    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+    @Qualifier("jsoupYouJiangServiceImpl")
+    private final ICrawlerCommonService jsoupYouJiangServiceImpl;
+
+    @Qualifier("jsoupLiLiServiceImpl")
+    private final ICrawlerCommonService jsoupLiLiServiceImpl;
 
     private final RedisTemplate redisTemplate;
 
@@ -52,15 +55,18 @@ public class CrawlerScheduleTask {
     Set<String> ipAndPorts = null;
 
 
-//        @Scheduled(cron = "30 26 16 * * ? ")
-    @Scheduled(cron = "0 0 0/2 * * ? ")
+//    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10
+//    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9
+    @Scheduled(cron = "0 30 1/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
-        map.put("爱电影", jsoupAiDianyingServiceImpl);
-        map.put("社区动力", jsoupSumuServiceImpl);
+//        map.put("爱电影", jsoupAiDianyingServiceImpl);
+//        map.put("社区动力", jsoupSumuServiceImpl);
         map.put("未读", jsoupUnreadServiceImpl);
-        map.put("小优", jsoupXiaoyouServiceImpl);
+//        map.put("小优", jsoupXiaoyouServiceImpl);
+//        map.put("悠酱", jsoupYouJiangServiceImpl);
+//        map.put("莉莉", jsoupLiLiServiceImpl);
 
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -71,10 +77,16 @@ public class CrawlerScheduleTask {
 
         //获取到用户查询的关键词实体类
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2021-12-27 00:00:15", "2021-12-27 23:10:15");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-1 00:00:15", "2022-1-10 10:01:16");
+
+        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
+        movieModel.setSearchName("JOJO的奇妙冒险系列全集");
+
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
+        systemUserSearchMovieModelList.add(movieModel);
+
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
-        int i = 1;
-        ;
+
         String ipAndPort = null;
         final AtomicInteger[] randomIndex = {new AtomicInteger()};
         this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
@@ -85,10 +97,10 @@ public class CrawlerScheduleTask {
         }
 
         final String[] finalIpAndPort = {ipAndPort};
-        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
-                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
+                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], false);
                 } catch (Exception e) {
                     randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
                     ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);

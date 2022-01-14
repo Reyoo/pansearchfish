@@ -14,5 +14,6 @@ public class WebPageConstant {
     public static final String WEIDU_TABLENAME = "url_movie_unread";
     public static final String LEIFENGJUN_TABLENAME = "url_movie_sumsu";
     public static final String YOUJIANG_TABLENAME = "url_movie_youjiang";
+    public static final String LiLi_TABLENAME = "url_movie_lili";
 
 }

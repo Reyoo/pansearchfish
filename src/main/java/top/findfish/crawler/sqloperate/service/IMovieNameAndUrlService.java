@@ -21,7 +21,7 @@ public interface IMovieNameAndUrlService extends IService<MovieNameAndUrlModel> 
      * @return
      * @throws Exception
      */
-    List<MovieNameAndUrlModel> findMovieUrl (String tablename,String movieName ) throws  Exception;
+    List<MovieNameAndUrlModel> findMovieUrl (String tablename,String movieName ,String wangPanUrl) throws  Exception;
 
 
     void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName)  throws Exception;

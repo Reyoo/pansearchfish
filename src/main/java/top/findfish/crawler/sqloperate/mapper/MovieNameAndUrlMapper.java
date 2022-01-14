@@ -17,10 +17,13 @@ import java.util.List;
 public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> {
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName , String wangPanUrl);
 
 
     List<MovieNameAndUrlModel> selectMovieUrlByLikeName(String tablename , String movieName);
+
+
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeNameGroup(String tablename , String movieName);
 
     /**
      * 批量新增

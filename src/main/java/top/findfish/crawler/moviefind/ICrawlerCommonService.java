@@ -46,4 +46,9 @@ public interface ICrawlerCommonService {
      */
     void checkRepeatMovie();
 
+//    /**
+//     * 设置资源对象参数
+//     */
+//    void setObjectParam(Element element,MovieNameAndUrlModel movieNameAndUrlModel, String movieUrl, String finalMovieName);
+
 }

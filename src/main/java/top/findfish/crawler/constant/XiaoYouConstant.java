@@ -7,8 +7,13 @@ public enum XiaoYouConstant {
     XIAOYOU_URL_CHECKXUJ("xuj.cool/STMP/20", "xuj.cool/STMP/20"),
     XIAOYOU_STR_WITH_SGIN("- 小悠家", "- 小悠家"),
     XIAOYOU_SHIPIN("视频", "视频"),
-    XIAOYOU_TIQUMA("提取码：","提取码："),
-    XIAOYOU("xiaoyou:","xiaoyou:");
+    XIAOYOU_TIQUMA("码：","码："),
+    XIAOYOU_TIQUMA_English("码:","码:"),
+    XIAOYOU("xiaoyou:","xiaoyou:"),
+    LILI_URL("http://a12.66perfect.com/","http://a12.66perfect.com/"),
+    LILI_DOUBAN_URL("https://movie.douban.com","https://movie.douban.com"),
+    LILI("lili:","lili:"),
+    LiLi_STR_WITH_SGIN("– A12 Site", "– A12 Site");
 
     XiaoYouConstant(String type, String description) {
         this.type = type;

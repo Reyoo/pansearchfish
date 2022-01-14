@@ -15,16 +15,15 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
+import top.findfish.crawler.util.WebPageConstant;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +64,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
         elements.parallelStream().forEach(link -> {
             String linkhref = link.attr("href");
             if (linkhref.startsWith("forum.php?mod")) {
-                firstSearchUrls.add("http://520.sumsu.cn/" + linkhref);
+                firstSearchUrls.add("http://520.skybyte.cn/" + linkhref);
                 log.info("查询电影名为--> " + searchMovieName + " 获取第一次链接为--> " + linkhref);
             }
         });

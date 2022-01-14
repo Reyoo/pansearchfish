@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -43,5 +42,9 @@ public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
     String wangPanPassword;
     @TableField("updatetime")
     LocalDateTime updateTime;
+    @TableField("title_name")
+    String titleName;
+    @TableField("pan_source")
+    String panSource;
 
 }

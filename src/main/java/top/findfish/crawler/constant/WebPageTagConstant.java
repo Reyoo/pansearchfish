@@ -14,11 +14,20 @@ public enum WebPageTagConstant {
 
 
     XIAOYOU_URL_PARAM("/?s=", "小优入参"),
+    LILI_URL_PARAM("/?s=", "莉莉入参"),
     HTML_TAG_A("a", "a标签"),
     HTML_TAG_HREF("href", "href标签"),
     HTML_TAG_TITLE("title", "title标签"),
     HTML_TAG_P("p","p标签"),
+    PANURL("https://pan.","https://pan."),
+    PANVIP("https://pan.baidu.com/wap/vip/","百度网盘VIP充值"),
+    TIQUMA_CHINA("提取码：","提取码："),
+    SHIPIN_CHINA("视频：","：为中文符号"),
+    BAIDU("baidu","百度"),
+    BAIDU_WANGPAN("百度网盘","百度网盘"),
+    XUNLEI_YUNPAN("迅雷云盘","迅雷云盘"),
     ONLINE_SHOW("在线播放","在线播放");
+
 
     WebPageTagConstant(String type, String description) {
         this.type = type;

@@ -1,20 +1,17 @@
 package top.findfish.crawler.sqloperate.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
+import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,8 +28,8 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
     @Override
-    public List<MovieNameAndUrlModel> findMovieUrl(String tablename, String movieName) throws Exception {
-        return movieNameAndUrlMapper.selectMovieUrlByName(tablename, movieName);
+    public List<MovieNameAndUrlModel> findMovieUrl(String tablename, String movieName,String wangPanUrl) throws Exception {
+        return movieNameAndUrlMapper.selectMovieUrlByName(tablename, movieName, wangPanUrl);
     }
 
     /**
@@ -53,7 +50,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                         return;
                     }
                     t.setUpdateTime(LocalDateTime.now());
-                    if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim()).size() > 0) {
+                    if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim(),t.getWangPanUrl().trim()).size() > 0) {
 //                如果查询到数据 则更新
                         movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
                         log.info("更新电影列表-->" + t);

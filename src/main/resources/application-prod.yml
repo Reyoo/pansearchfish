@@ -101,12 +101,13 @@ user:
   lxxh:
     aidianying: https://k.wxbxkx.com
   sumsu:
-    url: http://520.sumsu.cn/search.php?mod=forum
+    url: http://520.skybyte.cn/search.php?mod=forum&mobile=2
   xiaoyou:
     url: http://zyz.xiaouj.cn
   youjiang:
     url: http://www.jjj01.work
-
+  lili:
+    url: http://a12.66perfect.com
 
 temp:
   filrooet: 'D:/'
