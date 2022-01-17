@@ -57,7 +57,7 @@ public class CrawlerScheduleTask {
 
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9
-    @Scheduled(cron = "0 30 1/2 * * ? ")
+    @Scheduled(cron = "0 32 1/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();

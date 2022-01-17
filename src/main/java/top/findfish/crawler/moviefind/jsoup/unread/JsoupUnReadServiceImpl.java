@@ -103,6 +103,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                         } else {
                             movieNameAndUrlModel.setWangPanPassword("");
                         }
+
                         if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu")){
                             movieNameAndUrlModel.setPanSource("百度网盘");
                         }else {
