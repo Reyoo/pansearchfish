@@ -152,7 +152,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         try {
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);
             if (CollectionUtil.isNotEmpty(set)) {
-                set.stream().forEach(url -> {
+                set.parallelStream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
                         movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);

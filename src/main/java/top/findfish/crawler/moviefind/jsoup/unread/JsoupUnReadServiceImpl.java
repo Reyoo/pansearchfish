@@ -91,16 +91,22 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                         //判断是否需要拼接片名
                         if (pTagAttr.text().startsWith("资源链接点这里→")) {
                             movieNameAndUrlModel.setMovieName(finalMovieName);
+                            movieNameAndUrlModel.setTitleName("视频：");
                         } else {
                             movieNameAndUrlModel.setMovieName(finalMovieName + "  『" + pTagAttr.text().split("资源链接点这里")[0] + "』");
-
+                            movieNameAndUrlModel.setTitleName(pTagAttr.text().split("资源链接点这里")[0]+"：" );
                         }
                         if (pTagAttrs.next().text().contains("密码")) {
-                            movieNameAndUrlModel.setWangPanPassword(pTagAttrs.next().text().trim().split("提取码")[1].trim().substring(1, 6).trim());
+                            movieNameAndUrlModel.setWangPanPassword("提取码："+pTagAttrs.next().text().trim().split("提取码")[1].trim().substring(1, 6).trim());
                         } else if (pTagAttrs.next().text().contains("提取码")) {
-                            movieNameAndUrlModel.setWangPanPassword(pTagAttrs.next().text().trim().split("提取码")[1].trim().substring(1, 6).trim());
+                            movieNameAndUrlModel.setWangPanPassword("提取码："+pTagAttrs.next().text().trim().split("提取码")[1].trim().substring(1, 6).trim());
                         } else {
                             movieNameAndUrlModel.setWangPanPassword("");
+                        }
+                        if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu")){
+                            movieNameAndUrlModel.setPanSource("百度网盘");
+                        }else {
+                            movieNameAndUrlModel.setPanSource("迅雷云盘");
                         }
                         list.add(movieNameAndUrlModel);
                     }
