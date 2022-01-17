@@ -12,8 +12,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
+import top.findfish.crawler.util.WebPageConstant;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +51,8 @@ public class CrawlerScheduleTask {
 
     private final RedisTemplate redisTemplate;
 
+    private final MovieNameAndUrlMapper movieNameAndUrlMapper;
+
     @Value("${findfish.crawler.schedule.range}")
     String scheduleRange;
 
@@ -81,7 +85,6 @@ public class CrawlerScheduleTask {
 
 //        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
 //        movieModel.setSearchName("JOJO的奇妙冒险系列全集");
-//
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
 //        systemUserSearchMovieModelList.add(movieModel);
 
@@ -114,6 +117,21 @@ public class CrawlerScheduleTask {
         log.debug("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         log.debug("词条数量为 {}", systemUserSearchMovieModelList.size());
 
+    }
+
+
+    /**
+     * 奇数天 每日12：00后 将更新电视剧前一天的重复数据删除
+     */
+//    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行
+//    @Scheduled(cron = "0 0 12 0/2 * ? ")  //偶数天中午12点执行
+
+    @Scheduled(cron = "0 0 12 1/2 * ? ")
+    private void changeSubscribeStatus(){
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.WEIDU_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.AIDIANYING_TABLENAME);
     }
 
 
