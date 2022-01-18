@@ -100,6 +100,8 @@ public class CrawlerScheduleTask {
         }
 
         final String[] finalIpAndPort = {ipAndPort};
+        //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
+        //不建议使用parallelStream()
         systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
