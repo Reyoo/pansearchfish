@@ -40,8 +40,6 @@ public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
     String wangPanUrl;
     @TableField("wangpan_passwd")
     String wangPanPassword;
-    @TableField("updatetime")
-    LocalDateTime updateTime;
     @TableField("title_name")
     String titleName;
     @TableField("pan_source")

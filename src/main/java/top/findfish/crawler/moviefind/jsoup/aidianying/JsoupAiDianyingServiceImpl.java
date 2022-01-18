@@ -26,8 +26,8 @@ import java.util.Set;
 
 /**
  * @ProjectName: pan
- * @Package: com.search.pan.system.service
  * @ClassName: AiDianyingService
+ * @Package: com.search.pan.system.service
  * @Author: sun71
  * @Description: 爱电影JSOP爬虫获取
  * @Date: 2020/8/30 16:19
@@ -72,9 +72,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         }
         //解析h2 标签 如果有herf 则取出来,否者 直接获取百度盘
         Elements attrs = document.getElementsByTag("h2").select("a");
-
         attrs.parallelStream().forEach( attr -> {
-
             if(attr.attr("href").contains(lxxhUrl) && !attr.attr("href").contains("zysyd")){
                 movieUrlInLxxh.add(attr.attr("href").trim().toString());
             }
