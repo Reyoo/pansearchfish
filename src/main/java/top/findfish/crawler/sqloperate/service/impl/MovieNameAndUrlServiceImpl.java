@@ -49,7 +49,6 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                     if (StrUtil.isBlank(t.getMovieName())) {
                         return;
                     }
-                    t.setUpdateTime(LocalDateTime.now());
                     if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim(),t.getWangPanUrl().trim()).size() > 0) {
 //                如果查询到数据 则更新
                         movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
