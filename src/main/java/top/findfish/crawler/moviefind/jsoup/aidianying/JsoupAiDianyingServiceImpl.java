@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
@@ -87,30 +88,58 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         return movieUrlInLxxh;
     }
 
+
+    /**
+     * 2022-01-18
+     * 该方法为适用搜索页最新规则，HS临时新增titleName、panSource字段
+     * 爱电影爬虫逻辑仍有问题，页面内如有多个网盘资源，现规则下只能爬取到一条资源
+     * 例如搜索：绝望主妇
+     * 等待SQ进行修改。
+     */
     @Override
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort,Boolean useProxy) throws Exception {
 
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
         log.info("爱电影--》" + secondUrlLxxh);
         Document secorndDocument = JsoupFindfishUtils.getDocumentBysimulationIe(secondUrlLxxh,proxyIpAndPort,useProxy);
-        String titleName = secorndDocument.getElementsByTag("title").first().text();
+        String finalMovieName = secorndDocument.getElementsByTag("title").first().text();
         Elements secorndAttr = secorndDocument.getElementsByTag("p");
 
 
         secorndAttr.parallelStream().forEach(
                 element -> {
                     String  panUrl =  element.getElementsByTag("a").attr("href");
-                    if (panUrl.contains("pan.baidu")){
+                    //因最新资源链接包括迅雷云盘， 所以pan.baidu更新为 pan.
+                    //爱电影有概率会存入百度文档，百度文档资源不予爬取，进行过滤
+                    if (panUrl.contains("pan.") && !panUrl.contains("https://pan.baidu.com/doc")){
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                         movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-                        movieNameAndUrlModel.setWangPanUrl(panUrl);
+                        //判断是百度网盘还是迅雷云盘
+                        if (panUrl.contains(WebPageTagConstant.BAIDU.getType())){
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getType());
+                        }else {
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getType());
+                        }
+
+                        //SQ原判断规则
+//                        if (element.text().startsWith("视频")){
+//                            movieNameAndUrlModel.setMovieName(finalMovieName);
+//                        }else {
+//                            String arr[] =element.text().split("视频");
+//                            String lastName = arr[0];
+//                            movieNameAndUrlModel.setMovieName(finalMovieName+"  『"+lastName.replace(".","")+"』");
+//                        }
+
+                        movieNameAndUrlModel.setMovieName(finalMovieName);
+                        //因新增titleName字段，存入titleName
                         if (element.text().startsWith("视频")){
-                            movieNameAndUrlModel.setMovieName(titleName);
+                            movieNameAndUrlModel.setTitleName("视频：");
                         }else {
                             String arr[] =element.text().split("视频");
                             String lastName = arr[0];
-                            movieNameAndUrlModel.setMovieName(titleName+"  『"+lastName.replace(".","")+"』");
+                            movieNameAndUrlModel.setTitleName(lastName.replace(".",""));
                         }
+
                         if (element.childNodeSize() == 3){
                             movieNameAndUrlModel.setWangPanPassword(element.childNode(2).toString().replaceAll("&nbsp;","").trim());
                         }else {

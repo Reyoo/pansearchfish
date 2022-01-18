@@ -97,7 +97,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
         for (Element element : pTagAttr) {
 
-            //小悠 第二层业内包含百度网盘VIP广告，要额外过滤掉
+            //小悠 第二层页内包含百度网盘VIP广告，要额外过滤掉
             if (!element.toString().contains(WebPageTagConstant.PANURL.getType()) || element.toString().contains(WebPageTagConstant.PANVIP.getType())){
                 continue;
             }

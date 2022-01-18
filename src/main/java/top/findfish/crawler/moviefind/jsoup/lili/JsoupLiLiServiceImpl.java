@@ -155,18 +155,6 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
     @Override
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) {
 
-        //测试分组
-//        List<MovieNameAndUrlModel> movieNameAndUrlModelsGroup = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LiLi_TABLENAME, searchMovieName);
-//        System.out.println(movieNameAndUrlModelsGroup);
-//
-//        //分组
-//        Map<String, List<MovieNameAndUrlModel>> listMap = movieNameAndUrlModelsGroup.stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//        for(String key:listMap.keySet()){
-//            System.out.print(key+"组:");
-//            listMap.get(key).forEach(movie -> System.out.print(movie.getMovieName()));
-//            System.out.println();
-//        }
-
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
         try {
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);
@@ -238,93 +226,5 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    //    @Override
-//    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String movieUrl, String proxyIpAndPort, Boolean useProxy) throws Exception {
-//        ArrayList<MovieNameAndUrlModel> list = new ArrayList();
-//        Document document = JsoupFindfishUtils.getDocument(movieUrl, proxyIpAndPort, useProxy);
-//        String movieName = document.getElementsByTag(WebPageTagConstant.HTML_TAG_TITLE.getType()).get(1).text();
-//        if (movieName.contains(XiaoYouConstant.LiLi_STR_WITH_SGIN.getType())) {
-//            movieName = movieName.split(XiaoYouConstant.LiLi_STR_WITH_SGIN.getType())[0];
-//        }
-//
-//        Elements pTagAttr = document.getElementsByClass("entry-content").select(WebPageTagConstant.HTML_TAG_P.getType());
-//
-//        String finalMovieName = movieName;
-//
-//        for (Element element : pTagAttr) {
-//
-//            MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-//
-//            if (!element.toString().contains(XiaoYouConstant.PANURL.getType())){
-//                continue;
-//            }
-//
-//            if (StringUtils.isBlank(element.getElementsByTag(WebPageTagConstant.HTML_TAG_A.getType()).attr(WebPageTagConstant.HTML_TAG_HREF.getType())) || element.text().contains(WebPageTagConstant.ONLINE_SHOW.getType())) {
-//                continue;
-//            }
-//
-//            movieNameAndUrlModel.setWangPanUrl(element.getElementsByTag(WebPageTagConstant.HTML_TAG_A.getType()).attr(WebPageTagConstant.HTML_TAG_HREF.getType()));
-//
-//            movieNameAndUrlModel.setWangPanPassword("");
-//            movieNameAndUrlModel.setMovieUrl(movieUrl);
-//            movieNameAndUrlModel.setMovieName(finalMovieName);
-//
-//
-//            //判断titleName 该规则为无数次调试后成功匹配规则，请勿随意修改
-//            List<Node> nodes = element.childNodes();
-//            int countChild = 0;
-//            for (Node node : nodes) {
-//                if (element.childNodeSize() == 1 || element.childNodeSize() == 2){
-//                    movieNameAndUrlModel.setTitleName("视频：");
-//                    this.setObjectParam(element,movieNameAndUrlModel,movieUrl,finalMovieName);
-//                    break;
-//                }
-//                else if (element.childNode(0).toString().equals("资源列表")){
-//                movieNameAndUrlModel.setTitleName(element.childNode(2).toString().replaceAll("&nbsp;","").trim());
-//                    break;
-//                }else if (element.childNode(1).toString().equals("资源列表")){
-//                movieNameAndUrlModel.setTitleName(element.childNode(3).toString().replaceAll("&nbsp;","").trim());
-//                    break;
-//                }else if (node.toString().contains("https://pan.")){
-//                    movieNameAndUrlModel.setTitleName(element.childNode(countChild-1).toString().replaceAll("&nbsp;","").trim());
-//                    break;
-//                }
-//                countChild++;
-//            }
-//
-//
-//            //判断panSource
-//            if (movieNameAndUrlModel.getWangPanUrl().contains("baidu")){
-//                movieNameAndUrlModel.setPanSource("百度网盘");
-//            }else {
-//                movieNameAndUrlModel.setPanSource("迅雷云盘");
-//            }
-//
-//            if (element.text().contains(XiaoYouConstant.XIAOYOU_TIQUMA.getType())) {
-//                movieNameAndUrlModel.setWangPanPassword("提取码："+element.text().split(XiaoYouConstant.XIAOYOU_TIQUMA.getType())[1].trim());
-//
-//            }else if (element.text().contains(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())){
-//                movieNameAndUrlModel.setWangPanPassword("提取码："+element.text().split(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())[1].trim());
-//
-//            }
-//            list.add(movieNameAndUrlModel);
-//        }
-//
-//        if (list.size() == 0){
-//            MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-//            Elements specialSpTagAttr= document.getElementsByClass("detail");
-//            int i = specialSpTagAttr.get(0).childNodeSize();
-//            movieNameAndUrlModel.setMovieUrl(movieUrl);
-//            movieNameAndUrlModel.setMovieName(finalMovieName);
-//            movieNameAndUrlModel.setWangPanPassword(specialSpTagAttr.get(0).childNode(i - 1).toString().replaceAll("&nbsp;","").trim());
-//            movieNameAndUrlModel.setTitleName(specialSpTagAttr.get(0).childNode(i - 3).toString().trim());
-//            movieNameAndUrlModel.setWangPanUrl(specialSpTagAttr.get(0).childNode(i-2).attr(WebPageTagConstant.HTML_TAG_HREF.getType()));
-//            movieNameAndUrlModel.setPanSource(specialSpTagAttr.get(0).childNode(i-2).childNode(0).toString());
-//
-//            list.add(movieNameAndUrlModel);
-//        }
-//
-//        return list;
-//    }
 
 }

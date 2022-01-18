@@ -65,6 +65,13 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
     }
 
 
+    /**
+     * 2022-01-18
+     * 该方法为适用搜索页最新规则，HS临时新增titleName、panSource字段
+     * 未读影单爬虫逻辑仍有问题，页面内如有多个网盘资源，现规则下只能爬取到一条资源
+     * 例如搜索:绝望主妇
+     * 等待SQ进行修改。
+     */
     @Override
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String movieUrl, String proxyIpAndPort, Boolean useProxy) throws Exception {
 

@@ -59,9 +59,9 @@ public class CrawlerScheduleTask {
     Set<String> ipAndPorts = null;
 
 
-//    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10
-//    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9
-    @Scheduled(cron = "0 32 1/2 * * ? ")
+//    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   hjc用偶数
+//    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  prod用奇数
+    @Scheduled(cron = "0 0 0/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
@@ -123,10 +123,10 @@ public class CrawlerScheduleTask {
     /**
      * 奇数天 每日12：00后 将更新电视剧前一天的重复数据删除
      */
-//    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行
-//    @Scheduled(cron = "0 0 12 0/2 * ? ")  //偶数天中午12点执行
+//    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行  prod用奇数
+//    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点执行  hjc用偶数
 
-    @Scheduled(cron = "0 0 12 1/2 * ? ")
+    @Scheduled(cron = "0 0 12 2/2 * ? ")
     private void changeSubscribeStatus(){
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
