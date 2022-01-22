@@ -8,11 +8,17 @@ import lombok.extern.log4j.Log4j2;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Jsoup 工具类
@@ -25,7 +31,7 @@ public class JsoupFindfishUtils {
     private static final int TIME_OUT = 10 * 1000;
 
     private static final String ERROR_DESC = "网址请求失败：";
-
+    final static Pattern compile = Pattern.compile("(?<=charset=)(.+)(?=\")");
     /**
      * 直接获取网页 不需要重定向 GET请求
      *
@@ -52,6 +58,7 @@ public class JsoupFindfishUtils {
                 return Jsoup.connect(url)
                         .timeout(TIME_OUT)
                         .header("Accept", "application/json, text/javascript, */*; q=0.01")
+//                        .header("Content-Type", "application/json; charset=gb2312")
                         .header("Content-Type", "application/json; charset=UTF-8")
                         .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
 //                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
@@ -66,6 +73,40 @@ public class JsoupFindfishUtils {
         }
     }
 
+
+    public static Document getDocumentWithGb2312(String url, String proxyIpAndPort, Boolean useProxy) {
+        try {
+
+            if (useProxy) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.valueOf(proxyIpAndPort.split(":")[1])));
+                return Jsoup.connect(url)
+                        .timeout(TIME_OUT)
+                        .proxy(proxy)
+                        .header("Accept", "application/json, text/javascript, */*; q=0.01")
+                        .header("Content-Type", "application/json; charset=gb2312")
+                        .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+//                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .method(Connection.Method.GET)
+                        .ignoreContentType(true).get();
+            } else {
+                return Jsoup.connect(url)
+                        .timeout(TIME_OUT)
+                        .header("Accept", "application/json, text/javascript, */*; q=0.01")
+//                        .header("Content-Type", "application/json; charset=gb2312")
+                        .header("Content-Type", "application/json; charset=gb2312")
+                        .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+//                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
+                        .header("X-Requested-With", "XMLHttpRequest")
+                        .method(Connection.Method.GET)
+                        .ignoreContentType(true).get();
+            }
+
+        } catch (IOException e) {
+            log.error(ERROR_DESC + url);
+            return null;
+        }
+    }
 
     /**
      * 获取重定向 网页
@@ -148,5 +189,35 @@ public class JsoupFindfishUtils {
         return null;
     }
 
+    public static String getCharset (String siteurl) throws Exception{
+        Document document = Jsoup.connect(siteurl)
+                .timeout(TIME_OUT)
+                .header("Accept", "application/json, text/javascript, */*; q=0.01")
+                .header("Content-Type", "application/json; charset=gb2312")
+                .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
+//                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
+                .header("X-Requested-With", "XMLHttpRequest")
+                .method(Connection.Method.GET)
+                .ignoreContentType(true).get();
+        Elements eles = document.select("meta[http-equiv=Content-Type]");
+        Iterator<Element> itor = eles.iterator();
+        while (itor.hasNext())
+            return matchCharset(itor.next().toString());
+        return "gb2312";
+    }
+
+    /**
+     * 获得页面字符
+     */
+    public static String matchCharset(String content) {
+        String chs = "gb2312";
+
+        Matcher m = compile.matcher(content);
+        if (m.find()){
+            return m.group();
+        }
+
+        return chs;
+    }
 
 }
