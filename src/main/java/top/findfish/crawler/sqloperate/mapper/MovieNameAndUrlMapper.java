@@ -70,4 +70,6 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      */
     void checkRepeatMovie(String tableName);
 
+    List<MovieNameAndUrlModel> selectMovieUrlByCondition(String tablename , String movieName , String wangPanUrl,String titleName,String panSource);
+
 }

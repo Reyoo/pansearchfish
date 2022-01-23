@@ -180,9 +180,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     return;
                 }
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
-                //删除无效数据
-                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrlsWithTitleName(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
+                //删除无效数据  用百度盘判断
+//                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.WEIDU_TABLENAME, searchMovieName);
                 //筛选数据库链接

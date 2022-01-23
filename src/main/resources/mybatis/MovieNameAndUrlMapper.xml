@@ -159,6 +159,24 @@
         (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)
     </delete>
 
+    <select id="selectMovieUrlByCondition"
+            resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM  ${tablename}
+        WHERE movie_name =  ${"'"+movieName+"'"}
+        <if test="wangPanUrl != null ">
+            and wangpan_url = ${"'"+wangPanUrl+"'"}
+        </if>
+        <if test="titleName != null ">
+            and title_name = ${"'"+titleName+"'"}
+        </if>
+
+        <if test="panSource != null ">
+            and pan_source = ${"'"+panSource+"'"}
+        </if>
+        LIMIT 20
+    </select>
 
     <!--    由于设置了自增长ID 无法使用插入更新  ON DUPLICATE KEY UPDATE-->
 

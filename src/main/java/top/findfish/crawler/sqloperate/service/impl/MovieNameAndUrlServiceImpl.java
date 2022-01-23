@@ -73,4 +73,28 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
             movieNameAndUrlMapper.deleteUnAviliableUrl(tableName, movieNameAndUrlModel.getMovieUrl());
         }
     }
+
+    @Override
+    public void addOrUpdateMovieUrlsWithTitleName(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) throws Exception {
+        if (CollectionUtil.isEmpty(movieNameAndUrlModels)) {
+            return;
+        }
+
+        movieNameAndUrlModels.parallelStream().forEach(t -> {
+                    if (StrUtil.isBlank(t.getMovieName())) {
+                        return;
+                    }
+                    if (movieNameAndUrlMapper.selectMovieUrlByName(tableName, t.getMovieName().trim(),t.getWangPanUrl().trim()).size() > 0) {
+//                如果查询到数据 则更新
+                        movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
+                        log.info("更新电影列表-->" + t);
+
+                    } else {
+                        movieNameAndUrlMapper.insertMovieUrl(tableName, t);
+                        log.info("插入电影列表-->" + t);
+                    }
+                }
+        );
+    }
+
 }

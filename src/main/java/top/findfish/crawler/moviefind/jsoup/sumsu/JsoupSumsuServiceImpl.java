@@ -24,6 +24,7 @@ import top.findfish.crawler.util.FindFishUserAgentUtil;
 import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.WebPageConstant;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -139,11 +140,11 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 //插入更新可用数据
                 movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //删除无效数据
-                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+//                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-//                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
-//                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
-//                        Duration.ofHours(2L));
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
+                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+                        Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
