@@ -152,11 +152,20 @@
 
     </delete>
 
+<!--    <delete id="checkRepeatMovie"  statementType="STATEMENT">-->
+<!--        DELETE-->
+<!--        FROM ${tableName}-->
+<!--        WHERE id NOT IN-->
+<!--        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)-->
+<!--    </delete>-->
+
+
+<!--    HS优化新版本SQL-->
     <delete id="checkRepeatMovie"  statementType="STATEMENT">
         DELETE
         FROM ${tableName}
-        WHERE id NOT IN
-        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)
+        WHERE movie_name  not in
+        (SELECT * FROM  (SELECT movie_name FROM ${tableName} WHERE id  in  (SELECT max(id) from ${tableName} GROUP BY movie_url )) tn)
     </delete>
 
     <select id="selectMovieUrlByCondition"
