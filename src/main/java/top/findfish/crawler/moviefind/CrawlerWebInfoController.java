@@ -40,9 +40,9 @@ public class CrawlerWebInfoController {
 //    @Qualifier("jsoupSumuServiceImpl")
 //    private final ICrawlerCommonService jsoupSumuServiceImpl;
 //
-//    @Qualifier("jsoupUnreadServiceImpl")
-//    private final ICrawlerCommonService jsoupUnreadServiceImpl;
-//
+    @Qualifier("jsoupUnreadServiceImpl")
+    private final ICrawlerCommonService jsoupUnreadServiceImpl;
+
 //    @Qualifier("jsoupXiaoYouServiceImpl")
 //    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
 //
@@ -52,41 +52,35 @@ public class CrawlerWebInfoController {
 //    @Qualifier("initializeUrl")
 //    private final ICrawlerCommonService initializeUrl;
 //
-//    private final GetProxyService getProxyService;
-//
-//    private final RedisTemplate redisTemplate;
-//
-//
-//
-//    @Value("${user.unread.weiduyingdan}")
-//    String unreadUrl;
-//    @Value("${user.lxxh.aidianying}")
-//    String lxxhUrl;
-//    @Value("${user.xiaoyou.url}")
-//    String xiaoyouUrl;
-//    @Value("${user.sumsu.url}")
-//    String sumuUrl;
-//    @Value("${user.youjiang.url}")
-//    String youjiangUrl;
-//
-//    /**
-//     * 调用电影PID 入库 触发接口类
-//     */
-//    @RequestMapping(value = "/getall", method = RequestMethod.GET)
-//    public AjaxResult loopGetMoviePid() {
-//        String ipAndPort = getProxyService.getProxyIpFromRemote();
-//        try {
-//
-////            jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("八佰", ipAndPort);
-////            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("山海",ipAndPort);
+    private final GetProxyService getProxyService;
+
+    private final RedisTemplate redisTemplate;
 //
 //
-//            return AjaxResult.success();
-//        } catch (Exception e) {
-//            redisTemplate.opsForHash().delete("use_proxy",ipAndPort);
-//            return AjaxResult.error();
-//        }
-//    }
+//
+    @Value("${user.unread.weiduyingdan}")
+    String unreadUrl;
+    @Value("${user.lxxh.aidianying}")
+    String lxxhUrl;
+    @Value("${user.xiaoyou.url}")
+    String xiaoyouUrl;
+    @Value("${user.sumsu.url}")
+    String sumuUrl;
+    @Value("${user.youjiang.url}")
+    String youjiangUrl;
+//
+    /**
+     * 调用电影PID 入库 触发接口类
+     */
+    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+    public AjaxResult loopGetMoviePid() {
+        try {
+            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("海贼王","",false);
+            return AjaxResult.success();
+        } catch (Exception e) {
+            return AjaxResult.error();
+        }
+    }
 //
 //
 //    //测试
