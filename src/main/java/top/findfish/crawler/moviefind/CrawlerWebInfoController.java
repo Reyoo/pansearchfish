@@ -75,7 +75,7 @@ public class CrawlerWebInfoController {
     @RequestMapping(value = "/getall", method = RequestMethod.GET)
     public AjaxResult loopGetMoviePid() {
         try {
-            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("海贼王","",false);
+            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
             return AjaxResult.success();
         } catch (Exception e) {
             return AjaxResult.error();

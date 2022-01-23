@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,10 +51,10 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         Set<String> movieUrlSet = new HashSet();
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF-8");
         String url = unreadUrl + "/?s=" + encode;
-//        String charset = JsoupFindfishUtils.getCharset(url);
+        String charset = JsoupFindfishUtils.getCharset(url);
 //        System.out.println(charset);
-        Document doc = JsoupFindfishUtils.getDocumentWithGb2312(url, proxyIpAndPort, useProxy);
-        System.out.println(doc.toString());
+        Document doc = JsoupFindfishUtils.getDocumentWithCharset(url, proxyIpAndPort, useProxy, charset);
+//        System.out.println(doc.toString());
         Elements links = doc.getElementsByClass("entry-title");
         if (ObjectUtil.isNull(links)) {
             return movieUrlSet;
@@ -79,8 +80,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
     public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String movieUrl, String proxyIpAndPort, Boolean useProxy) throws Exception {
 
         ArrayList<MovieNameAndUrlModel> list = new ArrayList<>();
-        Document document = JsoupFindfishUtils.getDocumentWithGb2312(movieUrl, proxyIpAndPort, useProxy);
-        System.out.println(document.toString());
+        String charset = JsoupFindfishUtils.getCharset(movieUrl);
+        Document document = JsoupFindfishUtils.getDocumentWithCharset(movieUrl, proxyIpAndPort, useProxy, charset);
+//        System.out.println(document.toString());
         String movieName = document.getElementsByTag("title").text().trim();
         if (movieName.contains("– 未读影单")) {
             movieName = movieName.split("– 未读影单")[0].trim();
@@ -124,6 +126,36 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     }
                 }
         );
+        if (CollectionUtil.isEmpty(list)) {
+            Elements preInnerATagAttrs = document.getElementsByTag("pre");
+            preInnerATagAttrs.parallelStream().forEach(
+                    preInnerATagAttr -> {
+                        MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+                        movieNameAndUrlModel.setMovieName(finalMovieName);
+                        if (preInnerATagAttr.text().contains("资源链接点这里")) {
+                            String panUrl = preInnerATagAttr.getElementsByTag("a").attr("href");
+                            movieNameAndUrlModel.setMovieUrl(movieUrl);
+                            movieNameAndUrlModel.setWangPanUrl(panUrl);
+                        }
+                        List<Node> nodes = preInnerATagAttr.childNodes();
+                        nodes.parallelStream().forEach( node ->{
+                            if (node.toString().contains("提取码")) {
+                                movieNameAndUrlModel.setWangPanPassword(node.toString());
+                            }  else {
+                                movieNameAndUrlModel.setWangPanPassword("");
+                            }
+                        });
+
+
+                        if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu")) {
+                            movieNameAndUrlModel.setPanSource("百度网盘");
+                        } else {
+                            movieNameAndUrlModel.setPanSource("迅雷云盘");
+                        }
+                        list.add(movieNameAndUrlModel);
+                    }
+            );
+        }
         return list;
     }
 
@@ -136,18 +168,14 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         try {
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);
             if (ObjectUtil.isNotEmpty(set)) {
-                for (String url : set) {
-                    ArrayList<MovieNameAndUrlModel> wangPanUrl = getWangPanUrl(url, proxyIpAndPort, useProxy);
-                    movieNameAndUrlModelList.addAll(wangPanUrl);
-                }
-//                set.parallelStream().forEach(url -> {
-//                    try {
-//                        ArrayList<MovieNameAndUrlModel> wangPanUrl = getWangPanUrl(url, proxyIpAndPort, useProxy);
-//                        movieNameAndUrlModelList.addAll(wangPanUrl);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                });
+                set.parallelStream().forEach(url -> {
+                    try {
+                        ArrayList<MovieNameAndUrlModel> wangPanUrl = getWangPanUrl(url, proxyIpAndPort, useProxy);
+                        movieNameAndUrlModelList.addAll(wangPanUrl);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
                 if (CollectionUtil.isEmpty(movieNameAndUrlModelList)) {
                     return;
                 }

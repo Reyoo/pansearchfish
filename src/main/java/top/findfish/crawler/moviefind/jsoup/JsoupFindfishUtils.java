@@ -74,7 +74,7 @@ public class JsoupFindfishUtils {
     }
 
 
-    public static Document getDocumentWithGb2312(String url, String proxyIpAndPort, Boolean useProxy) {
+    public static Document getDocumentWithCharset(String url, String proxyIpAndPort, Boolean useProxy,String charset) {
         try {
 
             if (useProxy) {
@@ -83,7 +83,7 @@ public class JsoupFindfishUtils {
                         .timeout(TIME_OUT)
                         .proxy(proxy)
                         .header("Accept", "application/json, text/javascript, */*; q=0.01")
-                        .header("Content-Type", "application/json; charset=gb2312")
+                        .header("Content-Type", "application/json; charset="+charset)
                         .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
 //                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
                         .header("X-Requested-With", "XMLHttpRequest")
@@ -94,7 +94,7 @@ public class JsoupFindfishUtils {
                         .timeout(TIME_OUT)
                         .header("Accept", "application/json, text/javascript, */*; q=0.01")
 //                        .header("Content-Type", "application/json; charset=gb2312")
-                        .header("Content-Type", "application/json; charset=gb2312")
+                        .header("Content-Type", "application/json; charset="+charset)
                         .header("User-Agent", FindFishUserAgentUtil.randomUserAgent())
 //                    .header("User-Agent", "com.apple.WebKit.Networking/8610.3.7.0.3 CFNetwork/1209 Darwin/20.2.0")
                         .header("X-Requested-With", "XMLHttpRequest")
