@@ -103,8 +103,8 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         String finalMovieName = secorndDocument.getElementsByTag("title").first().text();
         Elements secorndAttr = secorndDocument.getElementsByTag("p");
 
-
-        secorndAttr.parallelStream().forEach(
+        //爱电影可能设置了屏蔽高访问IP，为细水长流不建议该站爬取过于频繁
+        secorndAttr.stream().forEach(
                 element -> {
                     String  panUrl =  element.getElementsByTag("a").attr("href");
                     //因最新资源链接包括迅雷云盘， 所以pan.baidu更新为 pan.
@@ -118,15 +118,6 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                         }else {
                             movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getType());
                         }
-
-                        //SQ原判断规则
-//                        if (element.text().startsWith("视频")){
-//                            movieNameAndUrlModel.setMovieName(finalMovieName);
-//                        }else {
-//                            String arr[] =element.text().split("视频");
-//                            String lastName = arr[0];
-//                            movieNameAndUrlModel.setMovieName(finalMovieName+"  『"+lastName.replace(".","")+"』");
-//                        }
 
                         movieNameAndUrlModel.setMovieName(finalMovieName);
                         //因新增titleName字段，存入titleName

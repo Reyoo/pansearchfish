@@ -82,7 +82,6 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> list = new ArrayList<>();
         String charset = JsoupFindfishUtils.getCharset(movieUrl);
         Document document = JsoupFindfishUtils.getDocumentWithCharset(movieUrl, proxyIpAndPort, useProxy, charset);
-//        System.out.println(document.toString());
         String movieName = document.getElementsByTag("title").text().trim();
         if (movieName.contains("– 未读影单")) {
             movieName = movieName.split("– 未读影单")[0].trim();
@@ -100,13 +99,11 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                         movieNameAndUrlModel.setMovieUrl(movieUrl);
                         movieNameAndUrlModel.setWangPanUrl(panUrl);
-
+                        movieNameAndUrlModel.setMovieName(finalMovieName);
                         //判断是否需要拼接片名
                         if (pTagAttr.text().startsWith("资源链接点这里→")) {
-                            movieNameAndUrlModel.setMovieName(finalMovieName);
                             movieNameAndUrlModel.setTitleName("视频：");
                         } else {
-                            movieNameAndUrlModel.setMovieName(finalMovieName + "  『" + pTagAttr.text().split("资源链接点这里")[0] + "』");
                             movieNameAndUrlModel.setTitleName(pTagAttr.text().split("资源链接点这里")[0] + "：");
                         }
                         if (pTagAttrs.next().text().contains("密码")) {
