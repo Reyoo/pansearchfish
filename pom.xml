@@ -11,7 +11,7 @@
 
     <groupId>top.findfish</groupId>
     <artifactId>crawler</artifactId>
-    <version>V1.10</version>
+    <version>1.11</version>
     <name>indfishCrawler</name>
     <description>crawler for findfish</description>
 

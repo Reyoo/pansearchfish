@@ -59,10 +59,9 @@ public class CrawlerScheduleTask {
     Set<String> ipAndPorts = null;
 
 
-//    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
+    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
-
-    @Scheduled(cron = "0 0 0/2 * * ? ")
+//    @Scheduled(cron = "0 0 1/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
@@ -131,15 +130,11 @@ public class CrawlerScheduleTask {
     @Scheduled(cron = "0 0 12 2/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.WEIDU_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.AIDIANYING_TABLENAME);
-        System.err.println("执行 删除重复数据 完毕: " + LocalDateTime.now());
-
-//        定时清理查询片名表一个月前的数据，后续可能会使用
-//        delete from user_movie_search where last_searchtime < date_add(curdate(),INTERVAL -1 month)
-
+        /**校验 从数据里查询所有数据 对接百度盘*/
+//        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
+//        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
+//        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.WEIDU_TABLENAME);
+//        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.AIDIANYING_TABLENAME);
     }
 
 
