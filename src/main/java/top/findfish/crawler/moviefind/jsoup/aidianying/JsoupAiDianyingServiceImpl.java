@@ -160,7 +160,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 //            movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.AIDIANYING_TABLENAME);
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.AIDIANYING_TABLENAME, searchMovieName);
-            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName.trim() ,
+            redisTemplate.opsForValue().set("aidianying::"+ searchMovieName.trim() ,
                     invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.AIDIANYING_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
                     Duration.ofHours(2L));
         } catch (Exception e) {

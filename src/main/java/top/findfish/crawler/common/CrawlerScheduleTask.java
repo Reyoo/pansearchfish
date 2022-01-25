@@ -66,7 +66,7 @@ public class CrawlerScheduleTask {
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
-        map.put("小优", jsoupXiaoyouServiceImpl);
+        map.put("小悠", jsoupXiaoyouServiceImpl);
         map.put("莉莉", jsoupLiLiServiceImpl);
         map.put("未读", jsoupUnreadServiceImpl);
         map.put("爱电影", jsoupAiDianyingServiceImpl);
@@ -86,7 +86,7 @@ public class CrawlerScheduleTask {
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-1 00:00:15", "2022-1-10 10:01:16");
 
 //        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
-//        movieModel.setSearchName("JOJO的奇妙冒险系列全集");
+//        movieModel.setSearchName("钢铁侠");
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
 //        systemUserSearchMovieModelList.add(movieModel);
 
@@ -107,7 +107,7 @@ public class CrawlerScheduleTask {
         systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
-                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
+                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], false);
                 } catch (Exception e) {
                     randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
                     ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);

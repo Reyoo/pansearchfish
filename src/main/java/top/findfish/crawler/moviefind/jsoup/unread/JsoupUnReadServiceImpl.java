@@ -183,7 +183,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.WEIDU_TABLENAME, searchMovieName);
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("unread:" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.WEIDU_TABLENAME, movieNameAndUrlModels,
+                redisTemplate.opsForValue().set("unread::" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.WEIDU_TABLENAME, movieNameAndUrlModels,
                         proxyIpAndPort), Duration.ofHours(2L));
             }
         } catch (Exception e) {
