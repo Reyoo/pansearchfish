@@ -62,16 +62,17 @@ public class CrawlerScheduleTask {
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
 
-    @Scheduled(cron = "0 0 0/2 * * ? ")
+    @Scheduled(cron = "0 0 1/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
+        map.put("小优", jsoupXiaoyouServiceImpl);
+        map.put("莉莉", jsoupLiLiServiceImpl);
+        map.put("未读", jsoupUnreadServiceImpl);
         map.put("爱电影", jsoupAiDianyingServiceImpl);
 //        map.put("社区动力", jsoupSumuServiceImpl);
-        map.put("未读", jsoupUnreadServiceImpl);
-        map.put("小优", jsoupXiaoyouServiceImpl);
 //        map.put("悠酱", jsoupYouJiangServiceImpl);
-        map.put("莉莉", jsoupLiLiServiceImpl);
+
 
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -103,7 +104,7 @@ public class CrawlerScheduleTask {
         final String[] finalIpAndPort = {ipAndPort};
         //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
         //不建议使用parallelStream()
-        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
                     v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
@@ -128,7 +129,7 @@ public class CrawlerScheduleTask {
      */
 //    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行  SQ服务器用奇数
 //    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点执行  HS服务器用偶数
-    @Scheduled(cron = "0 0 12 2/2 * ? ")
+    @Scheduled(cron = "0 0 12 1/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
