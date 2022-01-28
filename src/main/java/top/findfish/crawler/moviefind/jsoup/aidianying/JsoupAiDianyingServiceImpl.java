@@ -74,7 +74,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         //解析h2 标签 如果有herf 则取出来,否者 直接获取百度盘
         Elements attrs = document.getElementsByTag("h2").select("a");
         attrs.parallelStream().forEach( attr -> {
-            if(attr.attr("href").contains(lxxhUrl) && !attr.attr("href").contains("zysyd")){
+            if(attr.attr("href").contains("wxbxkx") && !attr.attr("href").contains("zysyd")){
                 movieUrlInLxxh.add(attr.attr("href").trim().toString());
             }
         });
@@ -118,7 +118,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                         }else {
                             movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getType());
                         }
-
+                        movieNameAndUrlModel.setWangPanUrl(panUrl);
                         movieNameAndUrlModel.setMovieName(finalMovieName);
                         //因新增titleName字段，存入titleName
                         if (element.text().startsWith("视频")){
@@ -160,7 +160,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 //            movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.AIDIANYING_TABLENAME);
             //更新后从数据库查询后删除 片名相同但更新中的 无效数据
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.AIDIANYING_TABLENAME, searchMovieName);
-            redisTemplate.opsForValue().set("aidianying:"+ searchMovieName.trim() ,
+            redisTemplate.opsForValue().set("aidianying::"+ searchMovieName.trim() ,
                     invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.AIDIANYING_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
                     Duration.ofHours(2L));
         } catch (Exception e) {

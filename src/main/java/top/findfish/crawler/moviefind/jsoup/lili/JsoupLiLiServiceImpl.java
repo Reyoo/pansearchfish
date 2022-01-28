@@ -154,7 +154,6 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) {
-
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
         try {
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);

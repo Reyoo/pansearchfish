@@ -177,7 +177,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
 
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("youjiang:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
+                redisTemplate.opsForValue().set("youjiang::"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.YOUJIANG_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(1L));
 
             }
         } catch (Exception e) {

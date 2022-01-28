@@ -143,7 +143,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 //                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LEIFENGJUN_TABLENAME, searchMovieName);
-                redisTemplate.opsForValue().set("sumsu:"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+                redisTemplate.opsForValue().set("sumsu::"+ searchMovieName , invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LEIFENGJUN_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
                         Duration.ofHours(2L));
 
             }
