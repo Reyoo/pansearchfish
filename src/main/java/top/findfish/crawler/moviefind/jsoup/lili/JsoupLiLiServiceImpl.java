@@ -218,10 +218,12 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
 
         //判断码后的: 是英文还是中文并进行字符过滤
         if (element.text().contains(XiaoYouConstant.XIAOYOU_TIQUMA.getType())) {
-            movieNameAndUrlModel.setWangPanPassword(WebPageTagConstant.TIQUMA_CHINA.getType()+element.childNode(countChild+1).toString().split(XiaoYouConstant.XIAOYOU_TIQUMA.getType())[1].replaceAll("&nbsp;","").trim());
+            movieNameAndUrlModel.setWangPanPassword(WebPageTagConstant.TIQUMA_CHINA.getType()+element.childNode(countChild+1).toString().split(XiaoYouConstant.XIAOYOU_TIQUMA.getType())[1]
+                    .replaceAll("&nbsp;","").replaceAll("</a>","").replaceAll("</span>","").trim());
 
         }else if (element.text().contains(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())){
-            movieNameAndUrlModel.setWangPanPassword(WebPageTagConstant.TIQUMA_CHINA.getType()+element.childNode(countChild+1).toString().split(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())[1].replaceAll("&nbsp;","").trim());
+            movieNameAndUrlModel.setWangPanPassword(WebPageTagConstant.TIQUMA_CHINA.getType()+element.childNode(countChild+1).toString().split(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())[1]
+                    .replaceAll("&nbsp;","").replaceAll("</a>","").replaceAll("</span>","").trim());
         }
     }
 
