@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
+import com.alibaba.fastjson.JSON;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class InvalidUrlCheckingService {
     /**
      * 判断是否失效、失效则数据库中删除
      *
-     * @param movieNameAndUrlModels
+     * @param
      * @return
      * @throws Exception
      */
@@ -118,7 +119,9 @@ public class InvalidUrlCheckingService {
                 }
             } else {
                 //将有用的信息返回
-                arrayList.add(movieNameAndUrlModel);
+                com.libbytian.pan.system.model.MovieNameAndUrlModel movieNameAndUrlModel1 = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
+
+                arrayList.add(movieNameAndUrlModel1);
             }
             log.info("校验完毕");
 

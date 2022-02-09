@@ -54,7 +54,7 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
-        log.debug("-------------->开始爬取 莉莉<--------------------");
+        log.info("-------------->开始爬取 莉莉<--------------------");
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), CharsetUtil.UTF_8);
         String url = liliUrl.concat(WebPageTagConstant.LILI_URL_PARAM.getType()).concat(encode);
