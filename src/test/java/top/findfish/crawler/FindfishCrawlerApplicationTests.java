@@ -21,7 +21,7 @@ import java.util.UUID;
 class FindfishCrawlerApplicationTests {
 
 
-    @Qualifier("jsoupUnreadServiceImpl")
+    @Qualifier("jsoupAiDianyingServiceImpl")
     @Autowired
     ICrawlerCommonService jsoupAiDianyingServiceImpl;
 //
@@ -49,6 +49,8 @@ class FindfishCrawlerApplicationTests {
     @Test
     void contextLoads() throws Exception {
 
+
+        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
 //
 //        StringBuilder builder = new StringBuilder();
 ////        builder.append("REDIS_MAP:ACCOUNT_LOCK:").append("[256660d60d9e44c39a54e77994b2314f]");
