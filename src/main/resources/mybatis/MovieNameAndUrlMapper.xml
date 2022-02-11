@@ -37,10 +37,9 @@
         <include refid="Base_Column_List"/>
         FROM  ${tablename}
         WHERE movie_name =  ${"'"+movieName+"'"}
-        <if test="wangPanUrl != null ">
-            and wangpan_url = ${"'"+wangPanUrl+"'"}
-        </if>
-        LIMIT 10
+        AND title_name = ${"'"+titleName+"'"}
+        AND pan_source = ${"'"+panSource+"'"}
+        LIMIT 20
     </select>
 
 

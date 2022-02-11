@@ -2,6 +2,7 @@ package top.findfish.crawler.moviefind.jsoup.lili;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.CharsetUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
@@ -45,7 +45,7 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
 
-    private final InvalidUrlCheckingService invalidUrlCheckingService;
+//    private final InvalidUrlCheckingService invalidUrlCheckingService;
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
@@ -113,7 +113,15 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
             //countChild 计数，后续获取指定位数索引使用
             int countChild = 0;
             for (Node node : nodes) {
-                if (element.childNodeSize() == 1 || element.childNodeSize() == 2){
+                //有可能 因为资源 无提取码 在 childNodeSize == 2时 需额外加校验
+                if (element.childNodeSize() == 2 && element.childNode(1).toString().contains("https")){
+                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+                    movieNameAndUrlModel.setTitleName(element.childNode(0).toString().replaceAll("&nbsp;","").trim());
+                    this.setObjectParam(element,movieNameAndUrlModel,movieUrl,finalMovieName,countChild);
+                    list.add(movieNameAndUrlModel);
+                    break;
+                }
+                else if (element.childNodeSize() == 1 || element.childNodeSize() == 2){
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                     movieNameAndUrlModel.setTitleName(WebPageTagConstant.SHIPIN_CHINA.getType());
                     this.setObjectParam(element,movieNameAndUrlModel,movieUrl,finalMovieName,countChild);
@@ -161,15 +169,19 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
                 set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.LiLi_TABLENAME);
-                        //删除无效数据  删除是要做的 删除的主要用处在于电视剧更新 级数问题。 后面应当抓到删除的逻辑 或者定时批量删除
-                        /** movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);*/
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.LiLi_TABLENAME,proxyIpAndPort);
                         CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.LiLi_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {
+                                ArrayList arrayList = new ArrayList();
+                                movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
+                                    com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
+                                    arrayList.add(findFishMovieNameAndUrlModel);
+                                });
+
                                 redisTemplate.opsForValue().set(XiaoYouConstant.LILI.getType() + searchMovieName,
-                                        invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.LiLi_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(2L));
+                                        arrayList, Duration.ofHours(2L));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

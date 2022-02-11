@@ -2,6 +2,7 @@ package top.findfish.crawler.moviefind.jsoup.unread;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -177,14 +178,19 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                     return;
                 }
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrlsWithTitleName(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
-                //删除无效数据  用百度盘判断
-//                movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrlsWithTitleName(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME,proxyIpAndPort);
+
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
                 List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.WEIDU_TABLENAME, searchMovieName);
+
+                ArrayList arrayList = new ArrayList();
+                movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
+                    com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
+                    arrayList.add(findFishMovieNameAndUrlModel);
+                });
+
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("unread::" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.WEIDU_TABLENAME, movieNameAndUrlModels,
-                        proxyIpAndPort), Duration.ofHours(2L));
+                redisTemplate.opsForValue().set("unread::" + searchMovieName, arrayList, Duration.ofHours(2L));
             }
         } catch (Exception e) {
             log.error("docment is null" + e.getMessage());

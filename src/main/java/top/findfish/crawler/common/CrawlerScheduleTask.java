@@ -83,10 +83,10 @@ public class CrawlerScheduleTask {
 
         //获取到用户查询的关键词实体类
         List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-1 00:00:15", "2022-1-10 10:01:16");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-20 12:00:15", "2022-1-20 17:02:16");
 
 //        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
-//        movieModel.setSearchName("钢铁侠");
+//        movieModel.setSearchName("无法攻略的女人");
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
 //        systemUserSearchMovieModelList.add(movieModel);
 
@@ -104,10 +104,10 @@ public class CrawlerScheduleTask {
         final String[] finalIpAndPort = {ipAndPort};
         //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
         //不建议使用parallelStream()
-        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
-                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], false);
+                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
                 } catch (Exception e) {
                     randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
                     ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
