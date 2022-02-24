@@ -62,7 +62,7 @@ public class CrawlerScheduleTask {
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
 
-    @Scheduled(cron = "0 0 1/2 * * ? ")
+    @Scheduled(cron = "0 0 0/2 * * ? ")
     private void crawlerMovieTasks() throws InterruptedException {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
@@ -86,7 +86,7 @@ public class CrawlerScheduleTask {
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-20 12:00:15", "2022-1-20 17:02:16");
 
 //        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
-//        movieModel.setSearchName("无法攻略的女人");
+//        movieModel.setSearchName("卡段说过");
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
 //        systemUserSearchMovieModelList.add(movieModel);
 
@@ -129,7 +129,7 @@ public class CrawlerScheduleTask {
      */
 //    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行  SQ服务器用奇数
 //    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点执行  HS服务器用偶数
-    @Scheduled(cron = "0 0 12 1/2 * ? ")
+    @Scheduled(cron = "0 0 12 2/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
