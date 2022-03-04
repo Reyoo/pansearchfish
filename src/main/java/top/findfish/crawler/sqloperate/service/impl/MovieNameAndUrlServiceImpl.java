@@ -52,8 +52,8 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
             return;
         }
 
-        movieNameAndUrlModels.parallelStream().forEach(t -> {
-                    lock.lock();
+        movieNameAndUrlModels.stream().forEach(t -> {
+
                     try {
                         if (StrUtil.isBlank(t.getMovieName())) {
                             return;
@@ -70,6 +70,8 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                                 movieSize.stream().forEach(movieNameAndUrlModel ->{
 
                                     if (movieNameAndUrlModel.getPanSource().contains("迅雷")){
+                                        Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,false);
+                                        System.out.println(document);
                                         return;
                                     }
 
@@ -102,8 +104,6 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }finally {
-                        lock.unlock();
                     }
                 }
         );

@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -55,6 +57,8 @@ public class CrawlerScheduleTask {
 
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
+    private static Lock lock = new ReentrantLock();
+
     @Value("${findfish.crawler.schedule.range}")
     String scheduleRange;
 
@@ -64,7 +68,7 @@ public class CrawlerScheduleTask {
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
 
-    @Scheduled(cron = "0 0 1/2 * * ? ")
+    @Scheduled(cron = "0 0 0/2 * * ? ")
     private void crawlerMovieTasks() throws Exception {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
@@ -84,13 +88,13 @@ public class CrawlerScheduleTask {
         log.debug("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-20 12:00:15", "2022-1-20 17:02:16");
 
-//        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
-//        movieModel.setSearchName("卡段说过");
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
-//        systemUserSearchMovieModelList.add(movieModel);
+        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
+        movieModel.setSearchName("人世间");
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
+        systemUserSearchMovieModelList.add(movieModel);
 
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
@@ -101,7 +105,7 @@ public class CrawlerScheduleTask {
 
         //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
         //不建议使用parallelStream()
-        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
                     v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
@@ -126,7 +130,7 @@ public class CrawlerScheduleTask {
      */
 //    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点，晚上22点 执行  SQ服务器用奇数
 //    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点，晚上22点 执行  HS服务器用偶数
-    @Scheduled(cron = "0 0 12,22 1/2 * ? ")
+    @Scheduled(cron = "0 0 12,22 2/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
@@ -141,32 +145,41 @@ public class CrawlerScheduleTask {
     }
 
 
-    public String getProxyIpAndPort(){
+    public String getProxyIpAndPort() throws InterruptedException {
         String ipAndPort = null;
-        final AtomicInteger[] randomIndex = {new AtomicInteger()};
-        this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-        if (CollectionUtil.isNotEmpty(ipAndPorts)) {
-            randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
-            ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
-            int a = randomIndex[0].get();
-            ipAndPort = ipAndPortList.get(a);
-            //判断IP是否能成功访问莉莉
-            String url = "http://a12.66perfect.com/?s=%E6%89%AB%E9%BB%91%E9%A3%8E%E6%9A%B4";
-            Document document = JsoupFindfishUtils.getDocument(url, ipAndPort, true);
-            //判断IP是否能访问到路径
-            if (document == null){
-                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-                this.getProxyIpAndPort();
+            final AtomicInteger[] randomIndex = {new AtomicInteger()};
+            this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+            if (CollectionUtil.isNotEmpty(ipAndPorts)) {
+                randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
+                ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
+                int a = randomIndex[0].get();
+                ipAndPort = ipAndPortList.get(a);
+                //判断IP是否能成功访问莉莉
+                String url = "http://a12.66perfect.com/?s=%E5%86%9B%E8%88%B0%E5%B2%9B";
+                Document document = JsoupFindfishUtils.getDocument(url, ipAndPort, true);
+                //判断IP是否能访问到路径
+                if (document == null){
+                    redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+                    System.out.println("========null 睡眠30秒=====  删除IP ："+ipAndPort);
+                    Thread.sleep(30000);
+                    this.getProxyIpAndPort();
+                }
+
+                String text = null;
+                try {
+                    text = document.text();
+                } catch (Exception e) {
+                    System.out.println("======="+document+"========");
+                }
+                //判断IP是否正常
+                if (!text.startsWith("A12 Site ")){
+                    redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+                    System.out.println("========睡眠30秒=====  删除IP ："+ipAndPort);
+                    Thread.sleep(30000);
+                    this.getProxyIpAndPort();
+                }
             }
 
-            String text = document.text();
-            //判断IP是否正常
-            if (!text.startsWith("A12 Site ")){
-                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-                this.getProxyIpAndPort();
-            }
-
-        }
         return  ipAndPort;
     }
 

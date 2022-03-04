@@ -130,7 +130,9 @@
             updatetime = now()
         </trim>
         WHERE
-        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"} and wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"}
+        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"}
+        and pan_source =${"'"+movieNameAndUrlModel.panSource+"'"}
+        and title_name =${"'"+movieNameAndUrlModel.titleName+"'"}
     </update>
 
 
