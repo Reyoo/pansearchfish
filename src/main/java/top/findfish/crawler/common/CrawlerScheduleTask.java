@@ -101,7 +101,7 @@ public class CrawlerScheduleTask {
 
         //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
         //不建议使用parallelStream()
-        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
                     v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
