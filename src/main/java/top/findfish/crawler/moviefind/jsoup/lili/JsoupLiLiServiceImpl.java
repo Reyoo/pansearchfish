@@ -60,15 +60,6 @@ public class JsoupLiLiServiceImpl implements ICrawlerCommonService {
         String url = liliUrl.concat(WebPageTagConstant.LILI_URL_PARAM.getType()).concat(encode);
         try {
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);
-            String text = document.text();
-            log.info(text);
-
-            //如果访问出现以下字符串，说明IP不可用，从库里删除
-            if (text.contains("Main About us Home Page") || text.contains("Apache2 Ubuntu Default Page") || text.contains("Name Last modified Size")){
-                redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
-                return movieList;
-            }
-
             //拿到查询结果 片名及链接
             Elements elements = document.getElementsByTag(WebPageTagConstant.HTML_TAG_A.getType());
 

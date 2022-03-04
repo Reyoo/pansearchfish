@@ -4,6 +4,7 @@ package top.findfish.crawler.common;
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
@@ -62,8 +64,8 @@ public class CrawlerScheduleTask {
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
 
-    @Scheduled(cron = "0 0 0/2 * * ? ")
-    private void crawlerMovieTasks() throws InterruptedException {
+    @Scheduled(cron = "0 0 1/2 * * ? ")
+    private void crawlerMovieTasks() throws Exception {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
         map.put("小悠", jsoupXiaoyouServiceImpl);
@@ -92,19 +94,14 @@ public class CrawlerScheduleTask {
 
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
-        String ipAndPort = null;
         final AtomicInteger[] randomIndex = {new AtomicInteger()};
-        this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
-        if (CollectionUtil.isNotEmpty(ipAndPorts)) {
-            randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
-            ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
-            ipAndPort = ipAndPortList.get(randomIndex[0].get());
-        }
+        String proxyIpAndPort = this.getProxyIpAndPort();
+        final String[] finalIpAndPort = {proxyIpAndPort};
 
-        final String[] finalIpAndPort = {ipAndPort};
+
         //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
         //不建议使用parallelStream()
-        systemUserSearchMovieModelList.stream().forEach(systemUserSearchMovieModel -> {
+        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
             map.forEach((k, v) -> {
                 try {
                     v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
@@ -127,9 +124,9 @@ public class CrawlerScheduleTask {
     /**
      * 奇数天 每日12：00后 将更新电视剧前一天的重复数据删除
      */
-//    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点执行  SQ服务器用奇数
-//    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点执行  HS服务器用偶数
-    @Scheduled(cron = "0 0 12 2/2 * ? ")
+//    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点，晚上22点 执行  SQ服务器用奇数
+//    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点，晚上22点 执行  HS服务器用偶数
+    @Scheduled(cron = "0 0 12,22 1/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
@@ -143,5 +140,34 @@ public class CrawlerScheduleTask {
 
     }
 
+
+    public String getProxyIpAndPort(){
+        String ipAndPort = null;
+        final AtomicInteger[] randomIndex = {new AtomicInteger()};
+        this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
+        if (CollectionUtil.isNotEmpty(ipAndPorts)) {
+            randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
+            ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
+            int a = randomIndex[0].get();
+            ipAndPort = ipAndPortList.get(a);
+            //判断IP是否能成功访问莉莉
+            String url = "http://a12.66perfect.com/?s=%E6%89%AB%E9%BB%91%E9%A3%8E%E6%9A%B4";
+            Document document = JsoupFindfishUtils.getDocument(url, ipAndPort, true);
+            //判断IP是否能访问到路径
+            if (document == null){
+                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+                this.getProxyIpAndPort();
+            }
+
+            String text = document.text();
+            //判断IP是否正常
+            if (!text.startsWith("A12 Site ")){
+                redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
+                this.getProxyIpAndPort();
+            }
+
+        }
+        return  ipAndPort;
+    }
 
 }
