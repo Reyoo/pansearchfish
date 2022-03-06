@@ -68,7 +68,7 @@ public class CrawlerScheduleTask {
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
 
-    @Scheduled(cron = "0 0 0/2 * * ? ")
+    @Scheduled(cron = "0 0 1/2 * * ? ")
     private void crawlerMovieTasks() throws Exception {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
@@ -88,39 +88,41 @@ public class CrawlerScheduleTask {
         log.debug("获取用户搜索范围结束时间：{}", endTime);
 
         //获取到用户查询的关键词实体类
-//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
 //        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-20 12:00:15", "2022-1-20 17:02:16");
 
-        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
-        movieModel.setSearchName("人世间");
-        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
-        systemUserSearchMovieModelList.add(movieModel);
+//        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
+//        movieModel.setSearchName("人世间");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
+//        systemUserSearchMovieModelList.add(movieModel);
 
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
         final AtomicInteger[] randomIndex = {new AtomicInteger()};
         String proxyIpAndPort = this.getProxyIpAndPort();
-        final String[] finalIpAndPort = {proxyIpAndPort};
+        if (proxyIpAndPort != null){
+            final String[] finalIpAndPort = {proxyIpAndPort};
+            //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
+            //不建议使用parallelStream()
+            systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
+                map.forEach((k, v) -> {
+                    try {
+                        v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
+                    } catch (Exception e) {
+                        randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
+                        ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
+                        finalIpAndPort[0] = ipAndPortList.get(randomIndex[0].get());
+                        e.printStackTrace();
+                    }
+                });
 
-
-        //经观察，两台服务器分奇偶整小时爬取，资源更新速度适中，为减轻爬取目标服务器压力
-        //不建议使用parallelStream()
-        systemUserSearchMovieModelList.parallelStream().forEach(systemUserSearchMovieModel -> {
-            map.forEach((k, v) -> {
-                try {
-                    v.saveOrFreshRealMovieUrl(systemUserSearchMovieModel.getSearchName(), finalIpAndPort[0], true);
-                } catch (Exception e) {
-                    randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
-                    ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
-                    finalIpAndPort[0] = ipAndPortList.get(randomIndex[0].get());
-                    e.printStackTrace();
-                }
             });
 
-        });
-
-        log.debug("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        log.debug("词条数量为 {}", systemUserSearchMovieModelList.size());
+            log.info("------------------> {} 定时任务完成", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            log.info("词条数量为 {}", systemUserSearchMovieModelList.size());
+        }else {
+            log.info("======= Redis 中没有IP，请检查获取IP服务 ===========");
+        }
 
     }
 
@@ -130,7 +132,7 @@ public class CrawlerScheduleTask {
      */
 //    @Scheduled(cron = "0 0 12 1/2 * ? ")  //奇数天中午12点，晚上22点 执行  SQ服务器用奇数
 //    @Scheduled(cron = "0 0 12 2/2 * ? ")  //偶数天中午12点，晚上22点 执行  HS服务器用偶数
-    @Scheduled(cron = "0 0 12,22 2/2 * ? ")
+    @Scheduled(cron = "0 0 12,22 1/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.LiLi_TABLENAME);
@@ -145,11 +147,14 @@ public class CrawlerScheduleTask {
     }
 
 
-    public String getProxyIpAndPort() throws InterruptedException {
+    public String getProxyIpAndPort(){
+        boolean result = false;
         String ipAndPort = null;
+        while (!result){
             final AtomicInteger[] randomIndex = {new AtomicInteger()};
             this.ipAndPorts = redisTemplate.opsForHash().keys("use_proxy");
             if (CollectionUtil.isNotEmpty(ipAndPorts)) {
+
                 randomIndex[0].set(new Random().nextInt(ipAndPorts.size()));
                 ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
                 int a = randomIndex[0].get();
@@ -158,29 +163,24 @@ public class CrawlerScheduleTask {
                 String url = "http://a12.66perfect.com/?s=%E5%86%9B%E8%88%B0%E5%B2%9B";
                 Document document = JsoupFindfishUtils.getDocument(url, ipAndPort, true);
                 //判断IP是否能访问到路径
-                if (document == null){
+                if (document == null || !document.text().startsWith("A12 Site ")){
                     redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-                    System.out.println("========null 睡眠30秒=====  删除IP ："+ipAndPort);
-                    Thread.sleep(30000);
-                    this.getProxyIpAndPort();
+                    System.out.println("======== 睡眠30秒=====  删除IP ："+ipAndPort);
+                }else {
+                    result = true;
                 }
 
-                String text = null;
-                try {
-                    text = document.text();
-                } catch (Exception e) {
-                    System.out.println("======="+document+"========");
-                }
-                //判断IP是否正常
-                if (!text.startsWith("A12 Site ")){
-                    redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
-                    System.out.println("========睡眠30秒=====  删除IP ："+ipAndPort);
-                    Thread.sleep(30000);
-                    this.getProxyIpAndPort();
-                }
+            }else {
+                result = true;
             }
+        }
 
         return  ipAndPort;
+
     }
+
+
+
+
 
 }
