@@ -2,6 +2,7 @@ package top.findfish.crawler;
 
 
 //
+
 import org.junit.jupiter.api.Test;
 
 import org.redisson.api.RLock;
@@ -50,7 +51,15 @@ class FindfishCrawlerApplicationTests {
     void contextLoads() throws Exception {
 
 
-        jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
+//      jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
+//      https://cloud.tencent.com/developer/article/1338265
+//        int i = Integer.SIZE - 3;
+        // 左移  等于乘以2的n次方  右移 等于除以2的n次方
+//        int i1 = -1 << i;
+//        System.out.println(i1);
+
+//        011 | 100  按位或  111  7
+//        System.out.println(3 | 4);
 //
 //        StringBuilder builder = new StringBuilder();
 ////        builder.append("REDIS_MAP:ACCOUNT_LOCK:").append("[256660d60d9e44c39a54e77994b2314f]");
