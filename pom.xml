@@ -12,7 +12,7 @@
     <groupId>top.findfish</groupId>
     <artifactId>crawler</artifactId>
     <version>1.11</version>
-    <name>indfishCrawler</name>
+    <name>findfishCrawler</name>
     <description>crawler for findfish</description>
 
     <properties>
