@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CrawlerScheduleTask {
 
-
     private final ISystemUserSearchMovieService systemUserSearchMovieService;
 
     @Qualifier("jsoupAiDianyingServiceImpl")

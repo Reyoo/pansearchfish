@@ -1,38 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>top.findfish</groupId>
+        <artifactId>top-findfish-findfish</artifactId>
+        <version>v2.0</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.findfish</groupId>
-    <artifactId>crawler</artifactId>
-    <version>1.11</version>
-    <name>findfishCrawler</name>
+
+    <artifactId>findfish-crawler</artifactId>
     <description>crawler for findfish</description>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <com.baomidou.mybatis.version>3.4.3.4</com.baomidou.mybatis.version>
-        <com.alibaba.druid.version>1.2.8</com.alibaba.druid.version>
-        <com.alibaba.fastjson.version>1.2.73</com.alibaba.fastjson.version>
-        <cn.hutool-all.version>5.7.17</cn.hutool-all.version>
-        <org.jsoup.version>1.14.3</org.jsoup.version>
-        <net.sourceforge.htmlunit.version>2.49.1</net.sourceforge.htmlunit.version>
-        <org.seleniumhq.selenium.version>3.141.59</org.seleniumhq.selenium.version>
-        <httpclient.version>4.5.13</httpclient.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
-        <com.codeborne.phantomjsdriver.version>1.4.4</com.codeborne.phantomjsdriver.version>
-        <spring-cloud.version>2021.0.1</spring-cloud.version>
-    </properties>
 
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -54,7 +36,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>2.2.6.RELEASE</version>
         </dependency>
 
 
@@ -62,7 +43,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>2.2.6.RELEASE</version>
         </dependency>
 
 
@@ -71,11 +51,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-<!--        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                </dependency>-->
 
 
         <dependency>
@@ -106,32 +86,28 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
-   <!--     <dependency>
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.16.7</version>
         </dependency>
-
 
 
         <!-- mybatisPlus 核心库 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${com.baomidou.mybatis.version}</version>
         </dependency>
         <!--配置druid数据源-->
         <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>${com.alibaba.druid.version}</version>
         </dependency>
 
 
@@ -139,27 +115,23 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${com.alibaba.fastjson.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-core -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>${cn.hutool-all.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>${org.jsoup.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>${net.sourceforge.htmlunit.version}</version>
         </dependency>
 
 
@@ -167,57 +139,40 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>${org.seleniumhq.selenium.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>phantomjsdriver</artifactId>
-            <version>${com.codeborne.phantomjsdriver.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
     </dependencies>
 
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>${spring-cloud.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
 
 </project>

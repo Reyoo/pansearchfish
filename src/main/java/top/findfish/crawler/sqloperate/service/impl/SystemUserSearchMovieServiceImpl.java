@@ -17,7 +17,10 @@ import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+/**
+ * @author SunQi
+ */
+@Service("systemUserSearchMovieServiceImpl")
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional(timeout = 3000,propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
