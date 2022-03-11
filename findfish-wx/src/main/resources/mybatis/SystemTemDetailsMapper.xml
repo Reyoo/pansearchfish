@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.libbytian.pan.system.mapper.SystemTemDetailsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        <id column="templatedetails_id" property="temdetailsId"/>
+        <result column="templatedetails_keyword" property="keyword"/>
+        <result column="templatedetails_value" property="keywordToValue"/>
+        <result column="createtime" property="createtime"/>
+        <result column="templatedetails_status" property="temdetailsstatus"/>
+        <result column="show_order" property="showOrder"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        d.templatedetails_id AS temdetailsId,
+         d.templatedetails_keyword AS keyword,
+         d.templatedetails_value AS keywordToValue,
+         d.createtime AS createtime,
+         d.templatedetails_status AS temdetailsstatus,
+         d.show_order AS showOrder,
+         d.enable_flag AS enableFlag
+    </sql>
+    <update id="updateTempDetailsWithModel" parameterType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        UPDATE
+            sys_temdetails
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test="keyword != null and keyword != ''">
+                templatedetails_keyword =#{keyword},
+            </if>
+            <if test="keywordToValue != null and keywordToValue != ''">
+                templatedetails_value =#{keywordToValue},
+            </if>
+
+            <if test="createtime != null">
+                createtime =#{createtime},
+            </if>
+
+            <if test="temdetailsstatus != null ">
+                templatedetails_status =#{temdetailsstatus},
+            </if>
+
+            <if test="showOrder != null ">
+                show_order =#{showOrder},
+            </if>
+
+            <if test="enableFlag != null  ">
+                enable_flag =#{enableFlag},
+            </if>
+
+        </trim>
+        WHERE
+        templatedetails_id =#{temdetailsId}
+
+    </update>
+
+
+    <select id="getTemDetails" parameterType="com.libbytian.pan.system.model.SystemTemplateModel"
+            resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_temdetails d
+        LEFT JOIN tem_temdetails tt ON d.templatedetails_id = tt.templatedetails_id
+        LEFT JOIN sys_template t ON tt.template_id = t.template_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="templateid != null and templateid != ''">
+                AND t.template_id =#{templateid}
+            </if>
+            <if test="templatename != null and templatename != ''">
+                AND t.template_name =#{templatename}
+            </if>
+            <if test="templatestatus != null and templatestatus != ''">
+                AND t.template_status =#{templatestatus}
+            </if>
+            ORDER BY d.templatedetails_status
+            DESC,
+            d.createtime
+            DESC
+        </trim>
+
+    </select>
+
+    <!-- 根据用户信息查询用户启用状态的模板list-->
+    <select id="findTemDetailsByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel"
+            resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        sys_temdetails d
+        LEFT JOIN tem_temdetails td
+        ON
+        d.templatedetails_id = td.templatedetails_id
+        LEFT JOIN sys_template t
+        ON
+        t.template_id = td.template_id
+        LEFT JOIN user_template ut
+        ON
+        td.template_id = ut.template_id
+        LEFT JOIN sys_user u
+        ON ut.user_id = u.user_id
+        <trim prefix="where" prefixOverrides="and|">
+            t.template_status = 1
+            <if test="userId != null and userId != ''">
+                AND u.user_id= #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.user_name =#{username}
+            </if>
+        </trim>
+
+    </select>
+
+
+    <!--用户输入模板详情 关键字  查询模板详情-->
+    <select id="listTemDetailsObjectsByWord" parameterType="com.libbytian.pan.system.model.SystemTemDetailsModel"
+            resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_temdetails d
+        LEFT JOIN tem_temdetails tt ON d.templatedetails_id = tt.templatedetails_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="keyword != null and keyword != ''">
+
+                <bind name="keyword" value="'%' + keyword + '%'"/>
+               AND  d.templatedetails_keyword LIKE #{keyword}
+
+            </if>
+            <if test="keywordToValue != null and keywordToValue != ''">
+
+                <bind name="keywordToValue" value="'%' + keywordToValue + '%'"/>
+                AND d.templatedetails_value LIKE #{keywordToValue}
+
+            </if>
+            <if test="templateId != null and templateId != ''">
+                AND tt.template_id =#{templateId}
+            </if>
+            ORDER BY d.createtime
+        </trim>
+
+    </select>
+
+
+    <select id="selectUserKeywordDetail" parameterType="java.lang.String"
+            resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_temdetails d
+        LEFT JOIN
+        tem_temdetails t ON
+        d.templatedetails_id = t.templatedetails_id
+        LEFT JOIN sys_template st ON
+        st.template_id = t.template_id
+
+        LEFT JOIN user_template ut ON
+        ut.template_id = t.template_id
+        LEFT JOIN sys_user u ON
+        ut.user_id = u.user_id
+
+        WHERE st.template_status = 1
+        AND u.user_name = #{username}
+        AND d.templatedetails_keyword = #{keyword}
+        AND d.show_order != 0
+    </select>
+
+<!--    查询默认模板详情-->
+    <select id="defultTemDetails"  resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_temdetails d
+        WHERE
+        d.show_order = 9
+    </select>
+
+
+
+
+
+    <insert id="insertSystemTemDetails" parameterType="com.libbytian.pan.system.model.SystemTemDetailsModel">
+        INSERT INTO sys_temdetails
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="temdetailsId != null">
+                templatedetails_id,
+            </if>
+            <if test="keyword != null">
+                templatedetails_keyword,
+            </if>
+            <if test="keywordToValue != null">
+                templatedetails_value,
+            </if>
+            <if test="createtime != null">
+                createtime,
+            </if>
+
+            <if test="showOrder != null">
+                show_order,
+            </if>
+
+            <if test="enableFlag != null">
+                enable_flag,
+            </if>
+
+            <if test="temdetailsstatus != null">
+                templatedetails_status,
+            </if>
+
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="temdetailsId != null">
+                #{temdetailsId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="keyword != null">
+                #{keyword,jdbcType=VARCHAR },
+            </if>
+
+            <if test="keywordToValue != null">
+                #{keywordToValue,jdbcType=VARCHAR},
+            </if>
+
+            <if test="createtime != null">
+                #{createtime,jdbcType=VARCHAR},
+            </if>
+
+            <if test="showOrder != null">
+                #{showOrder,jdbcType=VARCHAR},
+            </if>
+
+            <if test="enableFlag != null">
+                #{enableFlag},
+            </if>
+
+            <if test="temdetailsstatus != null">
+                #{temdetailsstatus},
+            </if>
+
+        </trim>
+    </insert>
+
+
+
+
+    <!-- 批量删除 -->
+    <delete id="deleteTemplateDetailsByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel">
+        DELETE
+        FROM
+            sys_temdetails
+        WHERE
+                templatedetails_id IN (
+                SELECT
+                    templatedetails_id
+                FROM
+                    sys_user s
+                        LEFT JOIN user_template ut ON s.user_id = ut.user_id
+                        LEFT JOIN tem_temdetails tt ON tt.template_id = ut.template_id WHERE s.user_id = #{userId}
+            )
+    </delete>
+
+
+
+    <!-- 批量删除 -->
+    <delete id="deleteTemplateDetails" parameterType="String" >
+        DELETE
+        FROM
+            sys_temdetails
+        WHERE
+        templatedetails_id in
+        <foreach collection="list" item="temdetailsId" separator="," open="(" close=")">
+            #{temdetailsId,jdbcType=VARCHAR}
+        </foreach>
+        and
+        show_order = 0
+
+    </delete>
+
+
+</mapper>
