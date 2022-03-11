@@ -1,0 +1,30 @@
+server:
+  port: 8849
+spring:
+  application:
+    name: findfishCrawler
+  profiles:
+#    active: dev
+    active: prod
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://42.192.79.2:38898 # Nacos 服务注册中心地址
+        # 控制台创建命名空间得到的uuid
+#        namespace: 1b21ae2a-dee2-4a42-869a-1499665edc93  #dev
+        namespace: 5b1e8565-7c18-4449-b566-6628846053ec   #prod
+        service: ${spring.application.name}
+      config:
+        server-addr: http://42.192.79.2:38898 # Nacos 作为配置中心地址
+        file-extension: yaml  #指定yaml格式的配置 yml会报错,nacos识别yaml
+        # 加载配置才需要以下配置   # 控制台创建命名空间得到的uuid
+#        namespace: 1b21ae2a-dee2-4a42-869a-1499665edc93  #dev
+        namespace: 5b1e8565-7c18-4449-b566-6628846053ec   #prod
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # actuator暴露所有endpoint
+        include: '*'

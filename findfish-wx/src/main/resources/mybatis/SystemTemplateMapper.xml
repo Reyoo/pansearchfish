@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.libbytian.pan.system.mapper.SystemTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.libbytian.pan.system.model.SystemTemplateModel">
+        <id column="template_id" property="templateid" />
+        <result column="template_name" property="templatename" />
+        <result column="template_createtime" property="templatecreatetime" />
+        <result column="template_lastupdate" property="templatelastupdate" />
+        <result column="template_status" property="templatestatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+         t.template_id AS templateid,
+         t.template_name AS templatename,
+         t.template_createtime AS templatecreatetime,
+         t.template_lastupdate AS templatelastupdate,
+         t.template_status AS templatestatus
+    </sql>
+
+
+    <!-- 根据用户信息查询用户启用状态的模板list-->
+    <select id="listTemplatelByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel" resultType="com.libbytian.pan.system.model.SystemTemplateModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_template  t
+        LEFT JOIN user_template ut
+        ON t.template_id =ut.template_id
+        LEFT JOIN sys_user s
+        ON ut.user_id = s.user_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="userId != null and userId != ''">
+               AND s.user_id= #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND s.user_name =#{username}
+            </if>
+        </trim>
+
+    </select>
+
+
+
+    <!-- 查询所有模板、根据条件查询模板list-->
+    <select id="listTemplatelObjects" parameterType="com.libbytian.pan.system.model.SystemTemplateModel" resultType="com.libbytian.pan.system.model.SystemTemplateModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_template t
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="templateid != null and templateid != ''">
+                AND t.template_id= #{templateid}
+            </if>
+            <if test="templatename != null and templatename != ''">
+                AND t.template_name =#{templatename}
+            </if>
+        </trim>
+
+    </select>
+
+
+    <select id="listTemplatelByUserOnUse" parameterType="com.libbytian.pan.system.model.SystemUserModel" resultType="com.libbytian.pan.system.model.SystemTemplateModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_template  t
+        LEFT JOIN user_template ut
+        ON t.template_id =ut.template_id
+        LEFT JOIN sys_user s
+        ON ut.user_id = s.user_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="userId != null and userId != ''">
+                AND s.user_id= #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND s.user_name =#{username}
+            </if>
+
+                AND t.template_status =1
+        </trim>
+
+    </select>
+
+
+
+    <!-- 批量删除 -->
+    <delete id="deleteTemplateByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel">
+        DELETE
+        FROM
+            sys_template
+        WHERE
+                template_id IN ( SELECT ut.template_id FROM user_template ut LEFT JOIN sys_user u ON ut.user_id = u.user_id WHERE u.user_id =#{userId} )
+    </delete>
+
+
+
+    <!-- 查询详情ID对应的模板-->
+    <select id="getTemplateById" parameterType="String" resultType="com.libbytian.pan.system.model.SystemTemplateModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_template t
+        LEFT JOIN tem_temdetails tt
+        ON t.template_id = tt.template_id
+        LEFT JOIN sys_temdetails td ON tt.templatedetails_id = td.templatedetails_id
+        WHERE td.templatedetails_id = #{temdetailsId}
+    </select>
+
+
+
+    <!-- 查询全部模板-->
+    <select id="getAllTemplate" resultType="com.libbytian.pan.system.model.SystemTemplateModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_template t
+    </select>
+
+</mapper>
