@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.libbytian.pan.system.mapper.SystemRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.libbytian.pan.system.model.SystemRoleModel">
+        <id column="role_id" property="roleId" />
+        <result column="role_name" property="roleName" />
+        <result column="role_status" property="roleStatus" />
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+         r.role_id AS roleId,
+         r.role_name AS roleName,
+         r.show_name AS showName,
+         r.role_status AS roleStatus,
+         r.createtime AS createTime,
+        r.allowremove AS allowremove
+    </sql>
+
+
+
+
+    <select id="getRoles" parameterType="com.libbytian.pan.system.model.SystemRoleModel"
+            resultType="com.libbytian.pan.system.model.SystemRoleModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_role r
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="roleId != null and roleId != ''">
+                AND r.role_id= #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                AND r.role_name =#{roleName}
+            </if>
+            <if test="showName != null and showName != ''">
+                AND r.show_name =#{showName}
+            </if>
+            <if test="roleStatus != null and roleStatus != ''">
+                AND r.role_status =#{roleStatus}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND r.createtime =#{createTime}
+            </if>
+
+        </trim>
+
+    </select>
+
+
+    <select id="getRolesPage" parameterType="com.libbytian.pan.system.model.SystemRoleModel"
+            resultType="com.libbytian.pan.system.model.SystemRoleModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_role r
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="roleId != null and userId != ''">
+                AND r.role_id= #{roleId}
+            </if>
+            <if test="roleName != null and username != ''">
+                AND r.role_name =#{roleName}
+            </if>
+            <if test="showName != null and mobile != ''">
+                AND r.show_name =#{showName}
+            </if>
+            <if test="roleStatus != null and lastLoginTime != ''">
+                AND r.role_status =#{roleStatus}
+            </if>
+            <if test="createTime != null ">
+                AND r.createtime =#{createTime}
+            </if>
+
+        </trim>
+
+    </select>
+
+
+
+
+
+    <select id="listRolesByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel"
+            resultType="com.libbytian.pan.system.model.SystemRoleModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_role r
+        LEFT JOIN sys_user_role ur ON r.role_id = ur.role_id
+        LEFT JOIN sys_user u ON ur.user_id = u.user_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="userId != null and userId != ''">
+                AND u.user_id= #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.user_name =#{username}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                AND u.user_mobile =#{mobile}
+            </if>
+            <if test="lastLoginTime != null">
+                AND u.user_lastlogin_time =#{lastLoginTime}
+            </if>
+            <if test="createTime != null ">
+                AND u.createTime =#{createTime}
+            </if>
+            <if test="status != null and status != ''">
+                AND u.status =#{status}
+            </if>
+            <if test="actTime != null">
+                AND u.act_time =#{actTime}
+            </if>
+
+        </trim>
+
+    </select>
+
+    <!-- 根据用户信息查询用户启用状态的模板list-->
+    <select id="selectUserRoleByUser" parameterType="com.libbytian.pan.system.model.SystemRoleModel" resultType="com.libbytian.pan.system.model.SystemRoleModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+
+        FROM
+        sys_role r
+        LEFT JOIN sys_user_role d
+        ON r.role_id  = d.role_id
+        LEFT JOIN sys_user u
+        ON d.user_id = u.user_id
+        <trim prefix="where" prefixOverrides="and|">
+            <if test="userId != null and userId != ''">
+                AND u.user_id= #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.user_name =#{username}
+            </if>
+            <if test="status != null and status != ''">
+                AND u.status =#{status}
+            </if>
+        </trim>
+    </select>
+
+
+
+    <insert id="insertFindFishRole" parameterType="com.libbytian.pan.system.model.SystemRoleModel">
+        INSERT INTO sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="showName != null">
+                show_name,
+            </if>
+
+            <if test="roleStatus != null">
+                role_status,
+            </if>
+
+            <if test="createTime != null">
+                createtime,
+            </if>
+
+            <if test="allowremove != null">
+                allowremove,
+            </if>
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=VARCHAR},
+            </if>
+
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="showName != null">
+                #{showName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="roleStatus != null">
+                #{roleStatus,jdbcType=TINYINT},
+            </if>
+
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="allowremove != null">
+                #{allowremove,jdbcType=TINYINT},
+            </if>
+
+        </trim>
+
+
+    </insert>
+
+
+
+
+    <delete id="deleteFindFishRole" parameterType="com.libbytian.pan.system.model.SystemRoleModel">
+        DELETE
+        FROM sys_role
+        <trim prefix="WHERE(" prefixOverrides="and|">
+            <if test="roleId != null and roleId != ''">
+                AND role_id= #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                AND role_name= #{roleName}
+            </if>
+            <if test="showName != null and showName != ''">
+                AND show_name= #{showName}
+            </if>)
+        </trim>
+
+
+    </delete>
+
+</mapper>

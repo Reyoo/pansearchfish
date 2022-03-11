@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.libbytian.pan.system.mapper.SystemKeywordMapper">
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        k.keyword_id  AS keywordId,
+        k.start_time AS startTime,
+        k.end_time AS endTime,
+        k.fans_key AS fansKey
+    </sql>
+
+
+    <select id="keywordByUser" parameterType="java.lang.String"
+            resultType="com.libbytian.pan.system.model.SystemKeywordModel">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        sys_keyword k
+        LEFT JOIN sys_user_keyword  uk ON
+        k.keyword_id = uk.keyword_id
+        LEFT JOIN sys_user u ON u.user_id = uk.user_id
+        WHERE u.user_name = #{username}
+
+    </select>
+
+    <update id="updateKeyword" parameterType="com.libbytian.pan.system.model.SystemKeywordModel">
+        UPDATE
+        sys_keyword
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test="startTime != null and startTime != ''">
+                start_time =#{startTime},
+            </if>
+            <if test="endTime != null and endTime != ''">
+                end_time =#{endTime},
+            </if>
+
+            <if test="fansKey != null and fansKey != ''">
+                fans_key =#{fansKey},
+            </if>
+        </trim>
+        WHERE
+        keyword_id =#{keywordId}
+    </update>
+
+
+    <insert id="insertKeyword" parameterType="com.libbytian.pan.system.model.SystemKeywordModel">
+        INSERT INTO sys_keyword
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="keywordId != null">
+                keyword_id,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+
+            <if test="endTime != null">
+                end_time,
+            </if>
+
+            <if test="fansKey != null">
+                fans_key,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="keywordId != null">
+                #{keywordId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=VARCHAR},
+            </if>
+
+            <if test="endTime != null">
+                #{endTime,jdbcType=VARCHAR},
+            </if>
+
+            <if test="fansKey != null">
+                #{fansKey,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!-- 批量删除 -->
+    <delete id="deleteKeywordByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel">
+        DELETE
+        FROM
+            sys_keyword
+        WHERE
+                keyword_id IN ( SELECT keyword_id FROM sys_user_keyword LEFT JOIN sys_user ON sys_user_keyword.user_id = sys_user.user_id WHERE sys_user.user_id = #{userId} )
+    </delete>
+
+</mapper>
