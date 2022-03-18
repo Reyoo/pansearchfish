@@ -48,6 +48,7 @@ public class AccessDecisionService {
 //        whiteList.add("/userkey/**");
         whiteList.add("/fantasy/**");
         whiteList.add("/sys/wx/**");
+        whiteList.add("/home/**");
 
 
         for (String url : whiteList) {

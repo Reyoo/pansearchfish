@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
     List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(String tablename , String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param("tableName") String tableName , @Param("movieName") String movieName);
 
     /**
      * 批量新增

@@ -23,9 +23,7 @@ import java.time.LocalDateTime;
 @TableName("user_movie_search")
 public class SystemUserSearchMovieModel extends Model<SystemUserSearchMovieModel> implements Serializable {
 
-
     private static final long serialVersionUID = 1L;
-
 
     /**
      * 用户搜索关键字

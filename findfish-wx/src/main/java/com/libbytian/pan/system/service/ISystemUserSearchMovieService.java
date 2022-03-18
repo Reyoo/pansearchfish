@@ -2,6 +2,7 @@ package com.libbytian.pan.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
+import com.libbytian.pan.system.vo.TopNVO;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +55,5 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
     /**
      * 根据时间范围查询 搜索频率最高的10条记录
       */
-
+    List<TopNVO>  listTopNSearchRecord(Integer topLimit);
 }

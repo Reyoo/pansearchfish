@@ -2,10 +2,12 @@ package com.libbytian.pan.system.service.impl;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.libbytian.pan.system.mapper.SystemUserSearchMovieMapper;
 import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
+import com.libbytian.pan.system.vo.TopNVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -15,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,11 +27,10 @@ import java.util.concurrent.TimeUnit;
 public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSearchMovieMapper, SystemUserSearchMovieModel> implements ISystemUserSearchMovieService {
 
     private final SystemUserSearchMovieMapper systemUserSearchMovieMapper;
-
-
     private final RedissonClient redissonClient;
 
     private final static String DISTRIBUTED_LOCK_SEARCH_COUNT = "DISTRIBUTED_LOCK_SEARCH_COUNT";
+    private final static String HOME_PAGE_URL = "http://findfish.top/home/movie/find/a/";
 
     @Override
     public void userSearchMovieCountInFindfish(String searchStr)   {
@@ -125,5 +127,19 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
     @Override
     public List<SystemUserSearchMovieModel> listUserSearchMovieBySearchDateRange(String beginTime, String endTime) {
         return systemUserSearchMovieMapper.listUserSearchMovieBySearchDateRange(beginTime, endTime);
+    }
+
+
+    @Override
+    public List<TopNVO> listTopNSearchRecord(Integer topLimit) {
+        QueryWrapper<SystemUserSearchMovieModel> queryWrapper = new QueryWrapper();
+        queryWrapper.lambda().orderByAsc(SystemUserSearchMovieModel::getLastSearchTime);
+        queryWrapper.last("limit 20");
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModels = systemUserSearchMovieMapper.selectList(queryWrapper);
+        List<TopNVO> topNVOList = new ArrayList<>();
+        systemUserSearchMovieModels.forEach( t ->{
+            topNVOList.add(TopNVO.builder().searchName(t.getSearchName()).showOrder(1).showStatus(true).showUrl(HOME_PAGE_URL.concat(t.getSearchName())).build());
+        });
+        return topNVOList;
     }
 }

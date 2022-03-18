@@ -35,10 +35,10 @@ public class AsyncSearchCachedComponent {
 
 
     private final IFindMovieInAiDianYing iFindMovieInAiDianYing;
-    private final IFindMovieInSumsu iFindMovieInSumsu;
+//    private final IFindMovieInSumsu iFindMovieInSumsu;
     private final IFindMovieInUnread iFindMovieInUnread;
     private final IFindMovieInXiaoyou iFindMovieInXiaoyou;
-    private final IFindMovieInYoujiang iFindMovieInYoujiang;
+//    private final IFindMovieInYoujiang iFindMovieInYoujiang;
     private final IFindMovieInLiLi iFindMovieInLiLi;
 
 
@@ -74,7 +74,6 @@ public class AsyncSearchCachedComponent {
             return combineResultMap;
             default:
                 return new HashMap<>();
-
         }
 
 
