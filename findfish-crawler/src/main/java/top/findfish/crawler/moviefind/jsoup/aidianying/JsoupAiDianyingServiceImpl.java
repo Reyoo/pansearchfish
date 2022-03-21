@@ -1,5 +1,6 @@
 package top.findfish.crawler.moviefind.jsoup.aidianying;
 
+import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.constant.WebPageTagConstant;
+import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
@@ -100,7 +102,14 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         ArrayList<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList();
         log.info("爱电影--》" + secondUrlLxxh);
         Document secorndDocument = JsoupFindfishUtils.getDocumentBysimulationIe(secondUrlLxxh,proxyIpAndPort,useProxy);
-        String finalMovieName = secorndDocument.getElementsByTag("title").first().text();
+        String movieName = secorndDocument.getElementsByTag("title").first().text();
+        //爱电影截掉标题中的固定后缀
+        if (movieName.contains(XiaoYouConstant.AIDIANYING_STR_WITH_SGIN.getType())) {
+            movieName = movieName.split(XiaoYouConstant.AIDIANYING_STR_WITH_SGIN.getType())[0];
+        }
+        String finalMovieName = movieName;
+
+
         Elements secorndAttr = secorndDocument.getElementsByTag("p");
 
         //爱电影可能设置了屏蔽高访问IP，为细水长流不建议该站爬取过于频繁
@@ -156,13 +165,17 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                 return;
             }
             //插入更新可用数据
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.AIDIANYING_TABLENAME);
-//            movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.AIDIANYING_TABLENAME);
-            //更新后从数据库查询后删除 片名相同但更新中的 无效数据
+            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.AIDIANYING_TABLENAME,proxyIpAndPort);
+
             List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.AIDIANYING_TABLENAME, searchMovieName);
-            redisTemplate.opsForValue().set("aidianying::"+ searchMovieName.trim() ,
-                    invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.AIDIANYING_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
-                    Duration.ofHours(2L));
+
+            ArrayList arrayList = new ArrayList();
+            movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
+                MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), MovieNameAndUrlModel.class);
+                arrayList.add(findFishMovieNameAndUrlModel);
+            });
+
+            redisTemplate.opsForValue().set("aidianying::"+ searchMovieName.trim() , arrayList, Duration.ofHours(2L));
         } catch (Exception e) {
             try {
                 redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
@@ -181,4 +194,3 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
 
 }
-

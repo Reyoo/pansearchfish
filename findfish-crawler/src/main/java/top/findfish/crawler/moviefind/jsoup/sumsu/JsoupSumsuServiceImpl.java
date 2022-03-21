@@ -138,7 +138,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     }
                 });
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.LEIFENGJUN_TABLENAME,proxyIpAndPort);
 //                //删除无效数据
 //                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
@@ -172,7 +172,6 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
         List<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
         try {
             String url = "http://520.sumsu.cn/forum.php?mod=viewthread&tid=" + times + "&highlight=%BD%AB%BE%FC&mobile=2";
-//                System.out.println(url);
             HttpHeaders requestSumsuHeaders = new HttpHeaders();
             requestSumsuHeaders.add("User-Agent", FindFishUserAgentUtil.randomUserAgent());
             HttpEntity<String> requestSumsuEntity = new HttpEntity(null, requestSumsuHeaders);
@@ -231,9 +230,8 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                 });
 
 
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
+//                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, "url_movie_sumsu");
 
-//                invalidUrlCheckingService.checkUrlMethod("url_movie_aidianying",movieNameAndUrlModels,proxyIp,Integer.valueOf(proxyPort));
             }
 
         } catch (Exception e) {

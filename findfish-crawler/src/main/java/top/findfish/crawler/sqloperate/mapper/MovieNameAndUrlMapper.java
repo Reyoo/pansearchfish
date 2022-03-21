@@ -18,27 +18,27 @@ import java.util.List;
 public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> {
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByName(@Param(value = "tablename")  String tablename , @Param(value = "movieName") String movieName , @Param(value = "wangPanUrl") String wangPanUrl);
+    List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName ,String titleName,String panSource);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param(value = "tablename") String tablename , @Param(value = "movieName") String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(String tablename , String movieName);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeNameGroup(@Param(value = "tablename") String tablename ,@Param(value = "movieName") String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeNameGroup(String tablename , String movieName);
 
     /**
      * 批量新增
      * @param movieNameAndUrlModels
      * @return
      */
-    int insertMovieUrls(@Param(value = "tableName") String tableName,List<MovieNameAndUrlModel> movieNameAndUrlModels);
+    int insertMovieUrls(String tableName,List<MovieNameAndUrlModel> movieNameAndUrlModels);
 
     /**
      * 新增
      * @param movieNameAndUrlModel
      * @return
      */
-    int insertMovieUrl(@Param(value = "tableName") String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int insertMovieUrl(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
@@ -46,7 +46,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int deleteUrlMovieUrls(@Param(value = "tableName")  String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int deleteUrlMovieUrls(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
@@ -55,7 +55,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param normalWebUrl
      * @return
      */
-    int deleteUnAviliableUrl(@Param(value = "tableName")  String tableName, @Param(value = "normalWebUrl") String normalWebUrl);
+    int deleteUnAviliableUrl(String tableName,String normalWebUrl);
 
 
     /**
@@ -63,16 +63,15 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int updateUrlMovieUrl(@Param(value = "tableName")  String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
+    int updateUrlMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
      * 校验重复资源
      */
-    void checkRepeatMovie(@Param(value = "tableName")  String tableName);
+    void checkRepeatMovie(String tableName);
 
-    List<MovieNameAndUrlModel> selectMovieUrlByCondition(@Param(value = "tablename")  String tablename , @Param(value = "movieName")  String movieName ,
-                                                         @Param(value = "wangPanUrl")  String wangPanUrl, @Param(value = "titleName")   String titleName,
-                                                         @Param(value = "panSource")  String panSource);
+    List<MovieNameAndUrlModel> selectMovieUrlByCondition(String tablename , String movieName , String wangPanUrl,String titleName,String panSource);
 
 }
+

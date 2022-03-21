@@ -3,6 +3,7 @@ package top.findfish.crawler.moviefind.jsoup.xiaoyou;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.CharsetUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
-        log.debug("-------------->开始爬取 小悠<--------------------");
+        log.info("-------------->开始爬取 小悠<--------------------");
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), CharsetUtil.UTF_8);
         String url = xiaoyouUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
@@ -110,7 +111,15 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
             //countChild 计数，后续获取指定位数索引使用
             int countChild = 0;
             for (Node node : nodes) {
-                if (element.childNodeSize() == 1 || element.childNodeSize() == 2){
+                //有可能 因为资源 无提取码 在 childNodeSize == 2时 需额外加校验
+                if (element.childNodeSize() == 2 && element.childNode(1).toString().contains("https")){
+                    MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
+                    movieNameAndUrlModel.setTitleName(element.childNode(0).toString().replaceAll("&nbsp;","").trim());
+                    this.setObjectParam(element,movieNameAndUrlModel,movieUrl,finalMovieName,countChild);
+                    list.add(movieNameAndUrlModel);
+                    break;
+                }
+                else if (element.childNodeSize() == 1 || element.childNodeSize() == 2){
                     MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
                     movieNameAndUrlModel.setTitleName(WebPageTagConstant.SHIPIN_CHINA.getType());
                     this.setObjectParam(element,movieNameAndUrlModel,movieUrl,finalMovieName,countChild);
@@ -126,6 +135,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                     if (StringUtils.isNotBlank(movieNameAndUrlModel.getWangPanUrl())){
                         list.add(movieNameAndUrlModel);
                     }
+                    break;
                 }
                 countChild++;
             }
@@ -152,18 +162,25 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         try {
             Set<String> set = firstFindUrl(searchMovieName, proxyIpAndPort, useProxy);
             if (CollectionUtil.isNotEmpty(set)) {
-                set.parallelStream().forEach(url -> {
+                set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME,proxyIpAndPort);
                         //删除无效数据  删除是要做的 删除的主要用处在于电视剧更新 级数问题。 后面应当抓到删除的逻辑 或者定时批量删除
-                    /** movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);*/
+                        /** movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);*/
                         CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.XIAOYOU_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {
+                                ArrayList arrayList = new ArrayList();
+                                movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
+                                    MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), MovieNameAndUrlModel.class);
+                                    arrayList.add(findFishMovieNameAndUrlModel);
+                                });
+
                                 redisTemplate.opsForValue().set(XiaoYouConstant.XIAOYOU.getType() + searchMovieName,
-                                        invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.XIAOYOU_TABLENAME, movieNameAndUrlModels, proxyIpAndPort), Duration.ofHours(2L));
+                                        arrayList, Duration.ofHours(2L));
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -219,44 +236,4 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
     }
 
 
-
-    // SQ
-//    @Override
-//    public ArrayList<MovieNameAndUrlModel> getWangPanUrl(String secondUrlLxxh, String proxyIpAndPort, Boolean useProxy) throws Exception {
-//        ArrayList<MovieNameAndUrlModel> list = new ArrayList();
-//        Document document = JsoupFindfishUtils.getDocument(secondUrlLxxh, proxyIpAndPort, useProxy);
-//        String movieName = document.getElementsByTag(WebPageTagConstant.HTML_TAG_TITLE.getType()).first().text();
-//        if (movieName.contains(XiaoYouConstant.XIAOYOU_STR_WITH_SGIN.getType())) {
-//            movieName = movieName.split(XiaoYouConstant.XIAOYOU_STR_WITH_SGIN.getType())[0];
-//        }
-//        Elements pTagAttr = document.select(WebPageTagConstant.HTML_TAG_P.getType());
-//
-//        String finalMovieName = movieName;
-//        pTagAttr.parallelStream().forEach(element -> {
-//
-//            MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-//            if (element.text().contains(XiaoYouConstant.XIAOYOU_SHIPIN.getType())) {
-//                if (StringUtils.isBlank(element.getElementsByTag(WebPageTagConstant.HTML_TAG_A.getType()).attr(WebPageTagConstant.HTML_TAG_HREF.getType())) || element.text().contains(WebPageTagConstant.ONLINE_SHOW.getType())) {
-//                    return;
-//                }
-//                movieNameAndUrlModel.setWangPanUrl(element.getElementsByTag(WebPageTagConstant.HTML_TAG_A.getType()).attr(WebPageTagConstant.HTML_TAG_HREF.getType()));
-//            }
-//            if (element.text().contains(XiaoYouConstant.XIAOYOU_TIQUMA.getType())) {
-//                movieNameAndUrlModel.setWangPanPassword(element.text().split(XiaoYouConstant.XIAOYOU_TIQUMA.getType())[1].trim())
-//                        .setMovieUrl(secondUrlLxxh)
-//                        .setMovieName(finalMovieName);
-//                list.add(movieNameAndUrlModel);
-//                return;
-//            }
-//
-//            if (StrUtil.isNotBlank(movieNameAndUrlModel.getWangPanUrl())) {
-//                movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
-//                movieNameAndUrlModel.setMovieName(finalMovieName);
-//                list.add(movieNameAndUrlModel);
-//            }
-//
-//        });
-//
-//        return list;
-//    }
 }

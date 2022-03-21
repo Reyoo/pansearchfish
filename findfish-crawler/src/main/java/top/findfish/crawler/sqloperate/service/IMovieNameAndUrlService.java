@@ -16,15 +16,13 @@ public interface IMovieNameAndUrlService extends IService<MovieNameAndUrlModel> 
 
     /**
      * 动态传入table
-     * @param tablename
-     * @param movieName
      * @return
      * @throws Exception
      */
-    List<MovieNameAndUrlModel> findMovieUrl (String tablename,String movieName ,String wangPanUrl) throws  Exception;
+//    List<MovieNameAndUrlModel> findMovieUrl (String tablename,String movieName ,String wangPanUrl) throws  Exception;
 
 
-    void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName)  throws Exception;
+    void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName,String proxyIpAndPort)  throws Exception;
 
 
     int dropMovieUrl (String tableName,MovieNameAndUrlModel movieNameAndUrlModel) throws Exception;
@@ -32,5 +30,6 @@ public interface IMovieNameAndUrlService extends IService<MovieNameAndUrlModel> 
 
     void deleteUnAviliableUrl(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName);
 
-    void addOrUpdateMovieUrlsWithTitleName(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName) throws Exception ;
+    void addOrUpdateMovieUrlsWithTitleName(List<MovieNameAndUrlModel> movieNameAndUrlModels, String tableName,String proxyIpAndPort) throws Exception ;
 }
+

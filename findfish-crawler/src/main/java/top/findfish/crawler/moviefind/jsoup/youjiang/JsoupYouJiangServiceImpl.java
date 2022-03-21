@@ -166,7 +166,7 @@ public class JsoupYouJiangServiceImpl implements ICrawlerCommonService {
                 //筛选爬虫链接
 //                invalidUrlCheckingService.checkUrlMethod("url_movie_xiaoyou", movieNameAndUrlModelList);
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME,proxyIpAndPort);
 
 
                 //删除无效数据
