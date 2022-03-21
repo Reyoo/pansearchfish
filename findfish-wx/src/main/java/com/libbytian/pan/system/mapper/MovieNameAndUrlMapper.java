@@ -18,7 +18,7 @@ import java.util.List;
 public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> {
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByName(@Param("tableName") String tablename , @Param("movieName") String movieName);
 
 
     List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param("tableName") String tableName , @Param("movieName") String movieName);
@@ -28,14 +28,14 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModels
      * @return
      */
-    int insertMovieUrls(String tableName,List<MovieNameAndUrlModel> movieNameAndUrlModels);
+    int insertMovieUrls(@Param("tableName") String tableName,@Param("movieNameAndUrlModels") List<MovieNameAndUrlModel> movieNameAndUrlModels);
 
     /**
      * 新增
      * @param movieNameAndUrlModel
      * @return
      */
-    int insertMovieUrl(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int insertMovieUrl(@Param("tableName") String tableName ,@Param("movieNameAndUrlModel") MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
@@ -43,7 +43,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int deleteUrlMovieUrls(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int deleteUrlMovieUrls(@Param("tableName") String tableName ,@Param("movieNameAndUrlModel") MovieNameAndUrlModel movieNameAndUrlModel);
 
 
 
@@ -54,6 +54,6 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int updateUrlMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
+    int updateUrlMovieUrl(@Param("tableName") String tableName, @Param("movieNameAndUrlModel") MovieNameAndUrlModel movieNameAndUrlModel);
 
 }

@@ -3,6 +3,7 @@ package top.findfish.crawler.sqloperate.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 
 import java.util.List;
@@ -17,27 +18,27 @@ import java.util.List;
 public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> {
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByName(String tablename , String movieName , String wangPanUrl);
+    List<MovieNameAndUrlModel> selectMovieUrlByName(@Param(value = "tablename")  String tablename , @Param(value = "movieName") String movieName , @Param(value = "wangPanUrl") String wangPanUrl);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(String tablename , String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param(value = "tablename") String tablename , @Param(value = "movieName") String movieName);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeNameGroup(String tablename , String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByLikeNameGroup(@Param(value = "tablename") String tablename ,@Param(value = "movieName") String movieName);
 
     /**
      * 批量新增
      * @param movieNameAndUrlModels
      * @return
      */
-    int insertMovieUrls(String tableName,List<MovieNameAndUrlModel> movieNameAndUrlModels);
+    int insertMovieUrls(@Param(value = "tableName") String tableName,List<MovieNameAndUrlModel> movieNameAndUrlModels);
 
     /**
      * 新增
      * @param movieNameAndUrlModel
      * @return
      */
-    int insertMovieUrl(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int insertMovieUrl(@Param(value = "tableName") String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
@@ -45,7 +46,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int deleteUrlMovieUrls(String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
+    int deleteUrlMovieUrls(@Param(value = "tableName")  String tableName ,MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
@@ -54,7 +55,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param normalWebUrl
      * @return
      */
-    int deleteUnAviliableUrl(String tableName,String normalWebUrl);
+    int deleteUnAviliableUrl(@Param(value = "tableName")  String tableName, @Param(value = "normalWebUrl") String normalWebUrl);
 
 
     /**
@@ -62,14 +63,16 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      * @param movieNameAndUrlModel
      * @return
      */
-    int updateUrlMovieUrl(String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
+    int updateUrlMovieUrl(@Param(value = "tableName")  String tableName, MovieNameAndUrlModel movieNameAndUrlModel);
 
 
     /**
      * 校验重复资源
      */
-    void checkRepeatMovie(String tableName);
+    void checkRepeatMovie(@Param(value = "tableName")  String tableName);
 
-    List<MovieNameAndUrlModel> selectMovieUrlByCondition(String tablename , String movieName , String wangPanUrl,String titleName,String panSource);
+    List<MovieNameAndUrlModel> selectMovieUrlByCondition(@Param(value = "tablename")  String tablename , @Param(value = "movieName")  String movieName ,
+                                                         @Param(value = "wangPanUrl")  String wangPanUrl, @Param(value = "titleName")   String titleName,
+                                                         @Param(value = "panSource")  String panSource);
 
 }

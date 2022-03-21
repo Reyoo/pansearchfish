@@ -3,6 +3,7 @@ package com.libbytian.pan.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
       * @param searchName
       * @return
       */
-     SystemUserSearchMovieModel getUserSearchMovieBySearchName(String searchName);
+     SystemUserSearchMovieModel getUserSearchMovieBySearchName(@Param(value = "searchName") String searchName);
 
 
      /**
@@ -44,6 +45,6 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
       * @param endTime
       * @return
       */
-     List<SystemUserSearchMovieModel> listUserSearchMovieBySearchDateRange(String startTime,String endTime);
+     List<SystemUserSearchMovieModel> listUserSearchMovieBySearchDateRange(@Param(value = "startTime") String startTime,@Param(value = "endTime") String endTime);
 
 }

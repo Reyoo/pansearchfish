@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.libbytian.pan.system.model.SystemKeywordModel;
 import com.libbytian.pan.system.model.SystemUserModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 项目名: pan
@@ -16,7 +17,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface SystemKeywordMapper extends BaseMapper<SystemKeywordModel> {
 
 
-    SystemKeywordModel keywordByUser(String username);
+    SystemKeywordModel keywordByUser(@Param(value = "username") String username);
 
     /**
      * 更新用户关联关键字

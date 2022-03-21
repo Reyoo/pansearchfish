@@ -57,5 +57,13 @@
             user_id = #{userId}
     </delete>
 
+    <delete id="deleteTemplateIdAll">
+        DELETE
+        FROM
+            user_template
+        WHERE
+            template_id = #{temped}
+    </delete>
+
 
 </mapper>

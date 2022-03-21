@@ -7,6 +7,7 @@ import com.libbytian.pan.system.model.SystemTemDetailsModel;
 import com.libbytian.pan.system.model.SystemTemplateModel;
 import com.libbytian.pan.system.model.SystemUserModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface SystemTemDetailsMapper extends BaseMapper<SystemTemDetailsModel
 
     List<SystemTemDetailsModel> defultTemDetails();
 
-    SystemTemDetailsModel selectUserKeywordDetail(String username,String keyword);
+    SystemTemDetailsModel selectUserKeywordDetail(@Param(value = "username") String username, @Param(value = "keyword") String keyword);
 
     int updateTempDetailsWithModel(SystemTemDetailsModel systemTemDetailsModel);
 

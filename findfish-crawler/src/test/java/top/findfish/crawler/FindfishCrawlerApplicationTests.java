@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,6 +42,9 @@ class FindfishCrawlerApplicationTests {
 //    private static GraphServiceClient<Request> graphClient = null;
 //    private static TokenCredentialAuthProvider authProvider = null;
 
+    @Qualifier("systemUserSearchMovieServiceImpl")
+    @Autowired
+    ISystemUserSearchMovieService systemUserSearchMovieService;
     @Autowired
     RedisTemplate redisTemplate;
 //
@@ -49,7 +53,7 @@ class FindfishCrawlerApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-
+        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
 
 //      jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
 //      https://cloud.tencent.com/developer/article/1338265

@@ -5,6 +5,7 @@ import com.libbytian.pan.system.model.SystemUserModel;
 import com.libbytian.pan.system.model.SystemUserToRole;
 import com.libbytian.pan.system.model.SystemUserToTemplate;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface SystemUserToTemplateMapper extends BaseMapper<SystemUserToTempl
      * @param userId
      * @return
      */
-    List<SystemUserToTemplate> listUserByUserid(String userId);
+    List<SystemUserToTemplate> listUserByUserid(@Param(value = "userId") String userId);
 
 
     /**
@@ -27,7 +28,7 @@ public interface SystemUserToTemplateMapper extends BaseMapper<SystemUserToTempl
      * @param temped
      * @return
      */
-    int deleteTemplateIdAll(String temped);
+    int deleteTemplateIdAll(@Param(value = "temped")  String temped);
 
 
     int deleteUserToTemplateByUserId(SystemUserModel systemUserModel);

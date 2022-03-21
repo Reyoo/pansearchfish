@@ -14,29 +14,31 @@
     </sql>
 
 
-    <select id="selectMovieUrlByLikeName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByLikeName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
-        WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 20
+        FROM ${tablename}
+        WHERE movie_name like ${"'%"+movieName+"%'"} LIMIT 20
 
     </select>
 
-    <select id="selectMovieUrlByLikeNameGroup" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByLikeNameGroup" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
-        WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 20
+        FROM ${tablename}
+        WHERE movie_name like ${"'%"+movieName+"%'"} LIMIT 20
         GROUP BY movie_name
     </select>
 
 
-
-    <select id="selectMovieUrlByName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
-        WHERE movie_name =  ${"'"+movieName+"'"}
+        FROM ${tablename}
+        WHERE movie_name = ${"'"+movieName+"'"}
         <if test="wangPanUrl != null ">
             and wangpan_url = ${"'"+wangPanUrl+"'"}
         </if>
@@ -44,9 +46,8 @@
     </select>
 
 
-
-    <insert id="insertMovieUrls"  statementType="STATEMENT">
-        INSERT INTO  ${tableName}
+    <insert id="insertMovieUrls" statementType="STATEMENT">
+        INSERT INTO ${tableName}
         (movie_name,movie_url,wangpan_url,wangpan_passwd,updatetime)
         VALUES
         <foreach collection="list" item="movieNameAndUrlModels" separator=",">
@@ -56,58 +57,61 @@
     </insert>
 
 
-<!--    原版-->
+    <!--    原版-->
 
-<!--    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">-->
-<!--        INSERT INTO  ${tableName}-->
-<!--            (movie_name, movie_url, wangpan_url, wangpan_passwd,updatetime)-->
-<!--        VALUES (${"'"+movieNameAndUrlModel.movieName+"'"}, ${"'"+movieNameAndUrlModel.movieUrl+"'"},-->
-<!--                ${"'"+movieNameAndUrlModel.wangPanUrl+"'"}, ${"'"+movieNameAndUrlModel.wangPanPassword+"'"},now())-->
+    <!--    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">-->
+    <!--        INSERT INTO  ${tableName}-->
+    <!--            (movie_name, movie_url, wangpan_url, wangpan_passwd,updatetime)-->
+    <!--        VALUES (${"'"+movieNameAndUrlModel.movieName+"'"}, ${"'"+movieNameAndUrlModel.movieUrl+"'"},-->
+    <!--                ${"'"+movieNameAndUrlModel.wangPanUrl+"'"}, ${"'"+movieNameAndUrlModel.wangPanPassword+"'"},now())-->
 
-<!--    </insert>-->
+    <!--    </insert>-->
 
-    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
-        INSERT INTO  ${tableName}
-            (movie_name, movie_url, wangpan_url, wangpan_passwd,title_name,pan_source,updatetime)
+    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
+        INSERT INTO ${tableName}
+        (movie_name, movie_url, wangpan_url, wangpan_passwd, title_name, pan_source, updatetime)
         VALUES (${"'"+movieNameAndUrlModel.movieName+"'"}, ${"'"+movieNameAndUrlModel.movieUrl+"'"},
                 ${"'"+movieNameAndUrlModel.wangPanUrl+"'"}, ${"'"+movieNameAndUrlModel.wangPanPassword+"'"},
-                ${"'"+movieNameAndUrlModel.titleName+"'"},${"'"+movieNameAndUrlModel.panSource+"'"},now())
+                ${"'"+movieNameAndUrlModel.titleName+"'"}, ${"'"+movieNameAndUrlModel.panSource+"'"}, now())
 
     </insert>
 
 
-    <delete id="deleteUrlMovieUrls" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+    <delete id="deleteUrlMovieUrls" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
         DELETE
-        FROM  ${tableName}
+        FROM ${tableName}
         WHERE movie_name = ${"'"+movieNameAndUrlModel.movieName+"'"}
           AND wangpan_url = ${"'"+movieNameAndUrlModel.wangPanUrl+"'"};
     </delete>
 
 
-<!--    原版-->
+    <!--    原版-->
 
-<!--    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">-->
-<!--        UPDATE-->
-<!--        ${tableName}-->
-<!--        <trim prefix="set" suffixOverrides=",">-->
+    <!--    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">-->
+    <!--        UPDATE-->
+    <!--        ${tableName}-->
+    <!--        <trim prefix="set" suffixOverrides=",">-->
 
-<!--            <if test="movieNameAndUrlModel.movieUrl != null and movieNameAndUrlModel.movieUrl != ''">-->
-<!--                movie_url =${"'"+movieNameAndUrlModel.movieUrl+"'"},-->
-<!--            </if>-->
+    <!--            <if test="movieNameAndUrlModel.movieUrl != null and movieNameAndUrlModel.movieUrl != ''">-->
+    <!--                movie_url =${"'"+movieNameAndUrlModel.movieUrl+"'"},-->
+    <!--            </if>-->
 
-<!--            <if test="movieNameAndUrlModel.wangPanUrl != null and movieNameAndUrlModel.wangPanUrl != ''">-->
-<!--                wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"},-->
-<!--            </if>-->
-<!--            <if test="movieNameAndUrlModel.wangPanPassword != null and movieNameAndUrlModel.wangPanPassword != ''">-->
-<!--                wangpan_passwd =${"'"+movieNameAndUrlModel.wangPanPassword+"'"},-->
-<!--            </if>-->
-<!--            updatetime = now()-->
-<!--        </trim>-->
-<!--        WHERE-->
-<!--        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"}-->
-<!--    </update>-->
+    <!--            <if test="movieNameAndUrlModel.wangPanUrl != null and movieNameAndUrlModel.wangPanUrl != ''">-->
+    <!--                wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"},-->
+    <!--            </if>-->
+    <!--            <if test="movieNameAndUrlModel.wangPanPassword != null and movieNameAndUrlModel.wangPanPassword != ''">-->
+    <!--                wangpan_passwd =${"'"+movieNameAndUrlModel.wangPanPassword+"'"},-->
+    <!--            </if>-->
+    <!--            updatetime = now()-->
+    <!--        </trim>-->
+    <!--        WHERE-->
+    <!--        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"}-->
+    <!--    </update>-->
 
-    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"
+            statementType="STATEMENT">
         UPDATE
         ${tableName}
         <trim prefix="set" suffixOverrides=",">
@@ -131,49 +135,47 @@
             updatetime = now()
         </trim>
         WHERE
-        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"} and wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"}
+        movie_name =${"'"+movieNameAndUrlModel.movieName+"'"} and wangpan_url
+        =${"'"+movieNameAndUrlModel.wangPanUrl+"'"}
     </update>
 
 
-
-
-    <delete id="deleteUnAviliableUrl"  statementType="STATEMENT">
+    <delete id="deleteUnAviliableUrl" statementType="STATEMENT">
         DELETE
-        FROM
-             ${tableName}
-        WHERE
-            movie_url = ${"'"+normalWebUrl+"'"}
+        FROM ${tableName}
+        WHERE movie_url = ${"'"+normalWebUrl+"'"}
           AND id NOT IN (
-            SELECT
-                a.id
-            FROM
-                ( SELECT max( id ) AS id FROM  ${tableName} WHERE movie_url = ${"'"+normalWebUrl+"'"} ) a
+            SELECT a.id
+            FROM (SELECT max(id) AS id FROM ${tableName} WHERE movie_url = ${"'"+normalWebUrl+"'"}) a
         )
 
     </delete>
 
-<!--    <delete id="checkRepeatMovie"  statementType="STATEMENT">-->
-<!--        DELETE-->
-<!--        FROM ${tableName}-->
-<!--        WHERE id NOT IN-->
-<!--        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)-->
-<!--    </delete>-->
+    <!--    <delete id="checkRepeatMovie"  statementType="STATEMENT">-->
+    <!--        DELETE-->
+    <!--        FROM ${tableName}-->
+    <!--        WHERE id NOT IN-->
+    <!--        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)-->
+    <!--    </delete>-->
 
 
-<!--    HS优化新版本SQL-->
-    <delete id="checkRepeatMovie"  statementType="STATEMENT">
+    <!--    HS优化新版本SQL-->
+    <delete id="checkRepeatMovie" statementType="STATEMENT">
         DELETE
         FROM ${tableName}
-        WHERE movie_name  not in
-        (SELECT * FROM  (SELECT movie_name FROM ${tableName} WHERE id  in  (SELECT max(id) from ${tableName} GROUP BY movie_url )) tn)
+        WHERE movie_name not in
+              (SELECT *
+               FROM (SELECT movie_name
+                     FROM ${tableName}
+                     WHERE id in (SELECT max(id) from ${tableName} GROUP BY movie_url)) tn)
     </delete>
 
     <select id="selectMovieUrlByCondition"
             resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
-        WHERE movie_name =  ${"'"+movieName+"'"}
+        FROM ${tablename}
+        WHERE movie_name = ${"'"+movieName+"'"}
         <if test="wangPanUrl != null ">
             and wangpan_url = ${"'"+wangPanUrl+"'"}
         </if>

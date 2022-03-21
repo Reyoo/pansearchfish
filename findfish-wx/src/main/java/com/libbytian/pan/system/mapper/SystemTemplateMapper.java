@@ -7,6 +7,7 @@ import com.libbytian.pan.system.model.SystemTemDetailsModel;
 import com.libbytian.pan.system.model.SystemTemplateModel;
 import com.libbytian.pan.system.model.SystemUserModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public interface SystemTemplateMapper extends BaseMapper<SystemTemplateModel> {
     int deleteTemplateByUser(SystemUserModel systemUserModel);
 
 
-    SystemTemplateModel getTemplateById(String temdetailsId);
+    SystemTemplateModel getTemplateById(@Param(value = "temdetailsId") String temdetailsId);
 
     /**
      * 查询所有模板
