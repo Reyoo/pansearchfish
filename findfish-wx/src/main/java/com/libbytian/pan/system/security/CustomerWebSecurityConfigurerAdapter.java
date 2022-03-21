@@ -53,12 +53,13 @@ public class CustomerWebSecurityConfigurerAdapter extends WebSecurityConfigurerA
         http
                 .authorizeRequests()
                 //访问白名单
-                .anyRequest ().access("@accessDecisionService.hasPermission(request , authentication)")
+                .anyRequest().access("@accessDecisionService.hasPermission(request , authentication)")
                 .and()
                 .addFilterAfter(new XssFilter(), CsrfFilter.class)
                 //自定义验证
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(validateCodeFilter, JWTAuthenticationFilter.class)
+//                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 //异常处理
                 .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 //添加无权限时的处理
@@ -70,7 +71,7 @@ public class CustomerWebSecurityConfigurerAdapter extends WebSecurityConfigurerA
                 .csrf().disable().authorizeRequests()
                 .and().logout().permitAll();
 
-}
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -83,7 +84,7 @@ public class CustomerWebSecurityConfigurerAdapter extends WebSecurityConfigurerA
         final CorsConfiguration corsConfig = new CorsConfiguration();
         List<String> allowedHeaders = Arrays.asList("x-auth-token", "content-type", "X-Requested-With", "XMLHttpRequest","Access-Control-Allow-Origin","Authorization","authorization");
         List<String> exposedHeaders = Arrays.asList("x-auth-token", "content-type", "X-Requested-With", "XMLHttpRequest","Access-Control-Allow-Origin","Authorization","authorization");
-        List<String> allowedMethods = Arrays.asList("POST", "GET", "DELETE", "PUT", "OPTIONS","PATCH");
+        List<String> allowedMethods = Arrays.asList("POST", "GET", "DELETE", "PUT", "OPTIONS");
         List<String> allowedOriginPatterns = Arrays.asList("*");
         corsConfig.setAllowedHeaders(allowedHeaders);
         corsConfig.setAllowedMethods(allowedMethods);
