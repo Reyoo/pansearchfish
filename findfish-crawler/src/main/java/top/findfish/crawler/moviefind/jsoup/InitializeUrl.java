@@ -154,7 +154,7 @@ public class InitializeUrl implements ICrawlerCommonService {
         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort,useProxy));
 
         //插入更新可用数据
-        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME);
+        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.YOUJIANG_TABLENAME,proxyIpAndPort);
 
     }
 
@@ -188,3 +188,4 @@ public class InitializeUrl implements ICrawlerCommonService {
         }
     }
 }
+
