@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,12 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
         }
         //先去查询是否有插入此词条的记录
         SystemUserSearchMovieModel systemUserSearchMovieModel = getUserSearchMovieBySearchName(searchStr);
+
+        //2022-05-13 获取当前日期
+        LocalDateTime currentDate = LocalDate.now().atTime(0, 0, 0);
+
         //如果查询回来的结果为空 则插入
-        if (systemUserSearchMovieModel == null) {
+        if (systemUserSearchMovieModel == null || systemUserSearchMovieModel.getLastSearchTime().isBefore(currentDate)) {
             SystemUserSearchMovieModel initSystemUserSearchMovieModel = new SystemUserSearchMovieModel(searchStr, 1, LocalDateTime.now(), Boolean.TRUE);
             if (addUserSearchMovie(initSystemUserSearchMovieModel)) {
                 log.debug("--> " + searchStr + "  新增词条插入成功");
