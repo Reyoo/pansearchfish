@@ -1,9 +1,6 @@
 package com.libbytian.pan.wechat.controller;
 
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.libbytian.pan.system.common.AjaxResult;
 import com.libbytian.pan.system.mapper.SystemTemDetailsMapper;
 import com.libbytian.pan.system.model.*;
@@ -102,7 +99,6 @@ public class MoviePageShowController {
     @RequestMapping(path = "/member/{fishEncryption}/{searchName}", method = RequestMethod.GET)
     public AjaxResult getMemberList(@PathVariable String fishEncryption, @PathVariable String searchName) {
         try {
-            long startTime = System.currentTimeMillis();
 
             String username = new String(decoder.decode(fishEncryption), "UTF-8");
             SystemUserModel systemUserModel = new SystemUserModel();
@@ -111,8 +107,17 @@ public class MoviePageShowController {
             searchName.replace("+", "");
             List<SystemTemDetailsModel> memberList = systemdetails.stream().
                     filter(systemTemdetailsModel -> systemTemdetailsModel.getKeyword().contains(searchName) && systemTemdetailsModel.getShowOrder() == 0).collect(Collectors.toList());
-            long endTime = System.currentTimeMillis(); //获取结束时间
-            System.out.println("=====接口调用时间：" + (endTime - startTime) + "ms==============");
+
+            /**
+             * 统计用户查询记录
+             */
+            String finalSearchName = searchName;
+            CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+                iSystemUserSearchMovieService.userSearchMovieCountInFindfish(finalSearchName);
+            });
+//            根据不同入参 给参数
+            completableFuture.get();
+
             //获取接口最新调用时间
             systemUserModel.setCallTime(LocalDateTime.now());
             iSystemUserService.updateUser(systemUserModel);
@@ -148,20 +153,12 @@ public class MoviePageShowController {
                 log.debug("===============用户：{}接口已过期===============", username);
                 return AjaxResult.error("该系统提供服务已过期,继续使用请 关注公众号：影子的胡言乱语 ");
             }
-            log.debug("===============用户: {}正在调用web页大厅===============", username);
+            log.info("===============用户: {}正在调用 {} 大厅===============", username,search);
 //            List<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
             Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModels = new HashMap<>();
             searchName = URLDecoder.decode(searchName, "UTF-8");
-            log.debug(searchName);
-            /**
-             * 统计用户查询记录
-             */
-            String finalSearchName = searchName;
-            CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
-                iSystemUserSearchMovieService.userSearchMovieCountInFindfish(finalSearchName);
-            });
-//            根据不同入参 给参数
-            completableFuture.get();
+            log.info("=========查询资源名称 {} =========",searchName);
+
             movieNameAndUrlModels = asyncSearchCachedService.searchWord(searchName.trim(), search);
             if (movieNameAndUrlModels == null) {
                 return AjaxResult.hide("未找到该资源，请前往其他大厅查看");

@@ -18,7 +18,7 @@ import java.util.List;
 public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> {
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByName(@Param("tableName") String tablename , @Param("movieName") String movieName);
+    List<MovieNameAndUrlModel> selectMovieUrlByName(@Param("tableName") String tableName , @Param("movieName") String movieName);
 
 
     List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param("tableName") String tableName , @Param("movieName") String movieName);

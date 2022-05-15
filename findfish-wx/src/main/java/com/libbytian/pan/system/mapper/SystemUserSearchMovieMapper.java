@@ -47,4 +47,11 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
       */
      List<SystemUserSearchMovieModel> listUserSearchMovieBySearchDateRange(@Param(value = "startTime") String startTime,@Param(value = "endTime") String endTime);
 
+     /**
+      * 展示热榜
+      * @param date
+      * @return
+      */
+     List<SystemUserSearchMovieModel> getHotList(int date);
+
 }

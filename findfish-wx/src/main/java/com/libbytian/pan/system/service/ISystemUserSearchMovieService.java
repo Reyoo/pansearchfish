@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: QiSun
@@ -56,4 +57,11 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
      * 根据时间范围查询 搜索频率最高的10条记录
       */
     List<TopNVO>  listTopNSearchRecord(Integer topLimit);
+
+    /**
+     * 获取热榜
+     * @param date
+     * @return
+     */
+    List<Map.Entry<String, Integer>> getHotList(Integer date);
 }
