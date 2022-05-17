@@ -42,16 +42,16 @@ public class InvalidUrlCheckingController {
     @RequestMapping(path = "/url", method = RequestMethod.POST)
     public AjaxResult checkInvalidUrl(@RequestBody List<MovieNameAndUrlModel> wangPanUrls) {
 
-            if(CollectionUtil.isNotEmpty(wangPanUrls)){
-                wangPanUrls.parallelStream().anyMatch( movieNameAndUrlModel -> {
-                    try {
-                        return invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getMovieUrl());
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
-                        return false;
-                    }
-                });
-            }
+        if(CollectionUtil.isNotEmpty(wangPanUrls)){
+            wangPanUrls.parallelStream().anyMatch( movieNameAndUrlModel -> {
+                try {
+                    return invalidUrlCheckingService.checkUrlByUrlStr(movieNameAndUrlModel.getMovieUrl());
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                    return false;
+                }
+            });
+        }
 
         return AjaxResult.error(FindfishConstant.LINK_OVERDUE.getDescription());
     }

@@ -1,5 +1,6 @@
 package com.libbytian.pan.system.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -26,10 +27,18 @@ public class SystemUserSearchMovieModel extends Model<SystemUserSearchMovieModel
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户搜索关键字
+     * 主键id
      */
-    @TableId("search_name")
+    @TableId(value = "id",type = IdType.AUTO)
+    Integer id;
+
+
+    /**
+     * 搜索关键字频率
+     */
+    @TableField("search_times")
     String searchName;
+
 
     /**
      * 搜索关键字频率
@@ -49,5 +58,6 @@ public class SystemUserSearchMovieModel extends Model<SystemUserSearchMovieModel
      */
     @TableField("search_allowed")
     Boolean searchAllowed;
+
 
 }

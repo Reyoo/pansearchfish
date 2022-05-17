@@ -16,12 +16,12 @@ public interface IMovieNameAndUrlService extends IService<MovieNameAndUrlModel> 
 
     /**
      * 动态传入table
-     * @param tablename
+     * @param tableName
      * @param movieName
      * @return
      * @throws Exception
      */
-    List<MovieNameAndUrlModel> findMovieUrl (String tablename,String movieName ) throws  Exception;
+    List<MovieNameAndUrlModel> findMovieUrl (String tableName,String movieName ) throws  Exception;
 
 
     void addOrUpdateMovieUrls(List<MovieNameAndUrlModel> movieNameAndUrlModels,String tableName)  throws Exception;
