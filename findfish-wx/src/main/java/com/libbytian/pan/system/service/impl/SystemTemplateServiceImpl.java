@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SystemTemplateServiceImpl extends ServiceImpl<SystemTemplateMapper,SystemTemplateModel> implements ISystemTemplateService {
 
-   private final SystemTemplateMapper systemTemplateMapper;
+    private final SystemTemplateMapper systemTemplateMapper;
 
 
     @Override

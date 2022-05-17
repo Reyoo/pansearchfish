@@ -24,7 +24,7 @@
     </sql>
     <update id="updateTempDetailsWithModel" parameterType="com.libbytian.pan.system.model.SystemTemDetailsModel">
         UPDATE
-            sys_temdetails
+        sys_temdetails
         <trim prefix="set" suffixOverrides=",">
 
             <if test="keyword != null and keyword != ''">
@@ -124,7 +124,7 @@
             <if test="keyword != null and keyword != ''">
 
                 <bind name="keyword" value="'%' + keyword + '%'"/>
-               AND  d.templatedetails_keyword LIKE #{keyword}
+                AND  d.templatedetails_keyword LIKE #{keyword}
 
             </if>
             <if test="keywordToValue != null and keywordToValue != ''">
@@ -164,7 +164,7 @@
         AND d.show_order != 0
     </select>
 
-<!--    查询默认模板详情-->
+    <!--    查询默认模板详情-->
     <select id="defultTemDetails"  resultType="com.libbytian.pan.system.model.SystemTemDetailsModel">
         SELECT
         <include refid="Base_Column_List"/>
@@ -172,8 +172,6 @@
         WHERE
         d.show_order = 9
     </select>
-
-
 
 
 
@@ -241,7 +239,6 @@
 
 
 
-
     <!-- 批量删除 -->
     <delete id="deleteTemplateDetailsByUser" parameterType="com.libbytian.pan.system.model.SystemUserModel">
         DELETE
@@ -264,7 +261,7 @@
     <delete id="deleteTemplateDetails" parameterType="String" >
         DELETE
         FROM
-            sys_temdetails
+        sys_temdetails
         WHERE
         templatedetails_id in
         <foreach collection="list" item="temdetailsId" separator="," open="(" close=")">

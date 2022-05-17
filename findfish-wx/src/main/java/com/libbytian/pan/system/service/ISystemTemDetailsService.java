@@ -5,10 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.libbytian.pan.system.model.SystemTemDetailsModel;
 import com.libbytian.pan.system.model.SystemUserModel;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +21,14 @@ public interface ISystemTemDetailsService extends IService<SystemTemDetailsModel
     IPage<SystemTemDetailsModel> findTemDetailsPage(Page page,String templateId) throws Exception;
 
 
-//    @CachePut(key = "#username" ,condition = "#username != null")
+    //    @CachePut(key = "#username" ,condition = "#username != null")
     List<SystemTemDetailsModel> addTemDetails(SystemTemDetailsModel systemTemDetailsModel,String templateId,String username) throws Exception;
 
-//    @CachePut(key = "#username" ,condition = "#username != null")
+    //    @CachePut(key = "#username" ,condition = "#username != null")
     List<SystemTemDetailsModel> exportExceltoDb(String filename, InputStream inputStream, String templateId,String username) throws Exception;
 
 
-     void exportTemDetails(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,  List<String> temdetailsIds)  throws Exception;
+    void exportTemDetails(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,  List<String> temdetailsIds)  throws Exception;
 
 
     /**
@@ -60,7 +56,7 @@ public interface ISystemTemDetailsService extends IService<SystemTemDetailsModel
 
     void  defaultSave(String templateId);
 
-//    @CacheEvict(key = "#username" ,condition = "#username != null" ,allEntries = true,beforeInvocation = true )
+    //    @CacheEvict(key = "#username" ,condition = "#username != null" ,allEntries = true,beforeInvocation = true )
     int deleteTemplateDetails(List<String> temdetailsId,String username);
 
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.libbytian.pan.system.model.SystemUserModel;
 import com.libbytian.pan.system.model.SystemUserToTemplate;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface SystemUserMapper extends BaseMapper<SystemUserModel> {
 
     void removeUserAll(SystemUserModel user);
 
-    SystemUserModel getUserByUerToTemplate(String templateId);
+    SystemUserModel getUserByUerToTemplate(@Param(value = "templateId")String templateId);
 
     int insertSystemUser(SystemUserModel systemUserModel);
 

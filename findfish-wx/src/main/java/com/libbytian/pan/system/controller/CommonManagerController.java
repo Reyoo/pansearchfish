@@ -5,12 +5,8 @@ import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +30,9 @@ public class CommonManagerController {
      * @return
      */
     @RequestMapping(value = "/select/{date}", method = RequestMethod.GET)
-    public AjaxResult getHotList(@PathVariable Integer date) {
-        List<Map.Entry<String, Integer>> hotList = iSystemUserSearchMovieService.getHotList(date);
+    public AjaxResult getHotList(@PathVariable Integer date, @RequestParam(defaultValue = "1") Integer pageNum , @RequestParam(defaultValue = "10") Integer pageSize) {
+        Map<String,Object> hotList = iSystemUserSearchMovieService.getHotList(date,pageNum,pageSize);
         return AjaxResult.success(hotList);
+
     }
 }

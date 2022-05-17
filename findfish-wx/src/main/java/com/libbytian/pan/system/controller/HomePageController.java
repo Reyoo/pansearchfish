@@ -36,16 +36,16 @@ public class HomePageController {
      * 获取topN 搜索接口  暂时给不可控制 条数 默认top10
      * @return
      */
-    @RequestMapping(value = "/topN", method = RequestMethod.GET)
-    public AjaxResult getTopN() {
-        try {
-            List<TopNVO> topNVOList = systemUserSearchMovieService.listTopNSearchRecord(0);
-            return AjaxResult.success(topNVOList);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return AjaxResult.error(e.getMessage());
-        }
-    }
+//    @RequestMapping(value = "/topN", method = RequestMethod.GET)
+//    public AjaxResult getTopN() {
+//        try {
+//            List<TopNVO> topNVOList = systemUserSearchMovieService.listTopNSearchRecord(0);
+//            return AjaxResult.success(topNVOList);
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return AjaxResult.error(e.getMessage());
+//        }
+//    }
 
 //   http://findfish.top/#/mobileView?searchname=%E5%A5%A5%E7%89%B9%E6%9B%BC&verification=c3VuNzEyN0AxMjYuY29t&type=mobile
 

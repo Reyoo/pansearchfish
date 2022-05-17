@@ -11,6 +11,7 @@
         <result column="search_allowed" property="searchAllowed"/>
     </resultMap>
 
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id ,
@@ -82,7 +83,7 @@
                 search_times =  #{searchTimes,jdbcType=BIGINT},
             </if>
             <if test="lastSearchTime != null">
-                last_searchtime =     #{lastSearchTime,jdbcType=TIMESTAMP},
+                last_searchtime = #{lastSearchTime,jdbcType=TIMESTAMP},
             </if>
             <if test="searchAllowed != null">
                 search_allowed =#{searchAllowed,jdbcType=TINYINT},
@@ -92,8 +93,8 @@
         WHERE
         search_name =#{searchName}
         and
-        --         to_days(last_searchtime) = to_days(now());
-        DATE_SUB(CURDATE(), INTERVAL 1 DAY) <![CDATA[<= ]]> date(last_searchtime)
+        to_days(last_searchtime) = to_days(now());
+        --         DATE_SUB(CURDATE(), INTERVAL 1 DAY) <![CDATA[<= ]]> date(last_searchtime)
     </update>
 
     <!--根据主键查询 词条-->
@@ -110,16 +111,18 @@
 
 
     <select id="getHotList" parameterType="java.lang.Integer"
-            resultType="com.libbytian.pan.system.model.SystemUserSearchMovieModel">
+            resultType="java.util.Map">
         SELECT
-        <include refid="Base_Column_List"/>
-        FROM user_movie_search
+        search_name,sum(search_times) as search_times
+        FROM
+        user_movie_search
         WHERE
-        DATE_SUB(CURDATE(), INTERVAL #{date} DAY) <![CDATA[<= ]]> date(last_searchtime)
+        DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ <= ]]> date(last_searchtime)
+        GROUP BY
+        search_name
         ORDER BY
         search_times
         DESC
-        Limit 50
     </select>
 
 

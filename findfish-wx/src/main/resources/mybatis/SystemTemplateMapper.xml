@@ -32,7 +32,7 @@
         ON ut.user_id = s.user_id
         <trim prefix="where" prefixOverrides="and|">
             <if test="userId != null and userId != ''">
-               AND s.user_id= #{userId}
+                AND s.user_id= #{userId}
             </if>
             <if test="username != null and username != ''">
                 AND s.user_name =#{username}
@@ -76,7 +76,7 @@
                 AND s.user_name =#{username}
             </if>
 
-                AND t.template_status =1
+            AND t.template_status =1
         </trim>
 
     </select>

@@ -21,7 +21,7 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
 
 
 
-     void userSearchMovieCountInFindfish(String searchStr);
+    void userSearchMovieCountInFindfish(String searchStr);
 
     /**
      * 新增 用户搜索记录
@@ -52,16 +52,19 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
      */
     List<SystemUserSearchMovieModel> listUserSearchMovieBySearchDateRange(String beginTime,String endTime);
 
-
     /**
      * 根据时间范围查询 搜索频率最高的10条记录
-      */
-    List<TopNVO>  listTopNSearchRecord(Integer topLimit);
+     */
+//    List<TopNVO>  listTopNSearchRecord(Integer topLimit);
 
     /**
      * 获取热榜
      * @param date
      * @return
      */
-    List<Map.Entry<String, Integer>> getHotList(Integer date);
+    Map<String,Object> getHotList(Integer date,Integer pageNum,Integer pageSize);
+
+
+
+
 }
