@@ -55,7 +55,6 @@ public class TemDetailsController {
         Page<SystemTemDetailsModel> findpage = new Page<>(page, limit);
         try {
             IPage<SystemTemDetailsModel> result = iSystemTemDetailsService.findTemDetailsPage(findpage, templateId);
-            LocalDateTime end = LocalDateTime.now();
             return AjaxResult.success(result);
         } catch (Exception e) {
             log.error(e.getMessage());

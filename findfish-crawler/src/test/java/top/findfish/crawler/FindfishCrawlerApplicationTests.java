@@ -14,9 +14,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @SpringBootTest
@@ -53,7 +58,72 @@ class FindfishCrawlerApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
+//        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
+
+//        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(()->{
+//            System.out.println("compute 1");
+//            return 1;
+//        });
+//        CompletableFuture<Integer> future2 = future1.thenApply((p)->{
+//            System.out.println("compute 2");
+//            return p+10;
+//        });
+//        System.out.println("result: " + future2.join());
+
+//        CompletableFuture<Integer> future = new CompletableFuture<>();
+//        Integer integer = future.get();
+//        System.out.println(integer.intValue());
+
+
+        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(() -> {
+            return 10086;
+        });
+        future1.whenComplete((result, error) -> {
+            System.out.println("拨打"+result);
+            error.printStackTrace();
+        });
+
+
+
+        CompletableFuture<List<String>> total = CompletableFuture.supplyAsync(() -> {
+            // 第一个任务获取美术课需要带的东西，返回一个list
+            List<String> stuff = new ArrayList<>();
+            stuff.add("画笔");
+            stuff.add("颜料");
+            return stuff;
+        }).thenCompose(list -> {
+            // 向第二个任务传递参数list(上一个任务美术课所需的东西list)
+            CompletableFuture<List<String>> insideFuture = CompletableFuture.supplyAsync(() -> {
+                List<String> stuff = new ArrayList<>();
+                // 第二个任务获取劳技课所需的工具
+                stuff.add("剪刀");
+                stuff.add("折纸");
+                // 合并两个list，获取课程所需所有工具
+                List<String> allStuff = Stream.of(list, stuff).flatMap(Collection::stream).collect(Collectors.toList());
+                return allStuff;
+            });
+            return insideFuture;
+        });
+        System.out.println(total.join().size());
+
+
+
+
+
+        CompletableFuture.supplyAsync(() -> 1)
+                .whenComplete((result, error) -> {
+                    System.out.println(result);
+                    error.printStackTrace();
+                })
+                .handle((result, error) -> {
+                    error.printStackTrace();
+                    return error;
+                })
+                .thenApply(Object::toString)
+                .thenApply(Integer::valueOf)
+                .thenAccept((param) -> System.out.println("done"));
+
+
 
 //      jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
 //      https://cloud.tencent.com/developer/article/1338265
@@ -161,7 +231,31 @@ class FindfishCrawlerApplicationTests {
 //                .buildRequest()
 //                .post(user);
 
+
     }
+
+
+    @Test
+    void testLocalTime() throws Exception {
+
+        /**时间在前*/
+        LocalDate a = LocalDate.parse("2022/04/10", DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+        
+        LocalDate b = LocalDate.parse("2022/04/20", DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//        Duration between = Duration.between(a, b);
+        Period between = Period.between(a, b);
+        Period between1 = Period.between(b, a);
+        long l = between.getDays();
+        System.out.println(l);
+        int days = between1.getDays();
+        System.out.println(days);
+
+        /**时间在后*/
+
+
+
+    }
+
 }
 
 

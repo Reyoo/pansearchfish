@@ -19,7 +19,7 @@
     <select id="selectMovieUrlByLikeName" resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name like  ${"'%"+movieName+"%'"}
         order by id DESC limit 20
 
@@ -31,7 +31,7 @@
     <select id="selectMovieUrlByName" resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name =  ${"'"+movieName+"'"}
         order by updatetime DESC limit 10
     </select>
