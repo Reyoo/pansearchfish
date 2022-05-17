@@ -222,13 +222,6 @@
             <artifactId>kaptcha</artifactId>
         </dependency>
 
-        <!--分页插件-->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>${pagehelper-spring-boot-starter.version}</version>
-        </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/com.alicp.jetcache/jetcache-starter-redis -->
         <!--        <dependency>
