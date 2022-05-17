@@ -16,7 +16,7 @@ public interface SystemRoleMapper extends BaseMapper<SystemRoleModel> {
 
 
     @Select("SELECT r.role_name AS roleName , r.show_name AS showName , r.createtime,r.role_status AS roleStatus FROM sys_role r WHERE r.role_id = #{roleId}")
-    IPage<SystemRoleModel> selectRoleById(Page page , String roleId);
+    IPage<SystemRoleModel> selectRoleById(Page page , @Param(value = "roleId")String roleId);
 
 
     IPage<SystemRoleModel> getRolesPage(Page page , SystemRoleModel systemRoleModel);
