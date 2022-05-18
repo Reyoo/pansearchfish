@@ -2,7 +2,6 @@ package com.libbytian.pan.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
-import com.libbytian.pan.system.vo.TopNVO;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,13 +56,24 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
      */
 //    List<TopNVO>  listTopNSearchRecord(Integer topLimit);
 
+
+    /**
+     * 热榜假数据
+     * 外加膨胀系数
+     * @param date
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    Map<String,Object> getFalseDataHotList(Integer date,Integer pageNum,Integer pageSize);
+
+
     /**
      * 获取热榜
      * @param date
      * @return
      */
     Map<String,Object> getHotList(Integer date,Integer pageNum,Integer pageSize);
-
 
 
 

@@ -117,7 +117,7 @@
         FROM
         user_movie_search
         WHERE
-        DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[ <= ]]> date(last_searchtime)
+        DATE_SUB(CURDATE(), INTERVAL #{date} DAY) <![CDATA[ <= ]]> date(last_searchtime)
         GROUP BY
         search_name
         ORDER BY

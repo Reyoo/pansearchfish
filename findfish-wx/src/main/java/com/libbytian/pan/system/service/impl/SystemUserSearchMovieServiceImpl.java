@@ -13,16 +13,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,10 +31,15 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
 
     private final SystemUserSearchMovieMapper systemUserSearchMovieMapper;
 
-
     private final RedissonClient redissonClient;
 
     private final static String DISTRIBUTED_LOCK_SEARCH_COUNT = "DISTRIBUTED_LOCK_SEARCH_COUNT";
+
+    @Value("${falseData.coefficient}")
+    private String coefficient;
+
+    @Value("${falseData.defaultDate}")
+    private Integer defaultDate;
 
 
     @Override
@@ -158,21 +163,29 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
     }
 
     @Override
-    public Map<String, Object> getHotList(Integer date, Integer pageNum, Integer pageSize) {
-
+    public Map<String, Object> getFalseDataHotList(Integer date, Integer pageNum, Integer pageSize) {
+        //展示当日数据时，在配置文件中控制 date 为0还是1
+        date = date ==1 ? defaultDate : date;
         Map<String,Object> map = new HashMap<>();
-
         PageHelper.startPage(pageNum,pageSize);
-
-        List<Map<String,Integer>> hotList = systemUserSearchMovieMapper.getHotList(date);
-
+        List<Map<String,BigDecimal>> hotList = systemUserSearchMovieMapper.getHotList(date);
+        for (Map<String, BigDecimal> stringIntegerMap : hotList) {
+            //设置 9倍 系数
+            stringIntegerMap.put("search_times",stringIntegerMap.get("search_times").multiply(new BigDecimal(coefficient)));
+        }
         PageInfo pageInfo = new PageInfo(hotList);
-
         map.put("result",pageInfo);
-
         return map;
+    }
 
-
+    @Override
+    public Map<String, Object> getHotList(Integer date, Integer pageNum, Integer pageSize) {
+        Map<String,Object> map = new HashMap<>();
+        PageHelper.startPage(pageNum,pageSize);
+        List<Map<String,BigDecimal>> hotList = systemUserSearchMovieMapper.getHotList(date);
+        PageInfo pageInfo = new PageInfo(hotList);
+        map.put("result",pageInfo);
+        return map;
     }
 
 

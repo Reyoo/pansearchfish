@@ -31,7 +31,7 @@ public class CommonManagerController {
      */
     @RequestMapping(value = "/select/{date}", method = RequestMethod.GET)
     public AjaxResult getHotList(@PathVariable Integer date, @RequestParam(defaultValue = "1") Integer pageNum , @RequestParam(defaultValue = "10") Integer pageSize) {
-        Map<String,Object> hotList = iSystemUserSearchMovieService.getHotList(date,pageNum,pageSize);
+        Map<String,Object> hotList = iSystemUserSearchMovieService.getFalseDataHotList(date,pageNum,pageSize);
         return AjaxResult.success(hotList);
 
     }

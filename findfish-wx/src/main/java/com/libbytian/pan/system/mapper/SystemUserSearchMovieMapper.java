@@ -5,6 +5,7 @@ import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,6 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
       * @param date
       * @return
       */
-     List<Map<String,Integer>> getHotList(int date);
+     List<Map<String, BigDecimal>> getHotList(int date);
 
 }
