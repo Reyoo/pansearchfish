@@ -73,7 +73,7 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
      * @param date
      * @return
      */
-    Map<String,Object> getHotList(Integer date,Integer pageNum,Integer pageSize);
+    Map<String,Object> getTrueHotList(Integer date,Integer pageNum,Integer pageSize);
 
 
 

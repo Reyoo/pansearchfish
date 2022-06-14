@@ -5,6 +5,7 @@ import com.libbytian.pan.findmovie.lili.IFindMovieInLiLi;
 import com.libbytian.pan.findmovie.sumsu.IFindMovieInSumsu;
 import com.libbytian.pan.findmovie.unread.IFindMovieInUnread;
 import com.libbytian.pan.findmovie.xiaoyou.IFindMovieInXiaoyou;
+import com.libbytian.pan.findmovie.xiaoyu.IFindMovieInXiaoyu;
 import com.libbytian.pan.findmovie.youjiang.IFindMovieInYoujiang;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +36,13 @@ public class AsyncSearchCachedComponent {
 
 
     private final IFindMovieInAiDianYing iFindMovieInAiDianYing;
-    private final IFindMovieInSumsu iFindMovieInSumsu;
     private final IFindMovieInUnread iFindMovieInUnread;
     private final IFindMovieInXiaoyou iFindMovieInXiaoyou;
-    private final IFindMovieInYoujiang iFindMovieInYoujiang;
-    private final IFindMovieInLiLi iFindMovieInLiLi;
+    private final IFindMovieInXiaoyu iFindMovieInXiaoyu;
 
+    private final IFindMovieInYoujiang iFindMovieInYoujiang;
+    private final IFindMovieInSumsu iFindMovieInSumsu;
+    private final IFindMovieInLiLi iFindMovieInLiLi;
 
     /**
      * 根据不同表示返回不用结果
@@ -57,10 +59,10 @@ public class AsyncSearchCachedComponent {
             case "a":
                 Map<String, List<MovieNameAndUrlModel>> collectXiaoYou = iFindMovieInXiaoyou.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return collectXiaoYou;
-            //u 二号大厅 莉莉
+            //u 二号大厅 小宇
             case "u":
-                Map<String, List<MovieNameAndUrlModel>> collectLiLi = iFindMovieInLiLi.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                return collectLiLi;
+                Map<String, List<MovieNameAndUrlModel>> collectXiaoYu = iFindMovieInXiaoyu.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                return collectXiaoYu;
             //x 3号大厅
             case "x":
                 Map<String,  List<MovieNameAndUrlModel>> combineResultMap = new HashMap<>();

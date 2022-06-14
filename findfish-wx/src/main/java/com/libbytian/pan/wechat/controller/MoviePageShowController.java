@@ -198,13 +198,26 @@ public class MoviePageShowController {
 
 
     /**
+     * 查询系数热榜
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/select/hotList", method = RequestMethod.GET)
+    public AjaxResult getHotList(@RequestParam(defaultValue = "1") Integer date,@RequestParam(defaultValue = "1") Integer pageNum ,@RequestParam(defaultValue = "10") Integer pageSize) {
+        Map<String,Object> hotList = iSystemUserSearchMovieService.getFalseDataHotList(date,pageNum,pageSize);
+        return AjaxResult.success(hotList);
+    }
+
+
+
+    /**
      * 查询热榜
      * @param
      * @return
      */
-    @RequestMapping(value = "/select/{date}", method = RequestMethod.GET)
-    public AjaxResult getHotList(@PathVariable Integer date,@RequestParam(defaultValue = "1") Integer pageNum ,@RequestParam(defaultValue = "10") Integer pageSize) {
-        Map<String,Object> hotList = iSystemUserSearchMovieService.getHotList(date,pageNum,pageSize);
+    @RequestMapping(value = "/select/trueHotList", method = RequestMethod.GET)
+    public AjaxResult getTrueHotList(@RequestParam(defaultValue = "1") Integer date,@RequestParam(defaultValue = "1") Integer pageNum ,@RequestParam(defaultValue = "10") Integer pageSize) {
+        Map<String,Object> hotList = iSystemUserSearchMovieService.getTrueHotList(date,pageNum,pageSize);
         return AjaxResult.success(hotList);
     }
 

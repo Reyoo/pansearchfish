@@ -169,9 +169,13 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
         Map<String,Object> map = new HashMap<>();
         PageHelper.startPage(pageNum,pageSize);
         List<Map<String,BigDecimal>> hotList = systemUserSearchMovieMapper.getHotList(date);
+        BigDecimal num = new BigDecimal(0);
+        BigDecimal count = new BigDecimal(1);
         for (Map<String, BigDecimal> stringIntegerMap : hotList) {
+            num = num.add(count);
             //设置 9倍 系数
             stringIntegerMap.put("search_times",stringIntegerMap.get("search_times").multiply(new BigDecimal(coefficient)));
+            stringIntegerMap.put("num",num);
         }
         PageInfo pageInfo = new PageInfo(hotList);
         map.put("result",pageInfo);
@@ -179,7 +183,7 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
     }
 
     @Override
-    public Map<String, Object> getHotList(Integer date, Integer pageNum, Integer pageSize) {
+    public Map<String, Object> getTrueHotList(Integer date, Integer pageNum, Integer pageSize) {
         Map<String,Object> map = new HashMap<>();
         PageHelper.startPage(pageNum,pageSize);
         List<Map<String,BigDecimal>> hotList = systemUserSearchMovieMapper.getHotList(date);
