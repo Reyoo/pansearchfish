@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -159,14 +160,40 @@ public class MoviePageShowController {
             searchName = URLDecoder.decode(searchName, "UTF-8");
             log.info("=========查询资源名称 {} =========",searchName);
 
+
+            if ("all".equals(search)){
+                Map<String, Object> linkedHashMap = new LinkedHashMap<>();
+                Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsOne = asyncSearchCachedService.searchWord(searchName.trim(), "one");
+                Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsTwo = asyncSearchCachedService.searchWord(searchName.trim(), "two");
+                Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsThree = asyncSearchCachedService.searchWord(searchName.trim(), "three");
+                Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsFour = asyncSearchCachedService.searchWord(searchName.trim(), "four");
+
+
+                if(movieNameAndUrlModelsOne.isEmpty() && movieNameAndUrlModelsTwo.isEmpty() && movieNameAndUrlModelsThree.isEmpty() && movieNameAndUrlModelsFour.isEmpty()){
+                    return AjaxResult.hide();
+                }
+
+                linkedHashMap.put("one",movieNameAndUrlModelsOne);
+                linkedHashMap.put("two",movieNameAndUrlModelsTwo);
+                linkedHashMap.put("three",movieNameAndUrlModelsThree);
+                linkedHashMap.put("four",movieNameAndUrlModelsFour);
+                
+                return AjaxResult.success(linkedHashMap);
+
+            }
+
+
+
             movieNameAndUrlModels = asyncSearchCachedService.searchWord(searchName.trim(), search);
             if (movieNameAndUrlModels == null) {
-                return AjaxResult.hide("未找到该资源，请前往其他大厅查看");
+//                return AjaxResult.hide("未找到该资源，请前往其他大厅查看");
+                return AjaxResult.hide();
             }
             return AjaxResult.success(movieNameAndUrlModels);
         } catch (Exception e) {
             e.printStackTrace();
-            return AjaxResult.hide("全网搜 '" + searchName + "' 中 挖坑埋点土数个一二三四五，再点一次大厅");
+//            return AjaxResult.hide("全网搜 '" + searchName + "' 中 挖坑埋点土数个一二三四五，再点一次大厅");
+            return AjaxResult.hide();
         }
     }
 
