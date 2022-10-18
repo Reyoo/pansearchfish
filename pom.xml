@@ -37,7 +37,7 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <velocity-engine-core.version>2.2</velocity-engine-core.version>
         <kaptcha.version>2.3.2</kaptcha.version>
-        <pagehelper-spring-boot-starter.version>1.4.2</pagehelper-spring-boot-starter.version>
+        <pagehelper-spring-boot-starter.version>1.4.1</pagehelper-spring-boot-starter.version>
     </properties>
 
 
@@ -322,13 +322,6 @@
                 <groupId>com.github.penggle</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>${kaptcha.version}</version>
-            </dependency>
-
-            <!--分页插件-->
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper-spring-boot-starter.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
