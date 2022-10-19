@@ -56,23 +56,26 @@ public class AsyncSearchCachedComponent {
 
         switch (search) {
             //a 一号大厅 小悠
-            case "a":
+            case "one":
                 Map<String, List<MovieNameAndUrlModel>> collectXiaoYou = iFindMovieInXiaoyou.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return collectXiaoYou;
             //u 二号大厅 小宇
-            case "u":
+            case "two":
                 Map<String, List<MovieNameAndUrlModel>> collectXiaoYu = iFindMovieInXiaoyu.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return collectXiaoYu;
             //x 3号大厅
-            case "x":
+            case "three":
                 Map<String,  List<MovieNameAndUrlModel>> combineResultMap = new HashMap<>();
                 Map<String, List<MovieNameAndUrlModel>> collectUnread = iFindMovieInUnread.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 //添加未读影单
                 combineResultMap.putAll(collectUnread);
                 //添加爱电影
-                combineResultMap.putAll(collectAiDianYing);
+//                combineResultMap.putAll(collectAiDianYing);
                 return combineResultMap;
+            case "four":
+                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                return collectAiDianYing;
             default:
                 return new HashMap<>();
 
