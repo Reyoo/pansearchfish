@@ -17,7 +17,7 @@
     <select id="selectMovieUrlByLikeName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 20
 
     </select>
@@ -25,7 +25,7 @@
     <select id="selectMovieUrlByLikeNameGroup" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name like  ${"'%"+movieName+"%'"} LIMIT 20
         GROUP BY movie_name
     </select>
@@ -35,7 +35,7 @@
     <select id="selectMovieUrlByName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name =  ${"'"+movieName+"'"}
         AND title_name = ${"'"+titleName+"'"}
         AND pan_source = ${"'"+panSource+"'"}
@@ -142,7 +142,7 @@
             resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tablename}
+        FROM  ${tableName}
         WHERE movie_name =  ${"'"+movieName+"'"}
         <if test="wangPanUrl != null ">
             and wangpan_url = ${"'"+wangPanUrl+"'"}

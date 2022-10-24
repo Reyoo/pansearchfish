@@ -63,14 +63,14 @@ public class InvalidUrlCheckingService {
             if (StrUtil.isBlank(wangPanUrl)) {
                 return;
             }
-            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort,false);
+            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort,true);
             if (document == null){
                 redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
                 return;
             }
 
             //根据分享人账号判断是否失效，如果有账号说明是有效的
-            if (!document.toString().contains("linkusername")){
+            if (!document.toString().contains("linkusername") && movieNameAndUrlModel.getWangPanUrl().contains("baidu")){
                 try {
                     movieNameAndUrlService.dropMovieUrl(tableName, movieNameAndUrlModel);
                 } catch (Exception e) {

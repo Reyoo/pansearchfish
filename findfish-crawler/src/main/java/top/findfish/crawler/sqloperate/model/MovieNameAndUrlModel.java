@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
 public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
 
     /**

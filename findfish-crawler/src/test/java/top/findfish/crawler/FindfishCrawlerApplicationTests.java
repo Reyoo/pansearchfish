@@ -28,13 +28,13 @@ import java.util.stream.Stream;
 class FindfishCrawlerApplicationTests {
 
 
-    @Qualifier("jsoupAiDianyingServiceImpl")
-    @Autowired
-    ICrawlerCommonService jsoupAiDianyingServiceImpl;
-//
-//    @Qualifier("jsoupSumuServiceImpl")
+//    @Qualifier("jsoupAiDianyingServiceImpl")
 //    @Autowired
-//    ICrawlerCommonService jsoupSumuServiceImpl;
+//    ICrawlerCommonService jsoupAiDianyingServiceImpl;
+//
+    @Qualifier("jsoupSumuServiceImpl")
+    @Autowired
+    ICrawlerCommonService jsoupSumuServiceImpl;
 //
 //    @Qualifier("jsoupUnreadServiceImpl")
 //    @Autowired
@@ -58,6 +58,12 @@ class FindfishCrawlerApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
+
+
+
+        jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("让子弹飞",null,false);
+
+
 //        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
 
 //        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(()->{
@@ -75,53 +81,53 @@ class FindfishCrawlerApplicationTests {
 //        System.out.println(integer.intValue());
 
 
-        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(() -> {
-            return 10086;
-        });
-        future1.whenComplete((result, error) -> {
-            System.out.println("拨打"+result);
-            error.printStackTrace();
-        });
+//        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(() -> {
+//            return 10086;
+//        });
+//        future1.whenComplete((result, error) -> {
+//            System.out.println("拨打"+result);
+//            error.printStackTrace();
+//        });
+//
+//
+//
+//        CompletableFuture<List<String>> total = CompletableFuture.supplyAsync(() -> {
+//            // 第一个任务获取美术课需要带的东西，返回一个list
+//            List<String> stuff = new ArrayList<>();
+//            stuff.add("画笔");
+//            stuff.add("颜料");
+//            return stuff;
+//        }).thenCompose(list -> {
+//            // 向第二个任务传递参数list(上一个任务美术课所需的东西list)
+//            CompletableFuture<List<String>> insideFuture = CompletableFuture.supplyAsync(() -> {
+//                List<String> stuff = new ArrayList<>();
+//                // 第二个任务获取劳技课所需的工具
+//                stuff.add("剪刀");
+//                stuff.add("折纸");
+//                // 合并两个list，获取课程所需所有工具
+//                List<String> allStuff = Stream.of(list, stuff).flatMap(Collection::stream).collect(Collectors.toList());
+//                return allStuff;
+//            });
+//            return insideFuture;
+//        });
+//        System.out.println(total.join().size());
 
 
 
-        CompletableFuture<List<String>> total = CompletableFuture.supplyAsync(() -> {
-            // 第一个任务获取美术课需要带的东西，返回一个list
-            List<String> stuff = new ArrayList<>();
-            stuff.add("画笔");
-            stuff.add("颜料");
-            return stuff;
-        }).thenCompose(list -> {
-            // 向第二个任务传递参数list(上一个任务美术课所需的东西list)
-            CompletableFuture<List<String>> insideFuture = CompletableFuture.supplyAsync(() -> {
-                List<String> stuff = new ArrayList<>();
-                // 第二个任务获取劳技课所需的工具
-                stuff.add("剪刀");
-                stuff.add("折纸");
-                // 合并两个list，获取课程所需所有工具
-                List<String> allStuff = Stream.of(list, stuff).flatMap(Collection::stream).collect(Collectors.toList());
-                return allStuff;
-            });
-            return insideFuture;
-        });
-        System.out.println(total.join().size());
 
 
-
-
-
-        CompletableFuture.supplyAsync(() -> 1)
-                .whenComplete((result, error) -> {
-                    System.out.println(result);
-                    error.printStackTrace();
-                })
-                .handle((result, error) -> {
-                    error.printStackTrace();
-                    return error;
-                })
-                .thenApply(Object::toString)
-                .thenApply(Integer::valueOf)
-                .thenAccept((param) -> System.out.println("done"));
+//        CompletableFuture.supplyAsync(() -> 1)
+//                .whenComplete((result, error) -> {
+//                    System.out.println(result);
+//                    error.printStackTrace();
+//                })
+//                .handle((result, error) -> {
+//                    error.printStackTrace();
+//                    return error;
+//                })
+//                .thenApply(Object::toString)
+//                .thenApply(Integer::valueOf)
+//                .thenAccept((param) -> System.out.println("done"));
 
 
 

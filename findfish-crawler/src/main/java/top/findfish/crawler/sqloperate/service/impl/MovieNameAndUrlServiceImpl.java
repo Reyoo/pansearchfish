@@ -54,7 +54,6 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
         }
 
         movieNameAndUrlModels.stream().forEach(t -> {
-
                     try {
                         if (StrUtil.isBlank(t.getMovieName())) {
                             return;
@@ -69,14 +68,12 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                         }else if (movieSize.size() >1){
                             try {
                                 movieSize.stream().forEach(movieNameAndUrlModel ->{
-
                                     if (movieNameAndUrlModel.getPanSource().contains("迅雷")){
-                                        Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,false);
+                                        Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,true);
                                         System.out.println(document);
                                         return;
                                     }
-
-                                    Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,false);
+                                    Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,true);
                                     if (document == null){
                                         redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
                                         return;
@@ -86,14 +83,11 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                                         try {
                                             movieNameAndUrlMapper.deleteUrlMovieUrls(tableName, movieNameAndUrlModel);
                                         } catch (Exception e) {
-                                            log.error(e.getMessage());
-                                            e.printStackTrace();
+                                            log.error("MovieNameAndUrlServiceImpl line88 ->{}" ,e.getMessage());
                                         }
                                     }
                                     log.info("校验完毕");
-
                                 });
-
                                 log.info("查询到多条记录，校验URL-->" + t);
                             } catch (Exception e) {
                                 e.printStackTrace();

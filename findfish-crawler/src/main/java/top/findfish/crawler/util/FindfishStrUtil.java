@@ -6,11 +6,11 @@ public class FindfishStrUtil {
 
     public static String getsumSuMovieName(String movieName){
         String resultSearchName = movieName;
-        if (movieName.contains(FindfishConstant.BAIDUYUN_STR.getDescription())) {
+        if (FindfishConstant.BAIDUYUN_STR.getDescription().contains(movieName)) {
             resultSearchName = movieName.split(FindfishConstant.BAIDUYUN_STR.getDescription())[0].trim();
         }
 
-        if (resultSearchName.contains(FindfishConstant.POWERED_BY_DISCUZ.getDescription())) {
+        if (FindfishConstant.POWERED_BY_DISCUZ.getDescription().contains(resultSearchName)) {
             resultSearchName = resultSearchName.split(FindfishConstant.POWERED_STR.getDescription())[0].trim();
         }
         return resultSearchName;

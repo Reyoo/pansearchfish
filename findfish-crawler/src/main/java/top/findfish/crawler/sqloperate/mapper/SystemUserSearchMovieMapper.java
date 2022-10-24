@@ -22,7 +22,7 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
      * @param systemUserSearchMovieModel
      * @return
      */
-    int insertUserSearchMovie(SystemUserSearchMovieModel systemUserSearchMovieModel);
+    int insertUserSearchMovie(@Param("systemUserSearchMovieModel") SystemUserSearchMovieModel systemUserSearchMovieModel);
 
 
     /**
@@ -40,7 +40,7 @@ public interface SystemUserSearchMovieMapper extends BaseMapper<SystemUserSearch
      * @param systemUserSearchMovieModel
      * @return
      */
-    int updateUserSearchMovie(SystemUserSearchMovieModel systemUserSearchMovieModel);
+    int updateUserSearchMovie(@Param("systemUserSearchMovieModel") SystemUserSearchMovieModel systemUserSearchMovieModel);
 
 
     /**

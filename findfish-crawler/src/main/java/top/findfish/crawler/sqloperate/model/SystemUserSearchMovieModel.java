@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
 @TableName("user_movie_search")
 public class SystemUserSearchMovieModel extends Model<SystemUserSearchMovieModel> {
 
