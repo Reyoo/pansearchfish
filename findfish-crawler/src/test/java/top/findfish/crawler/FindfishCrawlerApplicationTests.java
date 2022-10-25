@@ -32,9 +32,9 @@ class FindfishCrawlerApplicationTests {
 //    @Autowired
 //    ICrawlerCommonService jsoupAiDianyingServiceImpl;
 //
-    @Qualifier("jsoupSumuServiceImpl")
+    @Qualifier("jsoupHallFourthServiceImpl")
     @Autowired
-    ICrawlerCommonService jsoupSumuServiceImpl;
+    ICrawlerCommonService jsoupHallFourthServiceImpl;
 //
 //    @Qualifier("jsoupUnreadServiceImpl")
 //    @Autowired
@@ -56,12 +56,24 @@ class FindfishCrawlerApplicationTests {
 //    @Autowired
 //    RedissonClient redissonClient;
 
+
+    public static void main(String[] args) {
+        String resultCode = "123";
+
+        String firstWord = resultCode.substring(0,1);
+        String secondWord = resultCode.substring(1,2);
+
+        System.out.println(firstWord);
+        System.out.println(secondWord);
+    }
+
+
     @Test
     void contextLoads() throws Exception {
 
 
 
-        jsoupSumuServiceImpl.saveOrFreshRealMovieUrl("让子弹飞",null,false);
+        jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("瞎骗奇闻",null,false);
 
 
 //        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
