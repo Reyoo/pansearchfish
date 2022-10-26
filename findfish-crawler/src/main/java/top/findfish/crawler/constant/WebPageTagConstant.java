@@ -26,7 +26,10 @@ public enum WebPageTagConstant {
     BAIDU("baidu","百度"),
     BAIDU_WANGPAN("百度网盘","百度网盘"),
     XUNLEI_YUNPAN("迅雷云盘","迅雷云盘"),
-    ONLINE_SHOW("在线播放","在线播放");
+    ONLINE_SHOW("在线播放","在线播放"),
+    ALI_SOURCE("ali","阿里云盘"),
+    XUNLEI_SOURCE("xunlei","迅雷云盘"),
+    QUARK_SOURCE("quark","夸克网盘");
 
 
     WebPageTagConstant(String type, String description) {
@@ -45,6 +48,15 @@ public enum WebPageTagConstant {
 
     public String getDescription() {
         return description;
+    }
+
+    public static String getValue(String key) {
+        for (WebPageTagConstant ele : values()) {
+            if (ele.getType().equals(key)) {
+                return ele.getDescription();
+            }
+        }
+        return null;
     }
 
 }

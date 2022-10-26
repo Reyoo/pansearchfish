@@ -12,8 +12,7 @@ public enum XiaoYouConstant {
     XIAOYOU("xiaoyou::","xiaoyou::"),
     LILI_URL("http://a12.66perfect.com/","http://a12.66perfect.com/"),
     LILI_DOUBAN_URL("https://movie.douban.com","https://movie.douban.com"),
-    LILI("lili::","lili::"),
-    LiLi_STR_WITH_SGIN("– A12 Site", "– A12 Site"),
+    HALL_FOURTH_CACHE("fourth::","fourth::"),
     AIDIANYING_STR_WITH_SGIN("- LXXH", "- 爱电影标题后缀");
 
     XiaoYouConstant(String type, String description) {

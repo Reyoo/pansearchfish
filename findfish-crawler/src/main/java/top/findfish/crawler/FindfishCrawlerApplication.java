@@ -23,7 +23,7 @@ public class FindfishCrawlerApplication extends SpringBootServletInitializer {
     public RestTemplate restTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(60000);
-        factory.setReadTimeout(10000);
+        factory.setReadTimeout(30000);
         return new RestTemplate(factory);
     }
 
