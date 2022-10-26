@@ -73,7 +73,7 @@ class FindfishCrawlerApplicationTests {
 
 
 
-        jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("瞎骗奇闻",null,false);
+        jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("让子弹飞",null,false);
 
 
 //        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");

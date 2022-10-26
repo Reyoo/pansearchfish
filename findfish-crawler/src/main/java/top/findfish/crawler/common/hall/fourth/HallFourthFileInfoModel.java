@@ -12,7 +12,6 @@ import java.io.Serializable;
  *
  * @文件名称: HallFourthFileInfoModel.java
  * @包 路 径： top.findfish.crawler.common.hall.fourth
- * @版权所有：北京数字认证股份有限公司 (C) 2021
  * @类描述:
  * @版本: V1.0
  * @Author：SunQi

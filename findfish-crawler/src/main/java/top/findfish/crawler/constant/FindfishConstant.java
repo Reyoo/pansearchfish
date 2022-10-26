@@ -6,7 +6,6 @@ package top.findfish.crawler.constant;
  *
  * @文件名称: FindfishConstant.java
  * @包 路 径： top.findfish.crawler.common
- * @版权所有：北京数字认证股份有限公司 (C) 2018
  * @类描述: 身份证号校验
  * @版本: V1.0 @创建人：SunQi
  * @创建时间：2021/11/29 13:29

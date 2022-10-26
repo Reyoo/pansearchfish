@@ -6,7 +6,6 @@ package top.findfish.crawler.learnCode.algorithm.simple;
  *
  * @文件名称: SunToDoCode.java
  * @包 路 径： top.findfish.crawler.learnCode.algorithm.simple
- * @版权所有：北京数字认证股份有限公司 (C) 2021
  * @类描述:
  * @版本: V1.0
  * @Author：SunQi
