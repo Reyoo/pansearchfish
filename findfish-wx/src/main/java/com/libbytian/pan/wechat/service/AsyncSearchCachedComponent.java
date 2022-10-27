@@ -1,7 +1,7 @@
 package com.libbytian.pan.wechat.service;
 
 import com.libbytian.pan.findmovie.aidianying.IFindMovieInAiDianYing;
-import com.libbytian.pan.findmovie.lili.IFindMovieInLiLi;
+import com.libbytian.pan.findmovie.hall.fourth.IFindMovieHallFourth;
 import com.libbytian.pan.findmovie.sumsu.IFindMovieInSumsu;
 import com.libbytian.pan.findmovie.unread.IFindMovieInUnread;
 import com.libbytian.pan.findmovie.xiaoyou.IFindMovieInXiaoyou;
@@ -31,18 +31,15 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@EnableAsync
+//@EnableAsync
 public class AsyncSearchCachedComponent {
 
 
-    private final IFindMovieInAiDianYing iFindMovieInAiDianYing;
+//    private final IFindMovieInAiDianYing iFindMovieInAiDianYing;
     private final IFindMovieInUnread iFindMovieInUnread;
     private final IFindMovieInXiaoyou iFindMovieInXiaoyou;
     private final IFindMovieInXiaoyu iFindMovieInXiaoyu;
 
-    private final IFindMovieInYoujiang iFindMovieInYoujiang;
-    private final IFindMovieInSumsu iFindMovieInSumsu;
-    private final IFindMovieInLiLi iFindMovieInLiLi;
 
     /**
      * 根据不同表示返回不用结果
@@ -53,7 +50,7 @@ public class AsyncSearchCachedComponent {
      * @throws Exception
      */
     public Map<String, List<MovieNameAndUrlModel>> searchWord(String searchMovieText, String search) throws Exception {
-
+        Map<String,  List<MovieNameAndUrlModel>> combineResultMap = new HashMap<>();
         switch (search) {
             //a 一号大厅 小悠
             case "one":
@@ -65,7 +62,7 @@ public class AsyncSearchCachedComponent {
                 return collectXiaoYu;
             //x 3号大厅
             case "three":
-                Map<String,  List<MovieNameAndUrlModel>> combineResultMap = new HashMap<>();
+
                 Map<String, List<MovieNameAndUrlModel>> collectUnread = iFindMovieInUnread.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
 //                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 //添加未读影单
@@ -74,49 +71,19 @@ public class AsyncSearchCachedComponent {
 //                combineResultMap.putAll(collectAiDianYing);
                 return combineResultMap;
             case "four":
-                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                return collectAiDianYing;
+                //
+//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+
+
+
+//                combineResultMap.putAll(collectAiDianYing);
+                return combineResultMap;
             default:
                 return new HashMap<>();
 
         }
 
-
-        /**
-         * 备份使用
-         */
-//    public List<MovieNameAndUrlModel> searchWord(String searchMovieText, String search) throws Exception {
-//
-//        switch (search) {
-//            //a 一号大厅
-//            case "a":
-//                List<MovieNameAndUrlModel> listA = new ArrayList<>();
-//                //添加 莉莉
-//                List<MovieNameAndUrlModel> movieUrl = iFindMovieInLiLi.findMovieUrl(searchMovieText);
-//                movieUrl.stream().forEach(movieNameAndUrlModel -> movieNameAndUrlModel.setMovieName(movieNameAndUrlModel.getMovieName()+movieNameAndUrlModel.getTitleName()));
-//                listA.addAll(movieUrl);
-//
-//                return listA;
-//            //u 2号大厅
-//            case "u":
-//                List<MovieNameAndUrlModel> listB = new ArrayList<>();
-//                //添加小悠
-//                List<MovieNameAndUrlModel> xiaoYouMovieUrl = iFindMovieInXiaoyou.findMovieUrl(searchMovieText);
-//                xiaoYouMovieUrl.stream().forEach(movieNameAndUrlModel -> movieNameAndUrlModel.setMovieName(movieNameAndUrlModel.getMovieName()+movieNameAndUrlModel.getTitleName()));
-//                listB.addAll(xiaoYouMovieUrl);
-//
-//                return listB;
-//            //x 3号大厅
-//            case "x":
-//                List<MovieNameAndUrlModel> listC = new ArrayList<>();
-//                //添加未读影单
-//                listC.addAll(iFindMovieInUnread.findMovieUrl(searchMovieText));
-//                //爱电影
-//                listC.addAll(iFindMovieInAiDianYing.findMovieUrl(searchMovieText));
-//                return listC;
-//            default:
-//                return new ArrayList<MovieNameAndUrlModel>();
-//        }
     }
 }
 

@@ -8,10 +8,10 @@ import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
-@CacheConfig(cacheNames = "aidianying")
+//@CacheConfig(cacheNames = "aidianying")
 public interface IFindMovieInAiDianYing extends IService<MovieNameAndUrlModel> {
 
-    @Cacheable(key = "#movieName", condition = "#movieName != null")
+//    @Cacheable(key = "#movieName", condition = "#movieName != null")
     List<MovieNameAndUrlModel> findMovieUrl(String movieName) throws Exception;
 
 }

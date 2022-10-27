@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * @author SunQi
  */
-@CacheConfig(cacheNames = "unread")
+//@CacheConfig(cacheNames = "unread")
 public interface IFindMovieInUnread extends IService<MovieNameAndUrlModel> {
 
-    @Cacheable(key = "#movieName", condition = "#movieName != null")
+//    @Cacheable(key = "#movieName", condition = "#movieName != null")
     List<MovieNameAndUrlModel> findMovieUrl(String movieName) throws Exception;
     
 }

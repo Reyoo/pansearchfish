@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * @author SunQi
  */
-@CacheConfig(cacheNames = "sumsu")
+//@CacheConfig(cacheNames = "sumsu")
 public interface IFindMovieInSumsu extends IService<MovieNameAndUrlModel> {
 
-    @Cacheable(key = "#movieName", condition = "#movieName != null")
+//    @Cacheable(key = "#movieName", condition = "#movieName != null")
     List<MovieNameAndUrlModel> findMovieUrl(String movieName) throws Exception;
     
 }

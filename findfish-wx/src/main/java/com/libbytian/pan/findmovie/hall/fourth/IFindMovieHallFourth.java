@@ -1,4 +1,4 @@
-package com.libbytian.pan.findmovie.lili;
+package com.libbytian.pan.findmovie.hall.fourth;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
@@ -9,15 +9,15 @@ import java.util.List;
 
 /**
  * 项目名: pan
- * 文件名: IFindMovieInLiLi
+ * 文件名: IFindMovieHall2
  * 创建者: HS
  * 创建时间:2022/1/13 17:04
  * 描述: TODO
  */
-@CacheConfig(cacheNames = "lili")
-public interface IFindMovieInLiLi extends IService<MovieNameAndUrlModel> {
+//@CacheConfig(cacheNames = "hall-fourth")
+public interface IFindMovieHallFourth extends IService<MovieNameAndUrlModel> {
 
-    @Cacheable(key = "#movieName" , condition = "#movieName != null")
+//    @Cacheable(key = "#movieName" , condition = "#movieName != null")
     List<MovieNameAndUrlModel> findMovieUrl(String movieName) throws Exception;
 
 }

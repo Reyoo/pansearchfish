@@ -20,11 +20,9 @@ import javax.annotation.PostConstruct;
 @EnableCaching
 public class SearchpanApplication {
 
-
     public static void main(String[] args) {
         SpringApplication.run(SearchpanApplication.class, args);
     }
-
 
     @PostConstruct
     public void setProperties(){
@@ -38,7 +36,4 @@ public class SearchpanApplication {
         factory.setReadTimeout(10000);
         return new RestTemplate(factory);
     }
-
-
-
 }

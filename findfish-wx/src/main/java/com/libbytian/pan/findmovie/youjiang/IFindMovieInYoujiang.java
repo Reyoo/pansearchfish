@@ -14,9 +14,9 @@ import java.util.List;
  * 创建时间:2021/2/28 2:00
  * 描述: TODO
  */
-@CacheConfig(cacheNames = "youjiang")
+//@CacheConfig(cacheNames = "youjiang")
 public interface IFindMovieInYoujiang extends IService<MovieNameAndUrlModel> {
 
-    @Cacheable(key = "#movieName", condition = "#movieName != null")
+//    @Cacheable(key = "#movieName", condition = "#movieName != null")
     List<MovieNameAndUrlModel> findMovieUrl(String movieName) throws Exception;
 }
