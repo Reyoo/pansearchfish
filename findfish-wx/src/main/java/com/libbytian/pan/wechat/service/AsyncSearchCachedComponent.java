@@ -1,17 +1,10 @@
 package com.libbytian.pan.wechat.service;
 
-import com.libbytian.pan.findmovie.aidianying.IFindMovieInAiDianYing;
-import com.libbytian.pan.findmovie.hall.fourth.IFindMovieHallFourth;
-import com.libbytian.pan.findmovie.sumsu.IFindMovieInSumsu;
-import com.libbytian.pan.findmovie.unread.IFindMovieInUnread;
-import com.libbytian.pan.findmovie.xiaoyou.IFindMovieInXiaoyou;
-import com.libbytian.pan.findmovie.xiaoyu.IFindMovieInXiaoyu;
-import com.libbytian.pan.findmovie.youjiang.IFindMovieInYoujiang;
+import com.libbytian.pan.findmovie.FindMovieSelectorService;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -35,10 +28,7 @@ import java.util.stream.Collectors;
 public class AsyncSearchCachedComponent {
 
 
-//    private final IFindMovieInAiDianYing iFindMovieInAiDianYing;
-    private final IFindMovieInUnread iFindMovieInUnread;
-    private final IFindMovieInXiaoyou iFindMovieInXiaoyou;
-    private final IFindMovieInXiaoyu iFindMovieInXiaoyu;
+    private final FindMovieSelectorService findMovieSelectorService;
 
 
     /**
@@ -54,19 +44,22 @@ public class AsyncSearchCachedComponent {
         switch (search) {
             //a 一号大厅 小悠
             case "one":
-                Map<String, List<MovieNameAndUrlModel>> collectXiaoYou = iFindMovieInXiaoyou.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                return collectXiaoYou;
+//                Map<String, List<MovieNameAndUrlModel>> collectXiaoYou = iFindMovieInXiaoyou.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                combineResultMap = findMovieSelectorService.listMovies("url_movie_xiaoyou","xiaoyou::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                return combineResultMap;
             //u 二号大厅 小宇
             case "two":
-                Map<String, List<MovieNameAndUrlModel>> collectXiaoYu = iFindMovieInXiaoyu.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                return collectXiaoYu;
+                combineResultMap = findMovieSelectorService.listMovies("url_movie_xiaoyu","xiaoyu::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                return combineResultMap;
+//                Map<String, List<MovieNameAndUrlModel>> collectXiaoYu = iFindMovieInXiaoyu.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+//                return collectXiaoYu;
             //x 3号大厅
             case "three":
-
-                Map<String, List<MovieNameAndUrlModel>> collectUnread = iFindMovieInUnread.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                combineResultMap = findMovieSelectorService.listMovies("url_movie_unread","unread::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+//                Map<String, List<MovieNameAndUrlModel>> collectUnread = iFindMovieInUnread.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
 //                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 //添加未读影单
-                combineResultMap.putAll(collectUnread);
+//                combineResultMap.putAll(collectUnread);
                 //添加爱电影
 //                combineResultMap.putAll(collectAiDianYing);
                 return combineResultMap;
@@ -74,10 +67,9 @@ public class AsyncSearchCachedComponent {
                 //
 //                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
 //                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-
-
-
 //                combineResultMap.putAll(collectAiDianYing);
+                combineResultMap = findMovieSelectorService.listMovies("url_movie_fourth","fourth::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                combineResultMap.putAll(findMovieSelectorService.listMovies("url_movie_aidianying","aidianying::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName)));
                 return combineResultMap;
             default:
                 return new HashMap<>();

@@ -1,49 +1,46 @@
 package com.libbytian.pan;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.libbytian.pan.findmovie.aidianying.IFindMovieInAiDianYing;
-import com.libbytian.pan.findmovie.lili.IFindMovieInLiLi;
+import com.libbytian.pan.findmovie.hall.fourth.IFindMovieHallFourth;
 import com.libbytian.pan.findmovie.unread.IFindMovieInUnread;
 import com.libbytian.pan.findmovie.xiaoyou.IFindMovieInXiaoyou;
 import com.libbytian.pan.findmovie.youjiang.IFindMovieInYoujiang;
-import com.libbytian.pan.system.model.SystemTemDetailsModel;
-import com.libbytian.pan.system.model.SystemUserToRole;
 import com.libbytian.pan.system.service.ISystemTemDetailsService;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @SpringBootTest
 class SearchpanApplicationTests {
 
 
-    @Autowired
-//    IFindMovieInXiaoyou findMovieInXiaoyou;
-    IFindMovieInUnread findMovieUrl;
-
-    @Autowired
-    IFindMovieInYoujiang youjiang;
-
-    @Autowired
-    IFindMovieInAiDianYing aiDianYing;
-
-    @Autowired
-    IFindMovieInLiLi liLi;
-
-    @Autowired
-    IFindMovieInXiaoyou xiaoyou;
-
-
-    @Autowired
-    ISystemTemDetailsService iSystemTemDetailsService;
+//    @Autowired
+////    IFindMovieInXiaoyou findMovieInXiaoyou;
+//    IFindMovieInUnread findMovieUrl;
+//
+//    @Autowired
+//    IFindMovieInYoujiang youjiang;
+//
+//    @Autowired
+//    IFindMovieInAiDianYing aiDianYing;
+//
+//    @Autowired
+//    IFindMovieHallFourth hallSecond;
+//
+//    @Autowired
+//    IFindMovieInXiaoyou xiaoyou;
+//
+//
+//    @Autowired
+//    ISystemTemDetailsService iSystemTemDetailsService;
 
 //    public static void main(String[] args) {
 //        String appId = "wx61a17a682672e1b1";
@@ -55,8 +52,14 @@ class SearchpanApplicationTests {
 //        System.out.println(matches);
 //    }
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
     @Test
     void contextLoads() throws Exception {
+
+        redisTemplate.opsForValue().set("123123","123123");
+        System.out.println("123123");
 //        findMovieUrl.findMovieUrl("阿凡达");
 //        youjiang.findMovieUrl("阿凡达");
 //        aiDianYing.findMovieUrl("阿凡达");
@@ -67,9 +70,9 @@ class SearchpanApplicationTests {
 //        Page page = new Page(1,10);
 //        IPage<SystemTemDetailsModel> result = iSystemTemDetailsService.findTemDetailsPage(page, "1f193487adbb4ee8923e6bc72cc39e32");
 
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("08e3deea-b095-419c-9395-571aecf9256e");
-        iSystemTemDetailsService.deleteTemplateDetails(arrayList,"张山");
+//        ArrayList<String> arrayList = new ArrayList<>();
+//        arrayList.add("08e3deea-b095-419c-9395-571aecf9256e");
+//        iSystemTemDetailsService.deleteTemplateDetails(arrayList,"张山");
     }
 
 
