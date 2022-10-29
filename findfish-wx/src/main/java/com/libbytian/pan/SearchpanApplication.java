@@ -17,17 +17,16 @@ import javax.annotation.PostConstruct;
 @EnableAsync
 @EnableTransactionManagement
 @EnableDiscoveryClient
-@EnableCaching
 public class SearchpanApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SearchpanApplication.class, args);
     }
 
-    @PostConstruct
-    public void setProperties(){
-        System.setProperty("druid.mysql.usePingMethod","false");
-    }
+//    @PostConstruct
+//    public void setProperties(){
+//        System.setProperty("druid.mysql.usePingMethod","false");
+//    }
 
     @Bean
     public RestTemplate restTemplate() {

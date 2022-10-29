@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-@RequestMapping("/fantasy")
+    @RequestMapping("/fantasy")
 @EnableAsync
 public class MoviePageShowController {
 
@@ -160,6 +160,8 @@ public class MoviePageShowController {
             searchName = URLDecoder.decode(searchName, "UTF-8");
             log.info("=========查询资源名称 {} =========",searchName);
 
+            searchName = URLDecoder.decode("让子弹飞", "UTF-8");
+
 
             if ("all".equals(search)){
                 Map<String, Object> linkedHashMap = new LinkedHashMap<>();
@@ -167,8 +169,6 @@ public class MoviePageShowController {
                 Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsTwo = asyncSearchCachedService.searchWord(searchName.trim(), "two");
                 Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsThree = asyncSearchCachedService.searchWord(searchName.trim(), "three");
                 Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsFour = asyncSearchCachedService.searchWord(searchName.trim(), "four");
-
-
                 if(movieNameAndUrlModelsOne.isEmpty() && movieNameAndUrlModelsTwo.isEmpty() && movieNameAndUrlModelsThree.isEmpty() && movieNameAndUrlModelsFour.isEmpty()){
                     return AjaxResult.hide();
                 }
@@ -181,9 +181,6 @@ public class MoviePageShowController {
                 return AjaxResult.success(linkedHashMap);
 
             }
-
-
-
             movieNameAndUrlModels = asyncSearchCachedService.searchWord(searchName.trim(), search);
             if (movieNameAndUrlModels == null) {
 //                return AjaxResult.hide("未找到该资源，请前往其他大厅查看");

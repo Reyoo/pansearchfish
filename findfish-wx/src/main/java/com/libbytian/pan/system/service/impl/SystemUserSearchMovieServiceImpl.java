@@ -10,8 +10,6 @@ import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
 
     private final SystemUserSearchMovieMapper systemUserSearchMovieMapper;
 
-    private final RedissonClient redissonClient;
 
     private final static String DISTRIBUTED_LOCK_SEARCH_COUNT = "DISTRIBUTED_LOCK_SEARCH_COUNT";
 
@@ -57,11 +54,11 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
 
         //如果查询回来的结果为空 则插入
         if (systemUserSearchMovieModel == null || systemUserSearchMovieModel.getLastSearchTime().isBefore(currentDate)) {
-            RLock lock = redissonClient.getLock(DISTRIBUTED_LOCK_SEARCH_COUNT);
+//            RLock lock = redissonClient.getLock(DISTRIBUTED_LOCK_SEARCH_COUNT);
             boolean isLock;
             try {
-                isLock = lock.tryLock(500, 15000, TimeUnit.MILLISECONDS);
-                if (isLock){
+//                isLock = lock.tryLock(500, 15000, TimeUnit.MILLISECONDS);
+//                if (isLock){
                     SystemUserSearchMovieModel initSystemUserSearchMovieModel = new SystemUserSearchMovieModel();
                     initSystemUserSearchMovieModel.setSearchName(searchStr);
                     initSystemUserSearchMovieModel.setSearchTimes(1);
@@ -73,19 +70,19 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
                     } else {
                         log.debug("xxx--> " + searchStr + "  新增词条插入失败");
                     }
-                }
+//                }
             } catch (Exception e) {
                 log.error(e.getMessage());
             }finally {
-                lock.unlock();
+//                lock.unlock();
             }
 
         } else {
-            RLock lock = redissonClient.getLock(DISTRIBUTED_LOCK_SEARCH_COUNT);
+//            RLock lock = redissonClient.getLock(DISTRIBUTED_LOCK_SEARCH_COUNT);
             boolean isLock;
             try {
-                isLock = lock.tryLock(500, 15000, TimeUnit.MILLISECONDS);
-                if (isLock) {
+//                isLock = lock.tryLock(500, 15000, TimeUnit.MILLISECONDS);
+//                if (isLock) {
                     int searcchTimes = systemUserSearchMovieModel.getSearchTimes().intValue() + 1;
                     systemUserSearchMovieModel.getSearchTimes().intValue();
                     systemUserSearchMovieModel.setSearchTimes(searcchTimes);
@@ -95,11 +92,11 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
                     } else {
                         log.debug("xxx--> " + searchStr + "  更新词条插入失败");
                     }
-                }
-            } catch (InterruptedException e) {
+//                }
+            } catch (Exception e) {
                 log.error(e.getMessage());
             } finally {
-                lock.unlock();
+//                lock.unlock();
             }
         }
     }

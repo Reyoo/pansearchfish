@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IFindMovieService {
 
-    List<MovieNameAndUrlModel> getMoviesByName(String tbName,String movieName) throws Exception;
+    List<MovieNameAndUrlModel> getMoviesByName(String tbName, String redisPrefix,String movieName) throws Exception;
 
 }

@@ -1,12 +1,15 @@
 package com.libbytian.pan.findmovie;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.libbytian.pan.system.mapper.MovieNameAndUrlMapper;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -29,8 +32,14 @@ public class FindMovieServiceImpl implements IFindMovieService {
 
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
+    private final RedisTemplate redisTemplate;
+
     @Override
-    public List<MovieNameAndUrlModel> getMoviesByName(String tbName, String movieName) throws Exception {
+    public List<MovieNameAndUrlModel> getMoviesByName(String tbName, String redisPrefix, String movieName) throws Exception {
+        List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(tbName, movieName);
+        if(CollectionUtil.isNotEmpty(movieNameAndUrlModels)){
+            redisTemplate.opsForValue().set(redisPrefix.concat(movieName), movieNameAndUrlModels, Duration.ofHours(2L));
+        }
         return movieNameAndUrlMapper.selectMovieUrlByLikeName(tbName, movieName);
     }
 }

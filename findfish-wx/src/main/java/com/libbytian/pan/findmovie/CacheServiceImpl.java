@@ -1,9 +1,11 @@
 package com.libbytian.pan.findmovie;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.TypeReference;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +26,13 @@ import java.util.List;
 @Service("cacheService")
 public class CacheServiceImpl implements CacheService {
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public List<MovieNameAndUrlModel> getMoviesByName(String redisPrefix, String movieName) throws Exception {
         String cacheResult = redisTemplate.opsForValue().get(redisPrefix.concat(movieName));
-        return null == cacheResult ? null : JSON.parseObject(cacheResult, List.class);
+        List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult), MovieNameAndUrlModel.class);
+        return null == cacheResult ? null : movieNameAndUrlModels;
     }
 }
 

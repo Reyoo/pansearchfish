@@ -40,7 +40,7 @@ public class FindMovieSelectorService {
                 () -> cacheService.getMoviesByName(redisPrefix, movieName),
                 () -> {
                     try {
-                        return findMovieService.getMoviesByName(tbName, movieName);
+                        return findMovieService.getMoviesByName(tbName,redisPrefix, movieName);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
