@@ -55,7 +55,6 @@
     </insert>
 
 
-
     <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
         INSERT INTO  ${tableName}
             (movie_name, movie_url, wangpan_url, wangpan_passwd,title_name,pan_source,updatetime)
@@ -87,7 +86,7 @@
             <if test="movieNameAndUrlModel.wangPanUrl != null and movieNameAndUrlModel.wangPanUrl != ''">
                 wangpan_url =${"'"+movieNameAndUrlModel.wangPanUrl+"'"},
             </if>
-            <if test="movieNameAndUrlModel.wangPanPassword != null and movieNameAndUrlModel.wangPanPassword != ''">
+            <if test="movieNameAndUrlModel.wangPanPassword != null ">
                 wangpan_passwd =${"'"+movieNameAndUrlModel.wangPanPassword+"'"},
             </if>
             <if test="movieNameAndUrlModel.titleName != null ">
@@ -122,12 +121,6 @@
 
     </delete>
 
-    <!--    <delete id="checkRepeatMovie"  statementType="STATEMENT">-->
-    <!--        DELETE-->
-    <!--        FROM ${tableName}-->
-    <!--        WHERE id NOT IN-->
-    <!--        (SELECT * FROM   ( SELECT max( id ) FROM ${tableName} GROUP BY  wangpan_url ) ids)-->
-    <!--    </delete>-->
 
 
     <!--    HS优化新版本SQL-->
@@ -142,7 +135,7 @@
             resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM  ${tableName}
+        FROM  ${tablename}
         WHERE movie_name =  ${"'"+movieName+"'"}
         <if test="wangPanUrl != null ">
             and wangpan_url = ${"'"+wangPanUrl+"'"}
@@ -156,6 +149,14 @@
         </if>
         LIMIT 20
     </select>
+
+    <!--    清理热榜表 -->
+    <delete id="cleanHotList"  statementType="STATEMENT">
+        DELETE
+        FROM user_movie_search
+        WHERE
+        last_searchtime <![CDATA[ < ]]> date_add(curdate(),INTERVAL -2 month)
+    </delete>
 
 
 </mapper>

@@ -15,6 +15,7 @@ public enum WebPageTagConstant {
 
     XIAOYOU_URL_PARAM("/?s=", "小优入参"),
     LILI_URL_PARAM("/?s=", "莉莉入参"),
+    XIAOYU_URL_PARAM("/s/1/","小宇入参"),
     HTML_TAG_A("a", "a标签"),
     HTML_TAG_HREF("href", "href标签"),
     HTML_TAG_TITLE("title", "title标签"),
@@ -24,12 +25,11 @@ public enum WebPageTagConstant {
     TIQUMA_CHINA("提取码：","提取码："),
     SHIPIN_CHINA("视频：","：为中文符号"),
     BAIDU("baidu","百度"),
-    BAIDU_WANGPAN("百度网盘","百度网盘"),
-    XUNLEI_YUNPAN("迅雷云盘","迅雷云盘"),
-    ONLINE_SHOW("在线播放","在线播放"),
+    BAIDU_WANGPAN("pan.baidu.com","百度网盘"),
+    XUNLEI_YUNPAN("pan.xunlei.com","迅雷云盘"),
+    KUAKE_WANGPAN("pan.quark.cn","夸克网盘"),
     ALI_SOURCE("ali","阿里云盘"),
-    XUNLEI_SOURCE("xunlei","迅雷云盘"),
-    QUARK_SOURCE("quark","夸克网盘");
+    ONLINE_SHOW("在线播放","在线播放");
 
 
     WebPageTagConstant(String type, String description) {

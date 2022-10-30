@@ -19,6 +19,7 @@ import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.WebPageConstant;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import java.util.Set;
 @Service("jsoupAiDianyingServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
+@Deprecated
 public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
@@ -65,7 +67,8 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         Set<String> movieUrlInLxxh = new HashSet();
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(lxxhUrl);
-        stringBuffer.append("/page/1/?s=");
+//        stringBuffer.append("/page/1/?s=");
+        stringBuffer.append("/?s=");
         stringBuffer.append(URLEncoder.encode(searchMovieName.trim(), "UTF8"));
         Document document = JsoupFindfishUtils.getDocument(stringBuffer.toString(),proxyIpAndPort,useProxy);
         //如果未找到，放弃爬取，直接返回
@@ -109,6 +112,26 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
         }
         String finalMovieName = movieName;
 
+        secondUrlLxxh = URLDecoder.decode(secondUrlLxxh, "UTF-8");
+        //2022-05-11
+        //莉莉和爱电影 movieUrl 特殊， 更新中的资源 会有 更新至XX集的情况，入库时过滤一下
+
+
+        String movieUrl;
+        if (secondUrlLxxh.contains("【更新至")){
+            movieUrl = secondUrlLxxh.split("【更新至")[0];
+        }else if (secondUrlLxxh.contains("【完结")){
+            movieUrl = secondUrlLxxh.split("【完结")[0];
+        }else if (secondUrlLxxh.contains("更新至")){
+            movieUrl = secondUrlLxxh.split("更新至")[0];
+        }else if (secondUrlLxxh.contains("全集")){
+            movieUrl = secondUrlLxxh.split("全集")[0];
+        }else if (secondUrlLxxh.contains("完结")){
+            movieUrl = secondUrlLxxh.split("完结")[0];
+        }else {
+            movieUrl = secondUrlLxxh;
+        }
+
 
         Elements secorndAttr = secorndDocument.getElementsByTag("p");
 
@@ -120,12 +143,16 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
                     //爱电影有概率会存入百度文档，百度文档资源不予爬取，进行过滤
                     if (panUrl.contains("pan.") && !panUrl.contains("https://pan.baidu.com/doc")){
                         MovieNameAndUrlModel movieNameAndUrlModel = new MovieNameAndUrlModel();
-                        movieNameAndUrlModel.setMovieUrl(secondUrlLxxh);
+                        movieNameAndUrlModel.setMovieUrl(movieUrl);
                         //判断是百度网盘还是迅雷云盘
-                        if (panUrl.contains(WebPageTagConstant.BAIDU.getType())){
-                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getType());
-                        }else {
-                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getType());
+                        //2022-04-26 新增夸克网盘判断
+                        if (panUrl.contains(WebPageTagConstant.BAIDU_WANGPAN.getType())){
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getDescription());
+                        }else if (panUrl.contains(WebPageTagConstant.KUAKE_WANGPAN.getType())){
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.KUAKE_WANGPAN.getDescription());
+                        }
+                        else {
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getDescription());
                         }
                         movieNameAndUrlModel.setWangPanUrl(panUrl);
                         movieNameAndUrlModel.setMovieName(finalMovieName);
@@ -171,7 +198,7 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
 
             ArrayList arrayList = new ArrayList();
             movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
-                MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), MovieNameAndUrlModel.class);
+                com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
                 arrayList.add(findFishMovieNameAndUrlModel);
             });
 
@@ -190,7 +217,6 @@ public class  JsoupAiDianyingServiceImpl implements ICrawlerCommonService {
     public void checkRepeatMovie() {
 
     }
-
 
 
 }

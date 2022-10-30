@@ -61,6 +61,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), CharsetUtil.UTF_8);
         String url = xiaoyouUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
+
         try {
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);
             log.info(document.text());
@@ -174,7 +175,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                             try {
                                 ArrayList arrayList = new ArrayList();
                                 movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
-                                    MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), MovieNameAndUrlModel.class);
+                                    com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
                                     arrayList.add(findFishMovieNameAndUrlModel);
                                 });
 
@@ -220,10 +221,13 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
         movieNameAndUrlModel.setMovieName(finalMovieName);
 
         //判断panSource
-        if (movieNameAndUrlModel.getWangPanUrl().contains(WebPageTagConstant.BAIDU.getType())){
-            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getType());
+        //2022-04-26 新增夸克网盘判断
+        if (movieNameAndUrlModel.getWangPanUrl().contains(WebPageTagConstant.BAIDU_WANGPAN.getType())){
+            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getDescription());
+        }else if (movieNameAndUrlModel.getWangPanUrl().contains(WebPageTagConstant.KUAKE_WANGPAN.getType())){
+            movieNameAndUrlModel.setPanSource(WebPageTagConstant.KUAKE_WANGPAN.getDescription());
         }else {
-            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getType());
+            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getDescription());
         }
 
         //判断码后的: 是英文还是中文并进行字符过滤
@@ -234,6 +238,5 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
             movieNameAndUrlModel.setWangPanPassword(WebPageTagConstant.TIQUMA_CHINA.getType()+element.childNode(countChild+1).toString().split(XiaoYouConstant.XIAOYOU_TIQUMA_English.getType())[1].replaceAll("&nbsp;","").trim());
         }
     }
-
 
 }

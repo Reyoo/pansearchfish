@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service("jsoupSumuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
+@Deprecated
 public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
     private final RestTemplate restTemplate;

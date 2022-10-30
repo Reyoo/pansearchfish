@@ -77,6 +77,11 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
      */
     void checkRepeatMovie(@Param("tableName") String tableName);
 
+    /**
+     * 清理热榜表 2个月以前的数据
+     */
+    void cleanHotList();
+
     List<MovieNameAndUrlModel> selectMovieUrlByCondition(@Param("tableName") String tablename, @Param("movieName") String movieName, @Param("wangPanUrl") String wangPanUrl,
                                                          @Param("titleName") String titleName, @Param("panSource") String panSource);
 

@@ -32,11 +32,6 @@ public class CrawlerScheduleTask {
 
     private final ISystemUserSearchMovieService systemUserSearchMovieService;
 
-    @Qualifier("jsoupAiDianyingServiceImpl")
-    private final ICrawlerCommonService jsoupAiDianyingServiceImpl;
-
-//    @Qualifier("jsoupSumuServiceImpl")
-//    private final ICrawlerCommonService jsoupSumuServiceImpl;
 
     @Qualifier("jsoupUnreadServiceImpl")
     private final ICrawlerCommonService jsoupUnreadServiceImpl;
@@ -44,6 +39,8 @@ public class CrawlerScheduleTask {
     @Qualifier("jsoupXiaoYouServiceImpl")
     private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
 
+    @Qualifier("jsoupXiaoYuServiceImpl")
+    private final ICrawlerCommonService jsoupXiaoYuServiceImpl;
 
     @Qualifier("jsoupHallFourthServiceImpl")
     private final ICrawlerCommonService jsoupHallFourthServiceImpl;
@@ -60,15 +57,14 @@ public class CrawlerScheduleTask {
 
 //    @Scheduled(cron = "0 0 0/2 * * ? ") //偶数整点 2，4，6，8，10   HS服务器用偶数
 //    @Scheduled(cron = "0 0 1/2 * * ? ") //奇数整点 1，3，5，7，9  SQ服务器用奇数
-
     @Scheduled(cron = "0 0 1/2 * * ? ")
     private void crawlerMovieTasks() throws Exception {
 
         Map<String, ICrawlerCommonService> map = new HashMap<>();
         map.put("小悠", jsoupXiaoyouServiceImpl);
-        map.put("四号大厅", jsoupHallFourthServiceImpl);
         map.put("未读", jsoupUnreadServiceImpl);
-        map.put("爱电影", jsoupAiDianyingServiceImpl);
+        map.put("小宇",jsoupXiaoYuServiceImpl);
+        map.put("易搜", jsoupHallFourthServiceImpl);
 
 
         System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
@@ -78,8 +74,16 @@ public class CrawlerScheduleTask {
         log.debug("获取用户搜索范围起始时间：{}", begin);
         log.debug("获取用户搜索范围结束时间：{}", endTime);
 
+
         //获取到用户查询的关键词实体类
         List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange(begin, endTime);
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = systemUserSearchMovieService.listUserSearchMovieBySearchDateRange("2022-1-20 12:00:15", "2022-1-20 17:02:16");
+
+//        SystemUserSearchMovieModel movieModel = new SystemUserSearchMovieModel();
+//        movieModel.setSearchName("进击的巨人");
+//        List<SystemUserSearchMovieModel> systemUserSearchMovieModelList = new ArrayList<>();
+//        systemUserSearchMovieModelList.add(movieModel);
+
         log.info("查询到 " + systemUserSearchMovieModelList.size() + " 条记录");
 
         final AtomicInteger[] randomIndex = {new AtomicInteger()};
@@ -119,14 +123,15 @@ public class CrawlerScheduleTask {
     @Scheduled(cron = "0 0 12,22 1/2 * ? ")
     private void changeSubscribeStatus(){
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FOURTH_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYU_TABLENAME);
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.WEIDU_TABLENAME);
         movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.AIDIANYING_TABLENAME);
+
         System.err.println("执行 删除重复数据 完毕: " + LocalDateTime.now());
 
 //        定时清理查询片名表一个月前的数据，后续可能会使用
-//        delete from user_movie_search where last_searchtime < date_add(curdate(),INTERVAL -1 month)
+        movieNameAndUrlMapper.cleanHotList();
 
     }
 
@@ -142,13 +147,16 @@ public class CrawlerScheduleTask {
                 ArrayList<String> ipAndPortList =  new ArrayList<>(this.ipAndPorts);
                 int a = randomIndex[0].get();
                 ipAndPort = ipAndPortList.get(a);
-                //判断IP是否能成功访问莉莉
-                String url = "http://a12.66perfect.com/?s=%E5%86%9B%E8%88%B0%E5%B2%9B";
+
+                //判断IP是否能成功访问小悠
+//                String url = "http://168.xuj.cool/?s=斗牛";
+                String url = "http://xykmovie.com/s/1/公民凯恩";
+
                 Document document = JsoupFindfishUtils.getDocument(url, ipAndPort, true);
 
                 //判断IP是否能访问到路径
                 //以莉莉为筛选条件
-                if (document == null || !document.text().startsWith("A12 Site ")){
+                if (document == null || ! document.title().contains("小宇搜索")){
                     redisTemplate.opsForHash().delete("use_proxy", ipAndPort);
                     System.out.println("============  删除IP ："+ipAndPort);
                 }else {

@@ -14,10 +14,7 @@ import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author: QiSun
@@ -32,13 +29,8 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
 
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
     private final RedisTemplate redisTemplate;
-    private static Lock lock = new ReentrantLock();
-//    private final InvalidUrlCheckingService invalidUrlCheckingService;
 
-//    @Override
-//    public List<MovieNameAndUrlModel> findMovieUrl(String tablename, String movieName,String wangPanUrl) throws Exception {
-//        return movieNameAndUrlMapper.selectMovieUrlByName(tablename, movieName);
-//    }
+
 
     /**
      * 插入更新操作、如果数据库中 不存在 则插入、如果存在 则更新  由于分表、每个爬虫资源影单单独一套 Controller Servcie Mapper
@@ -54,6 +46,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
         }
 
         movieNameAndUrlModels.stream().forEach(t -> {
+
                     try {
                         if (StrUtil.isBlank(t.getMovieName())) {
                             return;
@@ -64,15 +57,17 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                             //如果只查询到唯一一条数据 则更新
                             movieNameAndUrlMapper.updateUrlMovieUrl(tableName, t);
                             log.info("更新电影列表-->" + t);
-                            //如果查询到多条 则校验URL
+                            //如果查询到多条（电影名、标题名、网盘来源均相同），则认为此条资源
                         }else if (movieSize.size() >1){
                             try {
                                 movieSize.stream().forEach(movieNameAndUrlModel ->{
-                                    if (movieNameAndUrlModel.getPanSource().contains("迅雷")){
-                                        Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,true);
-                                        System.out.println(document);
-                                        return;
-                                    }
+
+//                                    if (movieNameAndUrlModel.getPanSource().contains("迅雷")){
+//                                        Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,false);
+//                                        System.out.println(document);
+//                                        return;
+//                                    }
+
                                     Document document = JsoupFindfishUtils.getDocument(movieNameAndUrlModel.getWangPanUrl(), proxyIpAndPort,true);
                                     if (document == null){
                                         redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
@@ -83,11 +78,14 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                                         try {
                                             movieNameAndUrlMapper.deleteUrlMovieUrls(tableName, movieNameAndUrlModel);
                                         } catch (Exception e) {
-                                            log.error("MovieNameAndUrlServiceImpl line88 ->{}" ,e.getMessage());
+                                            log.error(e.getMessage());
+                                            e.printStackTrace();
                                         }
                                     }
                                     log.info("校验完毕");
+
                                 });
+
                                 log.info("查询到多条记录，校验URL-->" + t);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -149,5 +147,6 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
                 }
         );
     }
+
 
 }

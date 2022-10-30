@@ -1,13 +1,7 @@
-package top.findfish.crawler.moviefind.jsoup.hall.fourth;
+package top.findfish.crawler.moviefind.jsoup.yisou;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.regexp.RE;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +13,6 @@ import top.findfish.crawler.common.hall.fourth.HallFourthDataDetailModel;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.moviefind.util.RestTemplateUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;

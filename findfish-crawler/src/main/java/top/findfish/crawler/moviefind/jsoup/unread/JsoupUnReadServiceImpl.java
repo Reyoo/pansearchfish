@@ -13,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.findfish.crawler.moviefind.ICrawlerCommonService;
+import top.findfish.crawler.constant.WebPageTagConstant;
+import top.findfish.crawler.moviefind.CrawlerCommonService;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
@@ -36,7 +37,7 @@ import java.util.Set;
 @Service("jsoupUnreadServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
+public class JsoupUnReadServiceImpl extends CrawlerCommonService {
 
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final InvalidUrlCheckingService invalidUrlCheckingService;
@@ -53,7 +54,9 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF-8");
         String url = unreadUrl + "/?s=" + encode;
         String charset = JsoupFindfishUtils.getCharset(url);
+//        System.out.println(charset);
         Document doc = JsoupFindfishUtils.getDocumentWithCharset(url, proxyIpAndPort, useProxy, charset);
+//        System.out.println(doc.toString());
         Elements links = doc.getElementsByClass("entry-title");
         if (ObjectUtil.isNull(links)) {
             return movieUrlSet;
@@ -142,12 +145,14 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                             }
                         });
 
-
-                        if (movieNameAndUrlModel.getWangPanUrl().contains("pan.baidu")) {
-                            movieNameAndUrlModel.setPanSource("百度网盘");
-                        } else {
-                            movieNameAndUrlModel.setPanSource("迅雷云盘");
+                        if (movieNameAndUrlModel.getWangPanUrl().contains(WebPageTagConstant.BAIDU_WANGPAN.getType())){
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.BAIDU_WANGPAN.getDescription());
+                        }else if (movieNameAndUrlModel.getWangPanUrl().contains(WebPageTagConstant.KUAKE_WANGPAN.getType())){
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.KUAKE_WANGPAN.getDescription());
+                        }else {
+                            movieNameAndUrlModel.setPanSource(WebPageTagConstant.XUNLEI_YUNPAN.getDescription());
                         }
+
                         list.add(movieNameAndUrlModel);
                     }
             );
@@ -184,8 +189,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
                 ArrayList arrayList = new ArrayList();
                 movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
-//                    com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
-                    MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), MovieNameAndUrlModel.class);
+                    com.libbytian.pan.system.model.MovieNameAndUrlModel findFishMovieNameAndUrlModel = JSON.parseObject(JSON.toJSONString(movieNameAndUrlModel), com.libbytian.pan.system.model.MovieNameAndUrlModel.class);
                     arrayList.add(findFishMovieNameAndUrlModel);
                 });
 
@@ -198,10 +202,6 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
         }
     }
 
-    @Override
-    public void checkRepeatMovie() {
-
-    }
 
 
 }
