@@ -4,19 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.findfish.crawler.common.AjaxResult;
-import top.findfish.crawler.proxy.service.GetProxyService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import top.findfish.crawler.proxy.GetProxyService;
 
 /**
  * @ProjectName: pansearch
@@ -58,16 +51,7 @@ public class CrawlerWebInfoController {
 //
 //
 //
-    @Value("${user.unread.weiduyingdan}")
-    String unreadUrl;
-    @Value("${user.lxxh.aidianying}")
-    String lxxhUrl;
-    @Value("${user.xiaoyou.url}")
-    String xiaoyouUrl;
-    @Value("${user.sumsu.url}")
-    String sumuUrl;
-    @Value("${user.youjiang.url}")
-    String youjiangUrl;
+
 //
     /**
      * 调用电影PID 入库 触发接口类

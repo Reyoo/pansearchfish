@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.util;
+package top.findfish.crawler.util;
 
 /**
  * *************************************************************************

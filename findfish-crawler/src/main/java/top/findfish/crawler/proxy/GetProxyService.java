@@ -1,4 +1,4 @@
-package top.findfish.crawler.proxy.service;
+package top.findfish.crawler.proxy;
 
 
 import com.alibaba.fastjson.JSONObject;

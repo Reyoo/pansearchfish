@@ -2,30 +2,23 @@ package top.findfish.crawler.moviefind.jsoup.sumsu;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.regexp.RE;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
-import top.findfish.crawler.moviefind.util.JudgeUrlSourceUtil;
+import top.findfish.crawler.util.JudgeUrlSourceUtil;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.FindFishUserAgentUtil;
-import top.findfish.crawler.util.FindfishStrUtil;
 import top.findfish.crawler.util.WebPageConstant;
 
 import java.time.Duration;
@@ -33,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service("jsoupSumuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -41,7 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Deprecated
 public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
-    private final RestTemplate restTemplate;
     private final RedisTemplate redisTemplate;
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final InvalidUrlCheckingService invalidUrlCheckingService;

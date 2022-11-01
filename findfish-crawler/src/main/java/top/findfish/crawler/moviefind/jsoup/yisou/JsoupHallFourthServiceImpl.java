@@ -13,7 +13,7 @@ import top.findfish.crawler.common.hall.fourth.HallFourthDataDetailModel;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.util.RestTemplateUtils;
+import top.findfish.crawler.util.RestTemplateUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;

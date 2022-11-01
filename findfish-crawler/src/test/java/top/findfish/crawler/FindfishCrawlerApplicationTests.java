@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
 
+import java.net.SocketTimeoutException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 class FindfishCrawlerApplicationTests {
 
 
-//    @Qualifier("jsoupAiDianyingServiceImpl")
+    //    @Qualifier("jsoupAiDianyingServiceImpl")
 //    @Autowired
 //    ICrawlerCommonService jsoupAiDianyingServiceImpl;
 //
@@ -58,13 +59,32 @@ class FindfishCrawlerApplicationTests {
 
 
     public static void main(String[] args) {
-        String resultCode = "123";
 
-        String firstWord = resultCode.substring(0,1);
-        String secondWord = resultCode.substring(1,2);
+        try {
+            System.out.println(test());
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        System.out.println(firstWord);
-        System.out.println(secondWord);
+    }
+
+
+    public static String test() throws SocketTimeoutException, Exception {
+        try {
+            System.out.println("测试");
+            throw new SocketTimeoutException("123");
+
+        } catch (SocketTimeoutException e) {
+            System.out.println("抛出socket 异常");
+            return "a";
+        } catch (Exception e) {
+            System.out.println("抛出异常");
+            return "b";
+        }
+
+
     }
 
 
@@ -72,8 +92,7 @@ class FindfishCrawlerApplicationTests {
     void contextLoads() throws Exception {
 
 
-
-        jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("让子弹飞",null,false);
+        jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("让子弹飞", null, false);
 
 
 //        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
@@ -125,9 +144,6 @@ class FindfishCrawlerApplicationTests {
 //        System.out.println(total.join().size());
 
 
-
-
-
 //        CompletableFuture.supplyAsync(() -> 1)
 //                .whenComplete((result, error) -> {
 //                    System.out.println(result);
@@ -140,7 +156,6 @@ class FindfishCrawlerApplicationTests {
 //                .thenApply(Object::toString)
 //                .thenApply(Integer::valueOf)
 //                .thenAccept((param) -> System.out.println("done"));
-
 
 
 //      jsoupAiDianyingServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
@@ -258,7 +273,7 @@ class FindfishCrawlerApplicationTests {
 
         /**时间在前*/
         LocalDate a = LocalDate.parse("2022/04/10", DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        
+
         LocalDate b = LocalDate.parse("2022/04/20", DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 //        Duration between = Duration.between(a, b);
         Period between = Period.between(a, b);
@@ -269,7 +284,6 @@ class FindfishCrawlerApplicationTests {
         System.out.println(days);
 
         /**时间在后*/
-
 
 
     }
