@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.constant.WebPageTagConstant;
-import top.findfish.crawler.moviefind.CrawlerCommonService;
+import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
@@ -37,7 +37,7 @@ import java.util.Set;
 @Service("jsoupUnreadServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupUnReadServiceImpl extends CrawlerCommonService {
+public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
 
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final InvalidUrlCheckingService invalidUrlCheckingService;
@@ -202,6 +202,10 @@ public class JsoupUnReadServiceImpl extends CrawlerCommonService {
         }
     }
 
+    @Override
+    public void checkRepeatMovie() {
+        return;
+    }
 
 
 }

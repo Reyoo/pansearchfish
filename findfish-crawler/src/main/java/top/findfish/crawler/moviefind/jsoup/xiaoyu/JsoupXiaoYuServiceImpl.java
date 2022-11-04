@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
-import top.findfish.crawler.moviefind.CrawlerCommonService;
+import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("jsoupXiaoYuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupXiaoYuServiceImpl extends CrawlerCommonService {
+public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
 
@@ -144,5 +144,10 @@ public class JsoupXiaoYuServiceImpl extends CrawlerCommonService {
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
         }
 
+    }
+
+    @Override
+    public void checkRepeatMovie() {
+        return;
     }
 }

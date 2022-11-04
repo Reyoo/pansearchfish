@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.jsoup.yisou;
+package top.findfish.crawler.moviefind.jsoup.hall.fourth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.common.HallFourthResult;
-import top.findfish.crawler.common.hall.fourth.HallFourthDataDetailModel;
+import top.findfish.crawler.moviefind.jsoup.hall.fourth.HallFourthDataDetailModel;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;

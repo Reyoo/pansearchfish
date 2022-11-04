@@ -39,7 +39,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
 
-    @Value("${user.sumsu.url}")
+    @Value("${user.xiaoyu.url}")
     String url;
 
 

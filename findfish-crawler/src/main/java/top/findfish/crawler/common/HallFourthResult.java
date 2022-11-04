@@ -3,7 +3,7 @@ package top.findfish.crawler.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.findfish.crawler.common.hall.fourth.HallFourthDataNodeModel;
+import top.findfish.crawler.moviefind.jsoup.hall.fourth.HallFourthDataNodeModel;
 
 import java.io.Serializable;
 
