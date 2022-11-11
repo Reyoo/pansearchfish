@@ -1,6 +1,8 @@
 package com.libbytian.pan.wechat.service;
 
 import com.libbytian.pan.findmovie.FindMovieSelectorService;
+import com.libbytian.pan.system.enums.CacheConstant;
+import com.libbytian.pan.system.enums.TbNameConstant;
 import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,38 +46,23 @@ public class AsyncSearchCachedComponent {
         switch (search) {
             //a 一号大厅 小悠
             case "one":
-//                Map<String, List<MovieNameAndUrlModel>> collectXiaoYou = iFindMovieInXiaoyou.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                combineResultMap = findMovieSelectorService.listMovies("url_movie_xiaoyou","xiaoyou::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                combineResultMap = findMovieSelectorService.listMovies(TbNameConstant.HALL_FIRST_TABLENAME, CacheConstant.FIRST_HALL_CACHE_NAME,searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return combineResultMap;
             //u 二号大厅 小宇
             case "two":
-                combineResultMap = findMovieSelectorService.listMovies("url_movie_xiaoyu","xiaoyu::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
+                combineResultMap = findMovieSelectorService.listMovies(TbNameConstant.HALL_SECOND_TABLENAME,CacheConstant.SECOND_HALL_CACHE_NAME,searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return combineResultMap;
-//                Map<String, List<MovieNameAndUrlModel>> collectXiaoYu = iFindMovieInXiaoyu.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//                return collectXiaoYu;
             //x 3号大厅
             case "three":
-                combineResultMap = findMovieSelectorService.listMovies("url_movie_unread","unread::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//                Map<String, List<MovieNameAndUrlModel>> collectUnread = iFindMovieInUnread.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                //添加未读影单
-//                combineResultMap.putAll(collectUnread);
-                //添加爱电影
-//                combineResultMap.putAll(collectAiDianYing);
+                combineResultMap = findMovieSelectorService.listMovies(TbNameConstant.HALL_THIRD_TABLENAME,CacheConstant.THIRD_HALL_CACHE_NAME,searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return combineResultMap;
             case "four":
-                //
-//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//                Map<String, List<MovieNameAndUrlModel>> collectAiDianYing = iFindMovieInAiDianYing.findMovieUrl(searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-//                combineResultMap.putAll(collectAiDianYing);
-                combineResultMap = findMovieSelectorService.listMovies("url_movie_fourth","fourth::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
-                combineResultMap.putAll(findMovieSelectorService.listMovies("url_movie_aidianying","aidianying::",searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName)));
+                combineResultMap = findMovieSelectorService.listMovies(TbNameConstant.HALL_FOURTH_TABLENAME,CacheConstant.FOURTH_HALL_CACHE_NAME,searchMovieText).stream().collect(Collectors.groupingBy(MovieNameAndUrlModel::getMovieName));
                 return combineResultMap;
             default:
                 return new HashMap<>();
 
         }
-
     }
 }
 

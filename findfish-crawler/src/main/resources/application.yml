@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 movie:
   hall:
     first: jsoupHallFirstServiceImpl

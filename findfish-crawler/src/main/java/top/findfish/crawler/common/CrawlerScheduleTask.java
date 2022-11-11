@@ -16,7 +16,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.SystemUserSearchMovieModel;
 import top.findfish.crawler.sqloperate.service.ISystemUserSearchMovieService;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -103,10 +103,10 @@ public class CrawlerScheduleTask {
     @Scheduled(cron = "0 0 12,22 1/2 * ? ")
     private void changeSubscribeStatus() {
         System.err.println("执行 删除重复数据 时间: " + LocalDateTime.now());
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_SECOND_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FIRST_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_THIRD_TABLENAME);
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FOURTH_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_SECOND_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_FIRST_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_THIRD_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_FOURTH_TABLENAME);
         System.err.println("执行 删除重复数据 完毕: " + LocalDateTime.now());
 //        定时清理查询片名表一个月前的数据，后续可能会使用
         movieNameAndUrlMapper.cleanHotList();

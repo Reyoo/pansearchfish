@@ -159,10 +159,6 @@ public class MoviePageShowController {
             Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModels = new HashMap<>();
             searchName = URLDecoder.decode(searchName, "UTF-8");
             log.info("=========查询资源名称 {} =========",searchName);
-
-            searchName = URLDecoder.decode("让子弹飞", "UTF-8");
-
-
             if ("all".equals(search)){
                 Map<String, Object> linkedHashMap = new LinkedHashMap<>();
                 Map<String, List<MovieNameAndUrlModel>> movieNameAndUrlModelsOne = asyncSearchCachedService.searchWord(searchName.trim(), "one");
@@ -172,24 +168,20 @@ public class MoviePageShowController {
                 if(movieNameAndUrlModelsOne.isEmpty() && movieNameAndUrlModelsTwo.isEmpty() && movieNameAndUrlModelsThree.isEmpty() && movieNameAndUrlModelsFour.isEmpty()){
                     return AjaxResult.hide();
                 }
-
                 linkedHashMap.put("one",movieNameAndUrlModelsOne);
                 linkedHashMap.put("two",movieNameAndUrlModelsTwo);
                 linkedHashMap.put("three",movieNameAndUrlModelsThree);
                 linkedHashMap.put("four",movieNameAndUrlModelsFour);
-                
                 return AjaxResult.success(linkedHashMap);
 
             }
             movieNameAndUrlModels = asyncSearchCachedService.searchWord(searchName.trim(), search);
             if (movieNameAndUrlModels == null) {
-//                return AjaxResult.hide("未找到该资源，请前往其他大厅查看");
                 return AjaxResult.hide();
             }
             return AjaxResult.success(movieNameAndUrlModels);
         } catch (Exception e) {
             e.printStackTrace();
-//            return AjaxResult.hide("全网搜 '" + searchName + "' 中 挖坑埋点土数个一二三四五，再点一次大厅");
             return AjaxResult.hide();
         }
     }

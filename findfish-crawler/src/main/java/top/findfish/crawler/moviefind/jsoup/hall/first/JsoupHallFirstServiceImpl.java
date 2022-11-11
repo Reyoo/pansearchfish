@@ -23,7 +23,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -163,10 +163,10 @@ public class JsoupHallFirstServiceImpl implements ICrawlerCommonService {
                 set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_FIRST_TABLENAME,proxyIpAndPort);
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, TbNameConstant.HALL_FIRST_TABLENAME,proxyIpAndPort);
                         //删除无效数据  删除是要做的 删除的主要用处在于电视剧更新 级数问题。 后面应当抓到删除的逻辑 或者定时批量删除
                         /** movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);*/
-                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_FIRST_TABLENAME, searchMovieName));
+                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(TbNameConstant.HALL_FIRST_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {
@@ -196,7 +196,7 @@ public class JsoupHallFirstServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FIRST_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_FIRST_TABLENAME);
     }
 
     /**

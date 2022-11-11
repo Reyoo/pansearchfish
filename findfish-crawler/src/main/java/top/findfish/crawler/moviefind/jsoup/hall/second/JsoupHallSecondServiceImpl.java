@@ -18,7 +18,7 @@ import top.findfish.crawler.util.JudgeUrlSourceUtil;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -94,11 +94,11 @@ public class JsoupHallSecondServiceImpl implements ICrawlerCommonService {
                     }
                 });
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.HALL_SECOND_TABLENAME, proxyIpAndPort);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, TbNameConstant.HALL_SECOND_TABLENAME, proxyIpAndPort);
 //                //删除无效数据
 //                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_SECOND_TABLENAME, searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(TbNameConstant.HALL_SECOND_TABLENAME, searchMovieName);
 //                redisTemplate.opsForValue().set("xiaoyu::" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.XIAOYU_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
 //                        Duration.ofHours(2L));
                 redisTemplate.opsForValue().set(CacheConstant.SECOND_HALL_CACHE_NAME.concat(searchMovieName), movieNameAndUrlModels, Duration.ofHours(2L));
@@ -113,7 +113,7 @@ public class JsoupHallSecondServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_SECOND_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_SECOND_TABLENAME);
     }
 
 

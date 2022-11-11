@@ -10,16 +10,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.common.HallFourthResult;
 import top.findfish.crawler.constant.CacheConstant;
-import top.findfish.crawler.moviefind.jsoup.hall.fourth.HallFourthDataDetailModel;
 import top.findfish.crawler.constant.WebPageTagConstant;
-import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.util.RestTemplateUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -102,7 +100,7 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
             });
 
 
-            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, WebPageConstant.HALL_FOURTH_TABLENAME, proxyIpAndPort);
+            movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, TbNameConstant.HALL_FOURTH_TABLENAME, proxyIpAndPort);
             redisTemplate.opsForValue().set(CacheConstant.FOURTH_HALL_CACHE_NAME.concat(searchMovieName),
                     movieNameAndUrlModels, Duration.ofHours(2L));
         } catch (Exception e) {
@@ -113,7 +111,7 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FOURTH_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(TbNameConstant.HALL_FOURTH_TABLENAME);
     }
 
 }

@@ -20,7 +20,7 @@ import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.PanSourceUtil;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -115,8 +115,8 @@ public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
                 set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_SECOND_TABLENAME,proxyIpAndPort);
-                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_SECOND_TABLENAME, searchMovieName));
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, TbNameConstant.HALL_SECOND_TABLENAME,proxyIpAndPort);
+                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(TbNameConstant.HALL_SECOND_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {

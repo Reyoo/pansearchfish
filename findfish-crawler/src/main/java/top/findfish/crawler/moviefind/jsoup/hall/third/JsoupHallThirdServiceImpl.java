@@ -20,7 +20,7 @@ import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
-import top.findfish.crawler.util.WebPageConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 
 import java.net.URLEncoder;
 import java.time.Duration;
@@ -182,10 +182,10 @@ public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
                 }
                 //插入更新可用数据
 //                movieNameAndUrlService.addOrUpdateMovieUrlsWithTitleName(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME,proxyIpAndPort);
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_THIRD_TABLENAME,proxyIpAndPort);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, TbNameConstant.HALL_THIRD_TABLENAME,proxyIpAndPort);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_THIRD_TABLENAME, searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(TbNameConstant.HALL_THIRD_TABLENAME, searchMovieName);
 
                 ArrayList arrayList = new ArrayList();
                 movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
