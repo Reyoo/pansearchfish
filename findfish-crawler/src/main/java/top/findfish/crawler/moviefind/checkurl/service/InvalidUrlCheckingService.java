@@ -54,6 +54,7 @@ public class InvalidUrlCheckingService {
      * @param movieNameAndUrlModels
      * @return
      * @throws Exception
+     * // TODO: 2022/11/11   删除该方法  统一定时任务处理数据
      */
     public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels ,String proxyIpAndPort) throws Exception {
 
@@ -63,7 +64,7 @@ public class InvalidUrlCheckingService {
             if (StrUtil.isBlank(wangPanUrl)) {
                 return;
             }
-            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort,true);
+            Document document = JsoupFindfishUtils.getDocument(wangPanUrl, proxyIpAndPort,false);
             if (document == null){
                 redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);
                 return;

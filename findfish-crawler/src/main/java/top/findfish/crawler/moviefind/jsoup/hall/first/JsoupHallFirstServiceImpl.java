@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.jsoup.xiaoyou;
+package top.findfish.crawler.moviefind.jsoup.hall.first;
 
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.findfish.crawler.constant.CacheConstant;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
@@ -40,27 +40,24 @@ import java.util.concurrent.CompletableFuture;
  * 创建时间:2021/1/18 16:02
  * 描述: 小悠网盘站爬取
  */
-@Service("jsoupXiaoyouServiceImpl")
+@Service("jsoupHallFirstServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
-
+public class JsoupHallFirstServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
-
-    private final InvalidUrlCheckingService invalidUrlCheckingService;
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-    @Value("${user.xiaoyou.url}")
-    String xiaoyouUrl;
+    @Value("${user.hall.firstUrl}")
+    String firstHallUrl;
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
         log.info("-------------->开始爬取 小悠<--------------------");
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), CharsetUtil.UTF_8);
-        String url = xiaoyouUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
+        String url = firstHallUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
 
         try {
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);
@@ -166,10 +163,10 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                 set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME,proxyIpAndPort);
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_FIRST_TABLENAME,proxyIpAndPort);
                         //删除无效数据  删除是要做的 删除的主要用处在于电视剧更新 级数问题。 后面应当抓到删除的逻辑 或者定时批量删除
                         /** movieNameAndUrlService.deleteUnAviliableUrl(movieNameAndUrlModelList, WebPageConstant.XIAOYOU_TABLENAME);*/
-                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.XIAOYOU_TABLENAME, searchMovieName));
+                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_FIRST_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {
@@ -179,7 +176,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
                                     arrayList.add(findFishMovieNameAndUrlModel);
                                 });
 
-                                redisTemplate.opsForValue().set(XiaoYouConstant.XIAOYOU.getType() + searchMovieName,
+                                redisTemplate.opsForValue().set(CacheConstant.FIRST_HALL_CACHE_NAME.concat(searchMovieName),
                                         arrayList, Duration.ofHours(2L));
 
                             } catch (Exception e) {
@@ -199,7 +196,7 @@ public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYOU_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_FIRST_TABLENAME);
     }
 
     /**

@@ -29,16 +29,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+
 /**
- * 项目名: top-findfish-findfish
- * 文件名: JsoupXiaoYuServiceImpl
- * 创建者: HS
- * 创建时间:2022/10/30 20:13
- * 描述: TODO
+ * // TODO: 2022/11/11 重复  帅来判断是否删除
  */
 @Service("jsoupXiaoYuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
+@Deprecated
 public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
@@ -117,8 +115,8 @@ public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
                 set.stream().forEach(url -> {
                     try {
                         movieNameAndUrlModelList.addAll(getWangPanUrl(url, proxyIpAndPort, useProxy));
-                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.XIAOYU_TABLENAME,proxyIpAndPort);
-                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.XIAOYU_TABLENAME, searchMovieName));
+                        movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_SECOND_TABLENAME,proxyIpAndPort);
+                        CompletableFuture<List<MovieNameAndUrlModel>> completableFuture = CompletableFuture.supplyAsync(() -> movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_SECOND_TABLENAME, searchMovieName));
                         List<MovieNameAndUrlModel> movieNameAndUrlModels = completableFuture.get();
                         completableFuture.thenRun(() -> {
                             try {

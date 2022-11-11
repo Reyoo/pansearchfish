@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.common.HallFourthResult;
+import top.findfish.crawler.constant.CacheConstant;
 import top.findfish.crawler.moviefind.jsoup.hall.fourth.HallFourthDataDetailModel;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.constant.XiaoYouConstant;
@@ -43,6 +44,7 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
+    // 易搜 https://yiso.fun/api/search?name=
     @Value("${user.hall.fourthUrl}")
     String hallFourthUrl;
 
@@ -101,7 +103,7 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
 
 
             movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, WebPageConstant.HALL_FOURTH_TABLENAME, proxyIpAndPort);
-            redisTemplate.opsForValue().set(XiaoYouConstant.HALL_FOURTH_CACHE.getType() + searchMovieName,
+            redisTemplate.opsForValue().set(CacheConstant.FOURTH_HALL_CACHE_NAME.concat(searchMovieName),
                     movieNameAndUrlModels, Duration.ofHours(2L));
         } catch (Exception e) {
             redisTemplate.opsForHash().delete("use_proxy", proxyIpAndPort);

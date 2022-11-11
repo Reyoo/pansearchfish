@@ -33,8 +33,8 @@ public class CrawlerWebInfoController {
 //    @Qualifier("jsoupSumuServiceImpl")
 //    private final ICrawlerCommonService jsoupSumuServiceImpl;
 //
-    @Qualifier("jsoupUnreadServiceImpl")
-    private final ICrawlerCommonService jsoupUnreadServiceImpl;
+//    @Qualifier("jsoupUnreadServiceImpl")
+//    private final ICrawlerCommonService jsoupUnreadServiceImpl;
 
 //    @Qualifier("jsoupXiaoYouServiceImpl")
 //    private final ICrawlerCommonService jsoupXiaoyouServiceImpl;
@@ -56,15 +56,15 @@ public class CrawlerWebInfoController {
     /**
      * 调用电影PID 入库 触发接口类
      */
-    @RequestMapping(value = "/getall", method = RequestMethod.GET)
-    public AjaxResult loopGetMoviePid() {
-        try {
-            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
-            return AjaxResult.success();
-        } catch (Exception e) {
-            return AjaxResult.error();
-        }
-    }
+//    @RequestMapping(value = "/getall", method = RequestMethod.GET)
+//    public AjaxResult loopGetMoviePid() {
+//        try {
+//            jsoupUnreadServiceImpl.saveOrFreshRealMovieUrl("摩登家庭","",false);
+//            return AjaxResult.success();
+//        } catch (Exception e) {
+//            return AjaxResult.error();
+//        }
+//    }
 //
 //
 //    //测试

@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.jsoup.unread;
+package top.findfish.crawler.moviefind.jsoup.hall.third;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.findfish.crawler.constant.CacheConstant;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
 import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
@@ -34,17 +34,17 @@ import java.util.Set;
  * @date: 2021-01-04
  * @Description: 未读影单 爬取类
  */
-@Service("jsoupUnreadServiceImpl")
+@Service("jsoupHallThirdServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
+public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
 
     private final IMovieNameAndUrlService movieNameAndUrlService;
-    private final InvalidUrlCheckingService invalidUrlCheckingService;
+
     private final RedisTemplate redisTemplate;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-    @Value("${user.unread.weiduyingdan}")
+    @Value("${user.hall.thirdUrl}")
     String unreadUrl;
 
     @Override
@@ -182,10 +182,10 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                 }
                 //插入更新可用数据
 //                movieNameAndUrlService.addOrUpdateMovieUrlsWithTitleName(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME,proxyIpAndPort);
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.WEIDU_TABLENAME,proxyIpAndPort);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModelList, WebPageConstant.HALL_THIRD_TABLENAME,proxyIpAndPort);
 
                 //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.WEIDU_TABLENAME, searchMovieName);
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_THIRD_TABLENAME, searchMovieName);
 
                 ArrayList arrayList = new ArrayList();
                 movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{
@@ -194,7 +194,7 @@ public class JsoupUnReadServiceImpl implements ICrawlerCommonService {
                 });
 
                 //筛选数据库链接
-                redisTemplate.opsForValue().set("unread::" + searchMovieName, arrayList, Duration.ofHours(2L));
+                redisTemplate.opsForValue().set(CacheConstant.THIRD_HALL_CACHE_NAME.concat(searchMovieName), arrayList, Duration.ofHours(2L));
             }
         } catch (Exception e) {
             log.error("docment is null" + e.getMessage());

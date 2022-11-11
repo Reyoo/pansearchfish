@@ -28,26 +28,11 @@ import java.util.stream.Stream;
 @SpringBootTest
 class FindfishCrawlerApplicationTests {
 
-
-    //    @Qualifier("jsoupAiDianyingServiceImpl")
-//    @Autowired
-//    ICrawlerCommonService jsoupAiDianyingServiceImpl;
-//
-    @Qualifier("jsoupHallFourthServiceImpl")
+//    @Qualifier("jsoupHallFourthServiceImpl")
+    @Qualifier("jsoupHallThirdServiceImpl")
     @Autowired
     ICrawlerCommonService jsoupHallFourthServiceImpl;
 //
-//    @Qualifier("jsoupUnreadServiceImpl")
-//    @Autowired
-//    ICrawlerCommonService jsoupUnreadServiceImpl;
-//
-//    @Qualifier("jsoupAiDianyingServiceImpl")
-//    @Autowired
-//    ICrawlerCommonService jsoupYouJiangServiceImpl;
-
-//    private static GraphServiceClient<Request> graphClient = null;
-//    private static TokenCredentialAuthProvider authProvider = null;
-
     @Qualifier("systemUserSearchMovieServiceImpl")
     @Autowired
     ISystemUserSearchMovieService systemUserSearchMovieService;
@@ -58,43 +43,9 @@ class FindfishCrawlerApplicationTests {
 //    RedissonClient redissonClient;
 
 
-    public static void main(String[] args) {
-
-        try {
-            System.out.println(test());
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    public static String test() throws SocketTimeoutException, Exception {
-        try {
-            System.out.println("测试");
-            throw new SocketTimeoutException("123");
-
-        } catch (SocketTimeoutException e) {
-            System.out.println("抛出socket 异常");
-            return "a";
-        } catch (Exception e) {
-            System.out.println("抛出异常");
-            return "b";
-        }
-
-
-    }
-
-
     @Test
     void contextLoads() throws Exception {
-
-
         jsoupHallFourthServiceImpl.saveOrFreshRealMovieUrl("让子弹飞", null, false);
-
-
 //        systemUserSearchMovieService.userSearchMovieCountInFindfish("奥特曼大战哥斯拉");
 
 //        CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(()->{

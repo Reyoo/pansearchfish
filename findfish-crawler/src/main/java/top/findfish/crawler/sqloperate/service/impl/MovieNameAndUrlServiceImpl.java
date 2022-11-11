@@ -48,7 +48,7 @@ public class MovieNameAndUrlServiceImpl extends ServiceImpl<MovieNameAndUrlMappe
         movieNameAndUrlModels.stream().forEach(t -> {
 
                     try {
-                        if (StrUtil.isBlank(t.getMovieName())) {
+                        if (StrUtil.isBlank(t.getWangPanUrl())) {
                             return;
                         }
                         //查询库内是否有该电影名的数据

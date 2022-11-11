@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.jsoup.sumsu;
+package top.findfish.crawler.moviefind.jsoup.hall.second;
 
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -11,9 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import top.findfish.crawler.constant.CacheConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.moviefind.checkurl.service.InvalidUrlCheckingService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.util.JudgeUrlSourceUtil;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
@@ -21,33 +20,31 @@ import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.WebPageConstant;
 
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Service("jsoupSumuServiceImpl")
+@Service("jsoupHallSecondServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-@Deprecated
-public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
+public class JsoupHallSecondServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
     private final IMovieNameAndUrlService movieNameAndUrlService;
-    private final InvalidUrlCheckingService invalidUrlCheckingService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-
-    @Value("${user.xiaoyu.url}")
+    @Value("${user.hall.secondUrl}")
     String url;
 
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
-        log.info("-------------->开始爬取 社区动力<--------------------");
         Set<String> firstSearchUrls = new HashSet<>();
-        firstSearchUrls.add(url.concat(searchMovieName));
+        String encode = URLEncoder.encode(searchMovieName.trim(), "UTF-8");
+        firstSearchUrls.add(url.concat(encode));
         return firstSearchUrls;
     }
 
@@ -97,13 +94,14 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
                     }
                 });
                 //插入更新可用数据
-                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.XIAOYU_TABLENAME, proxyIpAndPort);
+                movieNameAndUrlService.addOrUpdateMovieUrls(movieList, WebPageConstant.HALL_SECOND_TABLENAME, proxyIpAndPort);
 //                //删除无效数据
 //                movieNameAndUrlService.deleteUnAviliableUrl(movieList, WebPageConstant.LEIFENGJUN_TABLENAME);
 //                //更新后从数据库查询后删除 片名相同但更新中的 无效数据
-                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.XIAOYU_TABLENAME, searchMovieName);
-                redisTemplate.opsForValue().set("xiaoyu::" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.XIAOYU_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
-                        Duration.ofHours(2L));
+                List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(WebPageConstant.HALL_SECOND_TABLENAME, searchMovieName);
+//                redisTemplate.opsForValue().set("xiaoyu::" + searchMovieName, invalidUrlCheckingService.checkDataBaseUrl(WebPageConstant.XIAOYU_TABLENAME, movieNameAndUrlModels, proxyIpAndPort),
+//                        Duration.ofHours(2L));
+                redisTemplate.opsForValue().set(CacheConstant.SECOND_HALL_CACHE_NAME.concat(searchMovieName), movieNameAndUrlModels, Duration.ofHours(2L));
 
             }
         } catch (Exception e) {
@@ -115,7 +113,7 @@ public class JsoupSumsuServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void checkRepeatMovie() {
-        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.XIAOYU_TABLENAME);
+        movieNameAndUrlMapper.checkRepeatMovie(WebPageConstant.HALL_SECOND_TABLENAME);
     }
 
 
