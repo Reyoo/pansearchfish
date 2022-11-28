@@ -37,8 +37,15 @@ public class RedisConfig {
      * @author huangweicheng
      * @date 2019/10/22
      */
+
+    /**
+     * Description: redisTemplate序列化
+     * @param factory
+     * @author huangweicheng
+     * @date 2019/10/22
+     */
     @Bean
-    public RedisTemplate redisTemplate(RedisConnectionFactory factory) {
+    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate redisTemplate = new RedisTemplate<Object, Object>();
         redisTemplate.setConnectionFactory(factory);
         Jackson2JsonRedisSerializer<Object> j2jrs = new Jackson2JsonRedisSerializer<>(Object.class);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,13 +27,13 @@ import java.util.List;
 @Service("cacheService")
 public class CacheServiceImpl implements CacheService {
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Override
     public List<MovieNameAndUrlModel> getMoviesByName(String redisPrefix, String movieName) throws Exception {
-        String cacheResult = redisTemplate.opsForValue().get(redisPrefix.concat(movieName));
-        List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult), MovieNameAndUrlModel.class);
-        return null == cacheResult ? null : movieNameAndUrlModels;
+        List<MovieNameAndUrlModel> movieNameAndUrlModels = (ArrayList)redisTemplate.opsForValue().get(redisPrefix.concat(movieName));
+//        List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult), MovieNameAndUrlModel.class);
+        return null == movieNameAndUrlModels ? null : movieNameAndUrlModels;
     }
 }
 

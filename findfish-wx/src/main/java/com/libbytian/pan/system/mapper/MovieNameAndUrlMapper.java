@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ public interface MovieNameAndUrlMapper extends BaseMapper<MovieNameAndUrlModel> 
     List<MovieNameAndUrlModel> selectMovieUrlByName(@Param("tableName") String tableName , @Param("movieName") String movieName);
 
 
-    List<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param("tableName") String tableName , @Param("movieName") String movieName);
+    ArrayList<MovieNameAndUrlModel> selectMovieUrlByLikeName(@Param("tableName") String tableName , @Param("movieName") String movieName);
 
     /**
      * 批量新增

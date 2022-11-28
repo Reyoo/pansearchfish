@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,9 +37,9 @@ public class FindMovieServiceImpl implements IFindMovieService {
 
     @Override
     public List<MovieNameAndUrlModel> getMoviesByName(String tbName, String redisPrefix, String movieName) throws Exception {
-        List<MovieNameAndUrlModel> movieNameAndUrlModels = movieNameAndUrlMapper.selectMovieUrlByLikeName(tbName, movieName);
-        if(CollectionUtil.isNotEmpty(movieNameAndUrlModels)){
-            redisTemplate.opsForValue().set(redisPrefix.concat(movieName), movieNameAndUrlModels, Duration.ofHours(2L));
+        ArrayList<MovieNameAndUrlModel> arrayList = movieNameAndUrlMapper.selectMovieUrlByLikeName(tbName, movieName);
+        if(CollectionUtil.isNotEmpty(arrayList)){
+            redisTemplate.opsForValue().set(redisPrefix.concat(movieName), arrayList, Duration.ofHours(2L));
         }
         return movieNameAndUrlMapper.selectMovieUrlByLikeName(tbName, movieName);
     }
