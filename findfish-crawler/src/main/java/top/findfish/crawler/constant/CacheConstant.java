@@ -13,8 +13,8 @@ package top.findfish.crawler.constant;
  */
 public class CacheConstant {
 
-    public final static String FIRST_HALL_CACHE_NAME = "first::";
-    public final static String SECOND_HALL_CACHE_NAME = "second::";
-    public final static String THIRD_HALL_CACHE_NAME = "third::";
-    public final static String FOURTH_HALL_CACHE_NAME = "fourth::";
+    public final static String FIRST_HALL_CACHE_NAME = "first:";
+    public final static String SECOND_HALL_CACHE_NAME = "second:";
+    public final static String THIRD_HALL_CACHE_NAME = "third:";
+    public final static String FOURTH_HALL_CACHE_NAME = "fourth:";
 }
