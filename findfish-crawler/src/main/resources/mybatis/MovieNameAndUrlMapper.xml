@@ -14,7 +14,7 @@
     </sql>
 
 
-    <select id="selectMovieUrlByLikeName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByLikeName" resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
         FROM  ${tableName}
@@ -22,7 +22,7 @@
 
     </select>
 
-    <select id="selectMovieUrlByLikeNameGroup" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByLikeNameGroup" resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
         FROM  ${tableName}
@@ -32,7 +32,7 @@
 
 
 
-    <select id="selectMovieUrlByName" resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel"  statementType="STATEMENT">
+    <select id="selectMovieUrlByName" resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel"  statementType="STATEMENT">
         SELECT
         <include refid="Base_Column_List"/>
         FROM  ${tableName}
@@ -55,7 +55,7 @@
     </insert>
 
 
-    <insert id="insertMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+    <insert id="insertMovieUrl" parameterType="com.libbytian.pan.system.model.MovieNameAndUrlModel" statementType="STATEMENT">
         INSERT INTO  ${tableName}
             (movie_name, movie_url, wangpan_url, wangpan_passwd,title_name,pan_source,updatetime)
         VALUES (${"'"+movieNameAndUrlModel.movieName+"'"}, ${"'"+movieNameAndUrlModel.movieUrl+"'"},
@@ -65,7 +65,7 @@
     </insert>
 
 
-    <delete id="deleteUrlMovieUrls" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+    <delete id="deleteUrlMovieUrls" parameterType="com.libbytian.pan.system.model.MovieNameAndUrlModel" statementType="STATEMENT">
         DELETE
         FROM  ${tableName}
         WHERE movie_name = ${"'"+movieNameAndUrlModel.movieName+"'"}
@@ -74,7 +74,7 @@
 
 
 
-    <update id="updateUrlMovieUrl" parameterType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel" statementType="STATEMENT">
+    <update id="updateUrlMovieUrl" parameterType="com.libbytian.pan.system.model.MovieNameAndUrlModel" statementType="STATEMENT">
         UPDATE
         ${tableName}
         <trim prefix="set" suffixOverrides=",">
@@ -132,7 +132,7 @@
     </delete>
 
     <select id="selectMovieUrlByCondition"
-            resultType="top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel">
+            resultType="com.libbytian.pan.system.model.MovieNameAndUrlModel">
         SELECT
         <include refid="Base_Column_List"/>
         FROM  ${tablename}

@@ -1,9 +1,10 @@
-package top.findfish.crawler.moviefind.jsoup.hall.third;
+package top.findfish.crawler.moviefind.jsoup.hall.unread;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -18,7 +19,6 @@ import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.constant.TbNameConstant;
 
@@ -34,10 +34,10 @@ import java.util.Set;
  * @date: 2021-01-04
  * @Description: 未读影单 爬取类
  */
-@Service("jsoupHallThirdServiceImpl")
+@Service("jsoupHallUnreadServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
+public class JsoupUnreadServiceImpl implements ICrawlerCommonService {
 
     private final IMovieNameAndUrlService movieNameAndUrlService;
 
@@ -54,9 +54,7 @@ public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
         String encode = URLEncoder.encode(searchMovieName.trim(), "UTF-8");
         String url = unreadUrl + "/?s=" + encode;
         String charset = JsoupFindfishUtils.getCharset(url);
-//        System.out.println(charset);
         Document doc = JsoupFindfishUtils.getDocumentWithCharset(url, proxyIpAndPort, useProxy, charset);
-//        System.out.println(doc.toString());
         Elements links = doc.getElementsByClass("entry-title");
         if (ObjectUtil.isNull(links)) {
             return movieUrlSet;
@@ -94,7 +92,7 @@ public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
 
         Elements pTagAttrs = document.getElementsByClass("entry-content").tagName("div").select("p");
         String finalMovieName = movieName;
-        pTagAttrs.parallelStream().forEach(
+        pTagAttrs.stream().forEach(
                 pTagAttr -> {
                     if (pTagAttr.text().contains("资源链接点这里")) {
                         String panUrl = pTagAttr.getElementsByTag("a").attr("href");
@@ -162,8 +160,7 @@ public class JsoupHallThirdServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) {
-
-        log.info("-------------->开始爬取 未读<--------------------");
+        log.info("-------------->开始爬取 未读  搜索片名: "+searchMovieName+" <--------------------");
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
 
         try {

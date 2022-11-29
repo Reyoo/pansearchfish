@@ -1,7 +1,9 @@
 package top.findfish.crawler.moviefind;
 
 
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
+
+
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 
 import java.util.List;
 import java.util.Set;

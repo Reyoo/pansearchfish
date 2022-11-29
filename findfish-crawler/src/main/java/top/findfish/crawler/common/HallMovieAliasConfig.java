@@ -24,7 +24,7 @@ public class HallMovieAliasConfig {
 
     private HashMap<String, String> aliasMap;
 
-    public static final String DEFAULT_HALL_NAME = "jsoupHallFirstServiceImpl";
+    public static final String DEFAULT_HALL_NAME = "jsoupHallFourthServiceImpl";
 
     public HashMap<String, String> getAliasMap() {
         return aliasMap;

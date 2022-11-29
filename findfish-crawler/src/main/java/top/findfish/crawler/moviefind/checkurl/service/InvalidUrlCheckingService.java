@@ -1,6 +1,7 @@
 package top.findfish.crawler.moviefind.checkurl.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -10,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class InvalidUrlCheckingService {
      * @throws Exception
      * // TODO: 2022/11/11   删除该方法  统一定时任务处理数据
      */
-    public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName,  List<MovieNameAndUrlModel> movieNameAndUrlModels ,String proxyIpAndPort) throws Exception {
+    public ArrayList<MovieNameAndUrlModel> checkDataBaseUrl(String tableName, List<MovieNameAndUrlModel> movieNameAndUrlModels , String proxyIpAndPort) throws Exception {
 
         ArrayList arrayList = new ArrayList();
         movieNameAndUrlModels.stream().forEach(movieNameAndUrlModel ->{

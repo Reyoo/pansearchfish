@@ -1,9 +1,10 @@
-package top.findfish.crawler.moviefind.jsoup.xiaoyu;
+package top.findfish.crawler.moviefind.jsoup.hall.xiaoyu;
 
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -12,15 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.findfish.crawler.constant.CacheConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 import top.findfish.crawler.constant.WebPageTagConstant;
-import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.PanSourceUtil;
-import top.findfish.crawler.constant.TbNameConstant;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -30,13 +30,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 
-/**
- * // TODO: 2022/11/11 重复  帅来判断是否删除
- */
-@Service("jsoupXiaoYuServiceImpl")
+
+@Service("jsoupHallXiaoYuServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-@Deprecated
 public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
@@ -44,16 +41,15 @@ public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-    @Value("${user.xiaoyu.url}")
-    String xiaoyuUrl;
+    @Value("${user.hall.secondUrl}")
+    String XiaoYuHallUrl;
 
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
-
-        log.info("-------------->开始爬取小宇 <--------------------");
+        log.info("-------------->开始爬取 小宇  搜索片名: "+searchMovieName+" <--------------------");
         Set<String> movieList = new HashSet<>();
-        String url = xiaoyuUrl.concat(WebPageTagConstant.XIAOYU_URL_PARAM.getType()).concat(searchMovieName.trim());
+        String url = XiaoYuHallUrl.concat(WebPageTagConstant.XIAOYU_URL_PARAM.getType()).concat(searchMovieName.trim());
         try {
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);
             if (document == null){
@@ -126,7 +122,7 @@ public class JsoupXiaoYuServiceImpl implements ICrawlerCommonService {
                                     arrayList.add(findFishMovieNameAndUrlModel);
                                 });
 
-                                redisTemplate.opsForValue().set(XiaoYouConstant.XIAOYU.getType() + searchMovieName,
+                                redisTemplate.opsForValue().set(CacheConstant.SECOND_HALL_CACHE_NAME.concat(searchMovieName),
                                         arrayList, Duration.ofHours(2L));
                             } catch (Exception e) {
                                 e.printStackTrace();

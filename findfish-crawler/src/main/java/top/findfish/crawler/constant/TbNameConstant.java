@@ -10,8 +10,8 @@ package top.findfish.crawler.constant;
 public class TbNameConstant {
 
     public static final String HALL_FIRST_TABLENAME = "url_movie_first";
+    public static final String HALL_SECOND_TABLENAME = "url_movie_second";
     public static final String HALL_THIRD_TABLENAME = "url_movie_third";
     public static final String HALL_FOURTH_TABLENAME = "url_movie_fourth";
-    public static final String HALL_SECOND_TABLENAME = "url_movie_second";
 
 }

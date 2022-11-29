@@ -1,5 +1,6 @@
-package top.findfish.crawler.moviefind.jsoup.hall.fourth;
+package top.findfish.crawler.moviefind.jsoup.hall.yisou;
 
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.common.HallFourthResult;
 import top.findfish.crawler.constant.CacheConstant;
+import top.findfish.crawler.constant.TbNameConstant;
 import top.findfish.crawler.constant.WebPageTagConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
-import top.findfish.crawler.util.RestTemplateUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.util.FindFishUserAgentUtil;
-import top.findfish.crawler.constant.TbNameConstant;
+import top.findfish.crawler.util.RestTemplateUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -31,18 +31,15 @@ import java.util.Set;
  * 创建时间:2022/1/5 11:16
  * 描述: 莉莉网盘站爬取
  */
-@Service("jsoupHallFourthServiceImpl")
+@Service("jsoupHallYiSouServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
-
-    //    private final InvalidUrlCheckingService invalidUrlCheckingService;
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
-    // 易搜 https://yiso.fun/api/search?name=
     @Value("${user.hall.fourthUrl}")
     String hallFourthUrl;
 
@@ -60,6 +57,8 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
 
     @Override
     public void saveOrFreshRealMovieUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) {
+        log.info("-------------->开始爬取 易搜  搜索片名: "+searchMovieName+" <--------------------");
+
         List<MovieNameAndUrlModel> movieNameAndUrlModelList = new ArrayList<>();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Accept", "application/json");
@@ -82,8 +81,7 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
             System.out.println(hallFourthResult.getData().getTotal());
             List<MovieNameAndUrlModel> movieNameAndUrlModels = new ArrayList<>();
             List<HallFourthDataDetailModel> resultDataList = hallFourthResult.getData().getList();
-            resultDataList.parallelStream().forEach(hallFourthDataDetailModel -> {
-//            hallFourthDataDetailModel.get
+            resultDataList.stream().forEach(hallFourthDataDetailModel -> {
                 hallFourthDataDetailModel.getFileInfos().forEach(fileInfo -> {
                     if (fileInfo.getFileName().contains("epub")) {
                         return;
@@ -98,7 +96,6 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
                     movieNameAndUrlModels.add(movieNameAndUrlModel);
                 });
             });
-
 
             movieNameAndUrlService.addOrUpdateMovieUrls(movieNameAndUrlModels, TbNameConstant.HALL_FOURTH_TABLENAME, proxyIpAndPort);
             redisTemplate.opsForValue().set(CacheConstant.FOURTH_HALL_CACHE_NAME.concat(searchMovieName),

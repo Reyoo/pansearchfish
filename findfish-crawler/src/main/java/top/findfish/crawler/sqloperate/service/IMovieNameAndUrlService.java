@@ -2,7 +2,7 @@ package top.findfish.crawler.sqloperate.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 
 import java.util.List;
 

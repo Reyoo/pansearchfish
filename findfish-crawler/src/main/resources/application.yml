@@ -1,6 +1,6 @@
 movie:
   hall:
-    first: jsoupHallFirstServiceImpl
-    second: jsoupHallSecondServiceImpl
-    third: jsoupHallThirdServiceImpl
-    fourth: jsoupHallFourthServiceImpl
+    first: jsoupHallXiaoYouServiceImpl
+    second: jsoupHallXiaoYuServiceImpl
+    third: jsoupHallUnreadServiceImpl
+    yisou: jsoupHallYiSouServiceImpl
