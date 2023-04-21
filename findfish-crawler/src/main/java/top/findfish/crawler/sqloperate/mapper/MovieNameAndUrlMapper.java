@@ -2,10 +2,10 @@ package top.findfish.crawler.sqloperate.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.core.parameters.P;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
+
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package top.findfish.crawler.moviefind.jsoup.hall.first;
+package top.findfish.crawler.moviefind.jsoup.hall.xiaoyou;
 
-
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.CharsetUtil;
 import com.alibaba.fastjson.JSON;
@@ -21,10 +21,8 @@ import top.findfish.crawler.constant.XiaoYouConstant;
 import top.findfish.crawler.moviefind.ICrawlerCommonService;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 import top.findfish.crawler.constant.TbNameConstant;
-
 import java.net.URLEncoder;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -40,24 +38,24 @@ import java.util.concurrent.CompletableFuture;
  * 创建时间:2021/1/18 16:02
  * 描述: 小悠网盘站爬取
  */
-@Service("jsoupHallFirstServiceImpl")
+@Service("jsoupHallXiaoYouServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-public class JsoupHallFirstServiceImpl implements ICrawlerCommonService {
+public class JsoupXiaoYouServiceImpl implements ICrawlerCommonService {
 
     private final RedisTemplate redisTemplate;
     private final IMovieNameAndUrlService movieNameAndUrlService;
     private final MovieNameAndUrlMapper movieNameAndUrlMapper;
 
     @Value("${user.hall.firstUrl}")
-    String firstHallUrl;
+    String XiaoYouHallUrl;
 
     @Override
     public Set<String> firstFindUrl(String searchMovieName, String proxyIpAndPort, Boolean useProxy) throws Exception {
-        log.info("-------------->开始爬取 小悠<--------------------");
+        log.info("-------------->开始爬取 小悠  搜索片名: "+searchMovieName+" <--------------------");
         Set<String> movieList = new HashSet<>();
         String encode = URLEncoder.encode(searchMovieName.trim(), CharsetUtil.UTF_8);
-        String url = firstHallUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
+        String url = XiaoYouHallUrl.concat(WebPageTagConstant.XIAOYOU_URL_PARAM.getType()).concat(encode);
 
         try {
             Document document = JsoupFindfishUtils.getDocument(url, proxyIpAndPort, useProxy);

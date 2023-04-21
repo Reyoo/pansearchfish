@@ -3,6 +3,7 @@ package top.findfish.crawler.sqloperate.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.findfish.crawler.moviefind.jsoup.JsoupFindfishUtils;
 import top.findfish.crawler.sqloperate.mapper.MovieNameAndUrlMapper;
-import top.findfish.crawler.sqloperate.model.MovieNameAndUrlModel;
 import top.findfish.crawler.sqloperate.service.IMovieNameAndUrlService;
 
 import java.util.List;

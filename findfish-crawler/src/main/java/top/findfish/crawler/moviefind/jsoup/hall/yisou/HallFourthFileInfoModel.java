@@ -1,4 +1,4 @@
-package top.findfish.crawler.moviefind.jsoup.hall.fourth;
+package top.findfish.crawler.moviefind.jsoup.hall.yisou;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

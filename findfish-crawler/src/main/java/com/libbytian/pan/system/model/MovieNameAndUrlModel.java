@@ -2,6 +2,7 @@ package com.libbytian.pan.system.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 
 /**
@@ -16,7 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=false)
 @Data
-public class MovieNameAndUrlModel {
+public class MovieNameAndUrlModel extends Model<MovieNameAndUrlModel> {
 
     /**
      * 主键id

@@ -1,13 +1,9 @@
 package com.libbytian.pan;
 
-import com.libbytian.pan.findmovie.aidianying.IFindMovieInAiDianYing;
-import com.libbytian.pan.findmovie.hall.fourth.IFindMovieHallFourth;
-import com.libbytian.pan.findmovie.unread.IFindMovieInUnread;
-import com.libbytian.pan.findmovie.xiaoyou.IFindMovieInXiaoyou;
-import com.libbytian.pan.findmovie.youjiang.IFindMovieInYoujiang;
-import com.libbytian.pan.system.service.ISystemTemDetailsService;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.libbytian.pan.system.model.MovieNameAndUrlModel;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +11,33 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
 class SearchpanApplicationTests {
+
+
+
+    @Test
+    void parseJson(){
+
+        String redisPrefix1 = "third::";
+        String movieName1 = "让子弹飞";
+        Object cacheResult1 = redisTemplate.opsForValue().get(redisPrefix1.concat(movieName1));
+        System.out.println("结果一 ："+cacheResult1);
+
+
+
+
+        String cacheResult2 = "[\"java.util.ArrayList\",[{\"@class\":\"com.libbytian.pan.system.model.MovieNameAndUrlModel\",\"id\":14,\"movieName\":\"[2010]让子弹飞\",\"movieUrl\":null,\"wangPanUrl\":\"https://www.aliyundrive.com/s/dgobYH45Cpk\",\"wangPanPassword\":\"\",\"titleName\":\"视频:\",\"panSource\":\"阿里云盘\",\"updateTime\":null}]]";
+        System.out.println("结果二 ："+cacheResult2);
+
+
+        List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult2), MovieNameAndUrlModel.class);
+
+        System.out.println(movieNameAndUrlModels);
+    }
 
 
 //    @Autowired
