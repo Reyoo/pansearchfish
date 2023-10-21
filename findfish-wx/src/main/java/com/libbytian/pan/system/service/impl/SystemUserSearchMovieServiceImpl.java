@@ -189,5 +189,22 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
         return map;
     }
 
-
+    @Override
+    public Map<String, Object> getEveryList(Integer date, Integer pageNum, Integer pageSize) {
+        date = date ==1 ? defaultDate : date;
+        Map<String,Object> map = new HashMap<>();
+        PageHelper.startPage(pageNum,pageSize);
+        List<Map<String,BigDecimal>> hotList = systemUserSearchMovieMapper.getHotList(date);
+        BigDecimal num = new BigDecimal(0);
+        BigDecimal count = new BigDecimal(1);
+        for (Map<String, BigDecimal> stringIntegerMap : hotList) {
+            num = num.add(count);
+            //设置 9倍 系数
+            stringIntegerMap.put("every_times",stringIntegerMap.get("every_times").multiply(new BigDecimal(coefficient)));
+            stringIntegerMap.put("num",num);
+        }
+        PageInfo pageInfo = new PageInfo(hotList);
+        map.put("result",pageInfo);
+        return map;
+    }
 }

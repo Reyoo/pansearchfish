@@ -11,8 +11,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static java.util.Collections.list;
 
 @SpringBootTest
 class SearchpanApplicationTests {
@@ -37,6 +40,47 @@ class SearchpanApplicationTests {
         List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult2), MovieNameAndUrlModel.class);
 
         System.out.println(movieNameAndUrlModels);
+    }
+
+
+    void fund(){
+
+        String a = "0100111011110";
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(0);
+        list.add(1);
+        list.add(0);
+        list.add(0);
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        list.add(0);
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        list.add(1);
+        list.add(0);
+
+
+        int l = 0,m = 0;
+
+        for(int i = 1;i <=a.length();i++){
+            if(list.get(i) == 1){
+                l++;
+                m=l;
+            }else {
+               l = 0;
+            }
+
+            if (l < m)
+               l =m;
+
+
+
+        }
+        //输出m的值
+        System.out.printf(String.valueOf(m));
+
     }
 
 

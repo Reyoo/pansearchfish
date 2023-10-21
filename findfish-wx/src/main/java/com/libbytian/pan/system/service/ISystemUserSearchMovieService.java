@@ -76,5 +76,8 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
     Map<String,Object> getTrueHotList(Integer date,Integer pageNum,Integer pageSize);
 
 
+    Map<String,Object> getEveryList(Integer date,Integer pageNum,Integer pageSize);
+
+
 
 }

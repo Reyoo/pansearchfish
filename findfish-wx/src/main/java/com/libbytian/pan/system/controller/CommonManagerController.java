@@ -41,4 +41,12 @@ public class CommonManagerController {
     }
 
 
+    @RequestMapping(value = "/select/everList", method = RequestMethod.GET)
+    public AjaxResult getEveryList(@RequestParam(defaultValue = "1") Integer date,
+                                 @RequestParam(defaultValue = "1") Integer pageNum , @RequestParam(defaultValue = "10") Integer pageSize) {
+        Map<String,Object> everyList = iSystemUserSearchMovieService.getEveryList(date,pageNum,pageSize);
+        return AjaxResult.success(everyList);
+
+    }
+
 }
