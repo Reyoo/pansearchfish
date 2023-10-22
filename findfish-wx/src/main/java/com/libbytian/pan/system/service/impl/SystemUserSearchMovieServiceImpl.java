@@ -207,4 +207,13 @@ public class SystemUserSearchMovieServiceImpl extends ServiceImpl<SystemUserSear
         map.put("result",pageInfo);
         return map;
     }
+
+
+
+    @Override
+    public  List<SystemUserSearchMovieModel> getOtherList() {
+        List<SystemUserSearchMovieModel> systemUserSearchMovieModels = systemUserSearchMovieMapper.selectList(null);
+        return systemUserSearchMovieModels;
+    }
+
 }

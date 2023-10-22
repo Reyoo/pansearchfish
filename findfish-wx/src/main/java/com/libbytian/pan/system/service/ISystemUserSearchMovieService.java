@@ -78,6 +78,6 @@ public interface ISystemUserSearchMovieService extends IService<SystemUserSearch
 
     Map<String,Object> getEveryList(Integer date,Integer pageNum,Integer pageSize);
 
-
+    List<SystemUserSearchMovieModel> getOtherList();
 
 }
