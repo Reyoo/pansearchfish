@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,6 +82,26 @@ class SearchpanApplicationTests {
         //输出m的值
         System.out.printf(String.valueOf(m));
 
+    }
+
+
+    @Test
+    void TestArr(){
+        int arr[] = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+                int temp = 0;
+                if (arr[j] > arr[i]) {
+                    temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        for(int a :arr){
+            System.out.println(a);
+        }
     }
 
 

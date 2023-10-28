@@ -1,19 +1,15 @@
 package com.libbytian.pan.system.controller;
 
 import com.libbytian.pan.system.common.AjaxResult;
-import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * 项目名: top-findfish-findfish
@@ -31,7 +27,8 @@ public class CanReactController {
     private final ISystemUserSearchMovieService iSystemUserSearchMovieService;
 
     /**
-     *  后台输出满心
+     * 后台输出满心
+     *
      * @return
      */
     @RequestMapping(value = "/select", method = RequestMethod.GET)
@@ -79,5 +76,22 @@ public class CanReactController {
 
     }
 
+
+    @RequestMapping(value = "/doubleFor", method = RequestMethod.GET)
+    public AjaxResult getDoubleIdeaFor() {
+        int arr[] = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 1 +i; j < arr.length; j++) {
+                int temp = 0;
+                if (arr[j] > arr[i]) {
+                    temp = arr[j];
+                    arr[j] = arr[i];
+                    arr[i] = temp;
+                }
+            }
+        }
+        Arrays.stream(arr).forEach(t-> System.out.printf(toString()));
+        return AjaxResult.success();
+    }
 
 }
