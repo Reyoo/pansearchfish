@@ -22,20 +22,17 @@ import static java.util.Collections.list;
 class SearchpanApplicationTests {
 
 
-
     @Test
-    void parseJson(){
+    void parseJson() {
 
         String redisPrefix1 = "third::";
         String movieName1 = "让子弹飞";
         Object cacheResult1 = redisTemplate.opsForValue().get(redisPrefix1.concat(movieName1));
-        System.out.println("结果一 ："+cacheResult1);
-
-
+        System.out.println("结果一 ：" + cacheResult1);
 
 
         String cacheResult2 = "[\"java.util.ArrayList\",[{\"@class\":\"com.libbytian.pan.system.model.MovieNameAndUrlModel\",\"id\":14,\"movieName\":\"[2010]让子弹飞\",\"movieUrl\":null,\"wangPanUrl\":\"https://www.aliyundrive.com/s/dgobYH45Cpk\",\"wangPanPassword\":\"\",\"titleName\":\"视频:\",\"panSource\":\"阿里云盘\",\"updateTime\":null}]]";
-        System.out.println("结果二 ："+cacheResult2);
+        System.out.println("结果二 ：" + cacheResult2);
 
 
         List<MovieNameAndUrlModel> movieNameAndUrlModels = JSON.parseArray(JSON.toJSONString(cacheResult2), MovieNameAndUrlModel.class);
@@ -44,7 +41,7 @@ class SearchpanApplicationTests {
     }
 
 
-    void fund(){
+    void fund() {
 
         String a = "0100111011110";
         ArrayList<Integer> list = new ArrayList<>();
@@ -63,19 +60,18 @@ class SearchpanApplicationTests {
         list.add(0);
 
 
-        int l = 0,m = 0;
+        int l = 0, m = 0;
 
-        for(int i = 1;i <=a.length();i++){
-            if(list.get(i) == 1){
+        for (int i = 1; i <= a.length(); i++) {
+            if (list.get(i) == 1) {
                 l++;
-                m=l;
-            }else {
-               l = 0;
+                m = l;
+            } else {
+                l = 0;
             }
 
             if (l < m)
-               l =m;
-
+                l = m;
 
 
         }
@@ -86,10 +82,10 @@ class SearchpanApplicationTests {
 
 
     @Test
-    void TestArr(){
+    void TestArr() {
         int arr[] = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
         for (int i = 0; i < arr.length; i++) {
-            for (int j = i+1; j < arr.length; j++) {
+            for (int j = i + 1; j < arr.length; j++) {
                 int temp = 0;
                 if (arr[j] > arr[i]) {
                     temp = arr[i];
@@ -99,8 +95,35 @@ class SearchpanApplicationTests {
             }
         }
 
-        for(int a :arr){
+        for (int a : arr) {
             System.out.println(a);
+        }
+    }
+
+
+    /**
+     * 不起作用的方法
+     */
+    @Deprecated
+    void testFlow() {
+        int[] n = {4, 2, 3, 4, 5, 7, 8, 9, 10, 11};
+        int m = 0;
+        for (int k = 1; k < n.length; k++) {
+            int p = 1;
+            for (int i = 0; i < n.length; i++) {
+                p = p * (n[i] - k);
+            }
+            if (p == 0) {
+                break;
+            } else {
+                System.out.println(k);
+                m = m + 1;
+            }
+        }
+        if (m == 0) {
+            System.out.println("OK");
+        } else {
+            System.out.println(m);
         }
     }
 
@@ -141,7 +164,7 @@ class SearchpanApplicationTests {
     @Test
     void contextLoads() throws Exception {
 
-        redisTemplate.opsForValue().set("123123","123123");
+        redisTemplate.opsForValue().set("123123", "123123");
         System.out.println("123123");
 //        findMovieUrl.findMovieUrl("阿凡达");
 //        youjiang.findMovieUrl("阿凡达");
@@ -181,7 +204,7 @@ class SearchpanApplicationTests {
 
 
     @Test
-   void testaaa(){
+    void testaaa() {
 //        SystemUserToRole systemUserToRole = new SystemUserToRole();
 //        systemUserToRole.setRoleId("1");
 //        systemUserToRole.setUserId("1");
@@ -233,8 +256,6 @@ class SearchpanApplicationTests {
         System.out.println(l3.compareTo(l31));
 
 
-
-
 //        String name = "bjt_13522215221";
 //        System.out.println(name.length());
 //        System.out.println(name+2);
@@ -244,17 +265,15 @@ class SearchpanApplicationTests {
 
     }
 
-    public static boolean stest(){
+    public static boolean stest() {
 
         String l2 = "l2";
         String l3 = "l3";
         String l31 = "l31";
         String l1 = "l1";
         System.out.println(l3.compareTo(l31));
-        return l3.compareTo(l31) >0;
+        return l3.compareTo(l31) > 0;
     }
-
-
 
 
     public static String upgradeCertChannel(String userCertChannel, String certLevel) {
@@ -270,7 +289,6 @@ class SearchpanApplicationTests {
         }
         return sb.toString();
     }
-
 
 
     public static String generateValue() {
