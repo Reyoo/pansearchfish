@@ -1,14 +1,18 @@
 package com.libbytian.pan.system.controller;
 
 import com.libbytian.pan.system.common.AjaxResult;
+import com.libbytian.pan.system.model.SystemKeywordModel;
+import com.libbytian.pan.system.service.ISystemKeywordService;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 /**
@@ -25,6 +29,8 @@ import java.util.Arrays;
 public class CanReactController {
 
     private final ISystemUserSearchMovieService iSystemUserSearchMovieService;
+
+    private final ISystemKeywordService iSystemKeywordService;
 
     /**
      * 后台输出满心
@@ -92,6 +98,18 @@ public class CanReactController {
         }
         Arrays.stream(arr).forEach(t-> System.out.printf(toString()));
         return AjaxResult.success();
+    }
+
+
+    @RequestMapping(value = "/findNameByConditions", method = RequestMethod.PATCH)
+    public AjaxResult findbyCondition(HttpServletRequest httpRequest, @RequestBody(required = true) SystemKeywordModel systemKeywordModel) {
+        try {
+            iSystemKeywordService.updateKeyword(systemKeywordModel);
+            return AjaxResult.success("update is success !!! ");
+        } catch (Exception e) {
+            log.error("systemKeywordModel -- >" + systemKeywordModel.getKeywordId() + "error -> " + e.getMessage());
+            return AjaxResult.error(e.getMessage());
+        }
     }
 
 }
