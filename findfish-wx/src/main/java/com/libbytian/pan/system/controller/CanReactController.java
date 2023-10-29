@@ -4,6 +4,8 @@ import com.libbytian.pan.system.common.AjaxResult;
 import com.libbytian.pan.system.model.SystemKeywordModel;
 import com.libbytian.pan.system.service.ISystemKeywordService;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/canReact")
 @Slf4j
+@Api(tags = "登陆")
 public class CanReactController {
 
     private final ISystemUserSearchMovieService iSystemUserSearchMovieService;
@@ -101,6 +104,7 @@ public class CanReactController {
     }
 
 
+    @ApiOperation(value = "wx｜接口厕所｜根据名称查找")
     @RequestMapping(value = "/findNameByConditions", method = RequestMethod.PATCH)
     public AjaxResult findbyCondition(HttpServletRequest httpRequest, @RequestBody(required = true) SystemKeywordModel systemKeywordModel) {
         try {

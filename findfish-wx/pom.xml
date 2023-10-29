@@ -237,6 +237,14 @@
         </dependency>
 
 
+
+        <!--swagger-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-sentinel -->
         <!--        <dependency>
                     <groupId>com.alibaba.cloud</groupId>
