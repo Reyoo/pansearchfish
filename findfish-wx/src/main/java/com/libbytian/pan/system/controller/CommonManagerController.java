@@ -3,6 +3,8 @@ package com.libbytian.pan.system.controller;
 import com.libbytian.pan.system.common.AjaxResult;
 import com.libbytian.pan.system.model.SystemUserSearchMovieModel;
 import com.libbytian.pan.system.service.ISystemUserSearchMovieService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/commonManager")
+@Api(tags = "外部接口")
 @Slf4j
 public class CommonManagerController {
 
@@ -35,6 +38,7 @@ public class CommonManagerController {
      * @param date 0为当日，7为近7天，30为近30天
      * @return
      */
+    @ApiOperation(value = "热榜查询")
     @RequestMapping(value = "/select/hotList", method = RequestMethod.GET)
     public AjaxResult getHotList(@RequestParam(defaultValue = "1") Integer date,
                                  @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize) {

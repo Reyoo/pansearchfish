@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.libbytian.pan.system.common.AjaxResult;
 import com.libbytian.pan.system.model.SystemNotifyModel;
 import com.libbytian.pan.system.service.ISystemNotifyService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +24,24 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/notify")
 @Slf4j
+@Api(tags = "通知接口")
 public class FindFishNotifyController {
 
     private final ISystemNotifyService systemNotifyService;
 
     /**
      * 分页查询
+     *
      * @param systemNotifyModel
      * @return
      */
+    @ApiOperation(value = "查询通知信息")
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     public AjaxResult findNotifyByPage(@RequestBody(required = false) SystemNotifyModel systemNotifyModel) {
         // 下个版本 迭代出来
 //        PageHelper.startPage(systemNotifyModel.page().intValue(), systemNotifyModel.limits().intValue());
-        Long page = systemNotifyModel.getPage()== null ? 1L:systemNotifyModel.getPage();
-        Long limits = systemNotifyModel.getLimits() == null?10L :systemNotifyModel.getLimits();
+        Long page = systemNotifyModel.getPage() == null ? 1L : systemNotifyModel.getPage();
+        Long limits = systemNotifyModel.getLimits() == null ? 10L : systemNotifyModel.getLimits();
         Page<SystemNotifyModel> findpage = new Page<>(page, limits);
         try {
             IPage<SystemNotifyModel> result = systemNotifyService.findConditionByPage(findpage, systemNotifyModel);
@@ -51,9 +56,11 @@ public class FindFishNotifyController {
 
     /**
      * 新增角色
+     *
      * @param systemNotifyModel
      * @return
      */
+    @ApiOperation(value = "新增通知")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public AjaxResult addNotify(@RequestBody SystemNotifyModel systemNotifyModel) {
         try {
@@ -68,12 +75,13 @@ public class FindFishNotifyController {
     }
 
 
-
     /**
      * 删除
+     *
      * @param systemNotifyModel
      * @return
      */
+    @ApiOperation(value = "删除通知")
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public AjaxResult deleteNotify(@RequestBody SystemNotifyModel systemNotifyModel) {
 
@@ -89,9 +97,11 @@ public class FindFishNotifyController {
 
     /**
      * 修改
+     *
      * @param systemNotifyModel
      * @return
      */
+    @ApiOperation(value = "更新通知")
     @RequestMapping(value = "/update", method = RequestMethod.PATCH)
     public AjaxResult updateNotify(@RequestBody SystemNotifyModel systemNotifyModel) {
         try {
