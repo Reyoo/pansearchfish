@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.libbytian.pan.system.common.AjaxResult;
 import com.libbytian.pan.system.model.*;
 import com.libbytian.pan.system.service.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/role")
 @Slf4j
+@Api(tags = "系统角色")
 public class FindFishRoleController {
 
     private final IRoleToPermissionService iRoleToPermissionService;
@@ -35,6 +38,7 @@ public class FindFishRoleController {
      * @param systemRoleModel
      * @return
      */
+    @ApiOperation(value = "查询角色",httpMethod = "POST")
     @RequestMapping(value = "/findrole", method = RequestMethod.POST)
     public AjaxResult findUserByRole(@RequestBody(required = false) SystemRoleModel systemRoleModel) {
 
@@ -64,6 +68,7 @@ public class FindFishRoleController {
      * @param role
      * @return
      */
+    @ApiOperation(value = "新增角色",httpMethod = "POST")
     @RequestMapping(value = "/addrole", method = RequestMethod.POST)
     public AjaxResult addRole(@RequestBody SystemRoleModel role) {
         try {
@@ -84,6 +89,7 @@ public class FindFishRoleController {
      * @param role
      * @return
      */
+    @ApiOperation(value = "更新角色",httpMethod = "PATCH")
     @RequestMapping(value = "/updaterole", method = RequestMethod.PATCH)
     public AjaxResult putRole(@RequestBody SystemRoleModel role) {
 
@@ -107,6 +113,7 @@ public class FindFishRoleController {
      * @param role 必传（roleId，roleName）
      * @return
      */
+    @ApiOperation(value = "删除角色",httpMethod = "DELETE")
     @RequestMapping(value = "/droprole", method = RequestMethod.DELETE)
     public AjaxResult dropRole(@RequestBody SystemRoleModel role) {
 
@@ -140,6 +147,7 @@ public class FindFishRoleController {
      * @param systemRoleModel
      * @return
      */
+    @ApiOperation(value = "获取用户角色绑定的权限",httpMethod = "POST")
     @RequestMapping(value = "/getauth", method = RequestMethod.POST)
     public AjaxResult finduserRole(@RequestBody SystemRoleModel systemRoleModel) {
 
@@ -176,6 +184,7 @@ public class FindFishRoleController {
      * @param systemRoleToPermission
      * @return
      */
+    @ApiOperation(value = "更新用户角色权限",httpMethod = "PATCH")
     @RequestMapping(value = "/updateauth", method = RequestMethod.PATCH)
     public AjaxResult updateuserRole(@RequestBody SystemRoleToPermission systemRoleToPermission) {
 
