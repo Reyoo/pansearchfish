@@ -4,15 +4,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import top.findfish.crawler.common.HallFourthResult;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -59,9 +55,7 @@ public class RestTemplateUtils {
     }
 
 
-    public static HallFourthResult sendSimpleWithProxy(String url, Map<String, ?> urlParam, HttpHeaders headers,String proxyIpAndPort) {
-        return sendSimpleUseProxy(url, urlParam, HttpMethod.GET, headers,proxyIpAndPort);
-    }
+
 
 
     /**
@@ -85,42 +79,8 @@ public class RestTemplateUtils {
         return restTemplate.exchange(url, method, requestEntity, String.class, urlParam).getBody();
     }
 
-    public static HallFourthResult sendSimpleWithBody(String url, Map<String, ?> urlParam, HttpMethod method, HttpHeaders headers) {
-        if (urlParam == null) {
-            urlParam = new HashMap<>(0);
-        }
-        // url参数拼接
-        url = handleUrlParam(url, urlParam);
-
-        HttpEntity<MultiValueMap<String, ?>> requestEntity = new HttpEntity<>(null, headers);
-
-        return restTemplate.exchange(url, method, requestEntity, HallFourthResult.class, urlParam).getBody();
-    }
 
 
-
-
-    /**
-     * 发送简单请求，不含body
-     *
-     * @param url      url
-     * @param urlParam 用?和&拼接在url后面的参数
-     * @param method   请求方式
-     * @param headers  请求头
-     * @return body
-     */
-    public static HallFourthResult sendSimpleUseProxy(String url, Map<String, ?> urlParam, HttpMethod method, HttpHeaders headers,String proxyIpAndPort) {
-        if (urlParam == null) {
-            urlParam = new HashMap<>(0);
-        }
-        // url参数拼接
-        url = handleUrlParam(url, urlParam);
-        HttpEntity<MultiValueMap<String, ?>> requestEntity = new HttpEntity<>(null, headers);
-        SimpleClientHttpRequestFactory reqfac = new SimpleClientHttpRequestFactory();
-        reqfac.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIpAndPort.split(":")[0], Integer.parseInt(proxyIpAndPort.split(":")[1]))));
-        restTemplate.setRequestFactory(reqfac);
-        return restTemplate.exchange(url, method, requestEntity, HallFourthResult.class, urlParam).getBody();
-    }
 
 
 
