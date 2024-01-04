@@ -93,7 +93,15 @@ public class JsoupHallFourthServiceImpl implements ICrawlerCommonService {
                         String downloadLink = pElement.attr("href");
                         movieNameAndUrlModel.setMovieName(movieName);
                         movieNameAndUrlModel.setWangPanUrl(downloadLink);
+                        movieNameAndUrlModel.setTitleName("视频");
+
                         System.out.println("网盘地址  " + downloadLink);
+                        if(downloadLink.contains("quark")){
+                            movieNameAndUrlModel.setPanSource("夸克");
+                        }else if(downloadLink.contains("baidu")){
+                            movieNameAndUrlModel.setPanSource("百度网盘");
+                        }
+                        movieNameAndUrlModel.setWangPanPassword("" );
                         list.add(movieNameAndUrlModel);
                     }
 
